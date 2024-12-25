@@ -41,7 +41,7 @@ class _UpdateShapeWidgetState extends State<UpdateShapeWidget> {
 
     _model.textCatalogueCodeFocusNode ??= FocusNode();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -78,7 +78,9 @@ class _UpdateShapeWidgetState extends State<UpdateShapeWidget> {
                   ),
                 );
               }
+
               final containerShapesRecord = snapshot.data!;
+
               return Container(
                 width: 650.0,
                 height: 350.0,
@@ -313,7 +315,7 @@ class _UpdateShapeWidgetState extends State<UpdateShapeWidget> {
                                 onChanged: (_) => EasyDebounce.debounce(
                                   '_model.textCatalogueCodeTextController',
                                   const Duration(milliseconds: 2000),
-                                  () => setState(() {}),
+                                  () => safeSetState(() {}),
                                 ),
                                 autofocus: true,
                                 readOnly: true,

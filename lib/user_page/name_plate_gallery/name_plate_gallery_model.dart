@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 class NamePlateGalleryModel extends FlutterFlowModel<NamePlateGalleryWidget> {
   ///  State fields for stateful widgets in this page.
 
-  final unfocusNode = FocusNode();
   // Model for FooterWeb component.
   late FooterWebModel footerWebModel;
   // Model for FooterMobile component.
@@ -29,7 +28,6 @@ class NamePlateGalleryModel extends FlutterFlowModel<NamePlateGalleryWidget> {
 
   @override
   void dispose() {
-    unfocusNode.dispose();
     footerWebModel.dispose();
     footerMobileModel.dispose();
     headerModel.dispose();

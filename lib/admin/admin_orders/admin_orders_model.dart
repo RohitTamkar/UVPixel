@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 class AdminOrdersModel extends FlutterFlowModel<AdminOrdersWidget> {
   ///  State fields for stateful widgets in this page.
 
-  final unfocusNode = FocusNode();
   // Stores action output result for [Firestore Query - Query a collection] action in AdminOrders widget.
   List<OrdersRecord>? listOfOrdersAdmin;
   // Stores action output result for [Firestore Query - Query a collection] action in IconButton widget.
@@ -28,7 +27,6 @@ class AdminOrdersModel extends FlutterFlowModel<AdminOrdersWidget> {
 
   @override
   void dispose() {
-    unfocusNode.dispose();
     headerModel.dispose();
     drawerModel.dispose();
   }

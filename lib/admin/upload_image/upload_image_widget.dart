@@ -27,7 +27,7 @@ class _UploadImageWidgetState extends State<UploadImageWidget> {
     super.initState();
     _model = createModel(context, () => UploadImageModel());
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -42,9 +42,10 @@ class _UploadImageWidgetState extends State<UploadImageWidget> {
     context.watch<FFAppState>();
 
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -84,7 +85,7 @@ class _UploadImageWidgetState extends State<UploadImageWidget> {
                             if (selectedMedia != null &&
                                 selectedMedia.every((m) => validateFileFormat(
                                     m.storagePath, context))) {
-                              setState(() => _model.isDataUploading = true);
+                              safeSetState(() => _model.isDataUploading = true);
                               var selectedUploadedFiles = <FFUploadedFile>[];
 
                               var downloadUrls = <String>[];
@@ -114,21 +115,20 @@ class _UploadImageWidgetState extends State<UploadImageWidget> {
                               if (selectedUploadedFiles.length ==
                                       selectedMedia.length &&
                                   downloadUrls.length == selectedMedia.length) {
-                                setState(() {
+                                safeSetState(() {
                                   _model.uploadedLocalFile =
                                       selectedUploadedFiles.first;
                                   _model.uploadedFileUrl = downloadUrls.first;
                                 });
                               } else {
-                                setState(() {});
+                                safeSetState(() {});
                                 return;
                               }
                             }
 
-                            setState(() {
-                              FFAppState().uploadImageOrVideoUrl =
-                                  _model.uploadedFileUrl;
-                            });
+                            FFAppState().uploadImageOrVideoUrl =
+                                _model.uploadedFileUrl;
+                            safeSetState(() {});
                           },
                     text: 'Upload',
                     options: FFButtonOptions(
@@ -198,9 +198,8 @@ class _UploadImageWidgetState extends State<UploadImageWidget> {
                                 );
                               },
                             );
-                            setState(() {
-                              FFAppState().uploadImageOrVideoUrl = '';
-                            });
+                            FFAppState().uploadImageOrVideoUrl = '';
+                            safeSetState(() {});
                           },
                     text: 'Copy URL',
                     options: FFButtonOptions(

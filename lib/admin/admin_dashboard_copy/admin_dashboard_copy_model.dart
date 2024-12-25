@@ -9,7 +9,6 @@ class AdminDashboardCopyModel
     extends FlutterFlowModel<AdminDashboardCopyWidget> {
   ///  State fields for stateful widgets in this page.
 
-  final unfocusNode = FocusNode();
   // State field(s) for Expandable widget.
   late ExpandableController expandableExpandableController;
 
@@ -34,7 +33,6 @@ class AdminDashboardCopyModel
 
   @override
   void dispose() {
-    unfocusNode.dispose();
     expandableExpandableController.dispose();
     headerModel.dispose();
     drawerModel.dispose();

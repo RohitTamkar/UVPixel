@@ -30,7 +30,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
     _model.passwordTextController ??= TextEditingController();
     _model.passwordFocusNode ??= FocusNode();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -43,9 +43,10 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: const Color(0x271D252D),
@@ -248,7 +249,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
                               suffixIcon: InkWell(
-                                onTap: () => setState(
+                                onTap: () => safeSetState(
                                   () => _model.passwordVisibility =
                                       !_model.passwordVisibility,
                                 ),
@@ -294,7 +295,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                               child: Checkbox(
                                 value: _model.checkboxValue ??= true,
                                 onChanged: (newValue) async {
-                                  setState(
+                                  safeSetState(
                                       () => _model.checkboxValue = newValue!);
                                 },
                                 side: BorderSide(
@@ -337,16 +338,30 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                               return;
                             }
 
-                            setState(() {
-                              FFAppState().loggedin = true;
-                            });
+                            FFAppState().loggedin = true;
+                            safeSetState(() {});
                             if (valueOrDefault(currentUserDocument?.role, '') ==
                                 'ADMIN') {
                               context.pushNamedAuth(
                                   'AdminDashboardCopy', context.mounted);
                             } else {
-                              context.pushNamedAuth(
-                                  'HomePage', context.mounted);
+                              await showDialog(
+                                context: context,
+                                builder: (alertDialogContext) {
+                                  return AlertDialog(
+                                    title: const Text('Error'),
+                                    content:
+                                        const Text('Something went wrong ,try again'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.pop(alertDialogContext),
+                                        child: const Text('Ok'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
                             }
                           },
                           text: 'Log In',

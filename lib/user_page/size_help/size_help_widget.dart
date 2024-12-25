@@ -24,7 +24,7 @@ class _SizeHelpWidgetState extends State<SizeHelpWidget> {
     super.initState();
     _model = createModel(context, () => SizeHelpModel());
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override

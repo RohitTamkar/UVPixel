@@ -40,10 +40,9 @@ class _HangingPhotonewWidgetState extends State<HangingPhotonewWidget> {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      setState(() {
-        FFAppState().productPrice = 299.0;
-        FFAppState().productMRPPrice = 599.0;
-      });
+      FFAppState().productPrice = 299.0;
+      FFAppState().productMRPPrice = 599.0;
+      safeSetState(() {});
     });
 
     _model.textController1 ??= TextEditingController();
@@ -52,7 +51,7 @@ class _HangingPhotonewWidgetState extends State<HangingPhotonewWidget> {
     _model.textController2 ??= TextEditingController();
     _model.textFieldFocusNode2 ??= FocusNode();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -67,9 +66,10 @@ class _HangingPhotonewWidgetState extends State<HangingPhotonewWidget> {
     context.watch<FFAppState>();
 
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -89,7 +89,7 @@ class _HangingPhotonewWidgetState extends State<HangingPhotonewWidget> {
             elevation: 16.0,
             child: wrapWithModel(
               model: _model.drawerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const DrawerWidget(),
             ),
           ),
@@ -234,7 +234,7 @@ class _HangingPhotonewWidgetState extends State<HangingPhotonewWidget> {
                                                                     validateFileFormat(
                                                                         m.storagePath,
                                                                         context))) {
-                                                              setState(() =>
+                                                              safeSetState(() =>
                                                                   _model.isDataUploading1 =
                                                                       true);
                                                               var selectedUploadedFiles =
@@ -260,13 +260,15 @@ class _HangingPhotonewWidgetState extends State<HangingPhotonewWidget> {
                                                                       .length ==
                                                                   selectedMedia
                                                                       .length) {
-                                                                setState(() {
+                                                                safeSetState(
+                                                                    () {
                                                                   _model.uploadedLocalFile1 =
                                                                       selectedUploadedFiles
                                                                           .first;
                                                                 });
                                                               } else {
-                                                                setState(() {});
+                                                                safeSetState(
+                                                                    () {});
                                                                 return;
                                                               }
                                                             }
@@ -609,7 +611,8 @@ class _HangingPhotonewWidgetState extends State<HangingPhotonewWidget> {
                             if ((_model.uploadedLocalFile1.bytes?.isNotEmpty ??
                                     false)) {
                               {
-                                setState(() => _model.isDataUploading2 = true);
+                                safeSetState(
+                                    () => _model.isDataUploading2 = true);
                                 var selectedUploadedFiles = <FFUploadedFile>[];
                                 var selectedMedia = <SelectedFile>[];
                                 var downloadUrls = <String>[];
@@ -638,27 +641,26 @@ class _HangingPhotonewWidgetState extends State<HangingPhotonewWidget> {
                                         selectedMedia.length &&
                                     downloadUrls.length ==
                                         selectedMedia.length) {
-                                  setState(() {
+                                  safeSetState(() {
                                     _model.uploadedLocalFile2 =
                                         selectedUploadedFiles.first;
                                     _model.uploadedFileUrl2 =
                                         downloadUrls.first;
                                   });
                                 } else {
-                                  setState(() {});
+                                  safeSetState(() {});
                                   return;
                                 }
                               }
 
-                              setState(() {
-                                FFAppState().orders = OrdersStruct(
-                                  imageurl: _model.uploadedFileUrl2,
-                                  price: FFAppState().productPrice,
-                                  qty: 1.0,
-                                  originalimage: _model.uploadedFileUrl2,
-                                  categoryName: 'Acrylic Car Hanging Photo',
-                                );
-                              });
+                              FFAppState().orders = OrdersStruct(
+                                imageurl: _model.uploadedFileUrl2,
+                                price: FFAppState().productPrice,
+                                qty: 1.0,
+                                originalimage: _model.uploadedFileUrl2,
+                                categoryName: 'Acrylic Car Hanging Photo',
+                              );
+                              safeSetState(() {});
                               await actions.returnOrderQtyPluslist(
                                 FFAppState().orders,
                               );
@@ -1273,7 +1275,7 @@ class _HangingPhotonewWidgetState extends State<HangingPhotonewWidget> {
                       ),
                       wrapWithModel(
                         model: _model.footerWebModel,
-                        updateCallback: () => setState(() {}),
+                        updateCallback: () => safeSetState(() {}),
                         child: const FooterWebWidget(),
                       ),
                     ],
@@ -2178,7 +2180,7 @@ class _HangingPhotonewWidgetState extends State<HangingPhotonewWidget> {
                       ),
                       wrapWithModel(
                         model: _model.footerMobileModel,
-                        updateCallback: () => setState(() {}),
+                        updateCallback: () => safeSetState(() {}),
                         child: const FooterMobileWidget(),
                       ),
                     ],
@@ -2187,7 +2189,7 @@ class _HangingPhotonewWidgetState extends State<HangingPhotonewWidget> {
               ),
             wrapWithModel(
               model: _model.headerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const HeaderWidget(),
             ),
           ],

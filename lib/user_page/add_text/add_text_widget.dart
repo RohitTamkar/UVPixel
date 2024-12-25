@@ -30,7 +30,7 @@ class _AddTextWidgetState extends State<AddTextWidget> {
     _model.textCatalogueNameTextController ??= TextEditingController();
     _model.textCatalogueNameFocusNode ??= FocusNode();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -97,7 +97,7 @@ class _AddTextWidgetState extends State<AddTextWidget> {
                     onChanged: (_) => EasyDebounce.debounce(
                       '_model.textCatalogueNameTextController',
                       const Duration(milliseconds: 2000),
-                      () => setState(() {}),
+                      () => safeSetState(() {}),
                     ),
                     autofocus: true,
                     obscureText: false,
@@ -219,10 +219,9 @@ class _AddTextWidgetState extends State<AddTextWidget> {
                           hoverColor: Colors.transparent,
                           highlightColor: Colors.transparent,
                           onTap: () async {
-                            setState(() {
-                              FFAppState().textString =
-                                  _model.textCatalogueNameTextController.text;
-                            });
+                            FFAppState().textString =
+                                _model.textCatalogueNameTextController.text;
+                            safeSetState(() {});
                             Navigator.pop(context);
                           },
                           child: Container(

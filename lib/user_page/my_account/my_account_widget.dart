@@ -54,7 +54,7 @@ class _MyAccountWidgetState extends State<MyAccountWidget> {
     _model.textController7 ??= TextEditingController();
     _model.textFieldFocusNode7 ??= FocusNode();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -67,9 +67,10 @@ class _MyAccountWidgetState extends State<MyAccountWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -89,7 +90,7 @@ class _MyAccountWidgetState extends State<MyAccountWidget> {
             elevation: 16.0,
             child: wrapWithModel(
               model: _model.drawerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const DrawerWidget(),
             ),
           ),
@@ -426,9 +427,8 @@ class _MyAccountWidgetState extends State<MyAccountWidget> {
                                           hoverColor: Colors.transparent,
                                           highlightColor: Colors.transparent,
                                           onTap: () async {
-                                            setState(() {
-                                              FFAppState().loggedin = false;
-                                            });
+                                            FFAppState().loggedin = false;
+                                            safeSetState(() {});
                                             GoRouter.of(context)
                                                 .prepareAuthEvent();
                                             await authManager.signOut();
@@ -436,7 +436,7 @@ class _MyAccountWidgetState extends State<MyAccountWidget> {
                                                 .clearRedirectLocation();
 
                                             context.goNamedAuth(
-                                                'HomePage', context.mounted);
+                                                'LoginPage', context.mounted);
                                           },
                                           child: Container(
                                             width: double.infinity,
@@ -585,7 +585,7 @@ class _MyAccountWidgetState extends State<MyAccountWidget> {
                                           'Account Details',
                                           'Logout '
                                         ],
-                                        onChanged: (val) => setState(
+                                        onChanged: (val) => safeSetState(
                                             () => _model.dropDownValue = val),
                                         width: double.infinity,
                                         height: 50.0,
@@ -2416,7 +2416,7 @@ class _MyAccountWidgetState extends State<MyAccountWidget> {
             ),
             wrapWithModel(
               model: _model.headerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const HeaderWidget(),
             ),
           ],

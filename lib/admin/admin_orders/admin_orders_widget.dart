@@ -8,7 +8,6 @@ import '/flutter_flow/flutter_flow_widgets.dart';
 import '/user_page/drawer/drawer_widget.dart';
 import '/user_page/header/header_widget.dart';
 import '/custom_code/actions/index.dart' as actions;
-import '/custom_code/widgets/index.dart' as custom_widgets;
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:collection/collection.dart';
 import 'package:expandable/expandable.dart';
@@ -39,17 +38,17 @@ class _AdminOrdersWidgetState extends State<AdminOrdersWidget> {
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       _model.listOfOrdersAdmin = await queryOrdersRecordOnce();
-      setState(() {
-        FFAppState().ordersDetails = _model.listOfOrdersAdmin!
-            .map((e) => e.orderList.first)
-            .toList()
-            .toList()
-            .cast<OrdersStruct>();
-        FFAppState().selectedDate = getCurrentTimestamp;
-      });
+      FFAppState().ordersDetails = _model.listOfOrdersAdmin!
+          .map((e) => e.orderList.firstOrNull)
+          .withoutNulls
+          .toList()
+          .toList()
+          .cast<OrdersStruct>();
+      FFAppState().selectedDate = getCurrentTimestamp;
+      safeSetState(() {});
     });
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -64,9 +63,10 @@ class _AdminOrdersWidgetState extends State<AdminOrdersWidget> {
     context.watch<FFAppState>();
 
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -76,7 +76,7 @@ class _AdminOrdersWidgetState extends State<AdminOrdersWidget> {
             elevation: 16.0,
             child: wrapWithModel(
               model: _model.drawerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const DrawerWidget(),
             ),
           ),
@@ -168,12 +168,11 @@ class _AdminOrdersWidgetState extends State<AdminOrdersWidget> {
                                     context: context,
                                     builder: (context) {
                                       return GestureDetector(
-                                        onTap: () => _model
-                                                .unfocusNode.canRequestFocus
-                                            ? FocusScope.of(context)
-                                                .requestFocus(
-                                                    _model.unfocusNode)
-                                            : FocusScope.of(context).unfocus(),
+                                        onTap: () {
+                                          FocusScope.of(context).unfocus();
+                                          FocusManager.instance.primaryFocus
+                                              ?.unfocus();
+                                        },
                                         child: Padding(
                                           padding:
                                               MediaQuery.viewInsetsOf(context),
@@ -214,11 +213,6 @@ class _AdminOrdersWidgetState extends State<AdminOrdersWidget> {
                           child: StreamBuilder<List<OrdersRecord>>(
                             stream: queryOrdersRecord(
                               queryBuilder: (ordersRecord) => ordersRecord
-                                  .where(
-                                    'orderDate',
-                                    isEqualTo: functions
-                                        .getToday(FFAppState().selectedDate!),
-                                  )
                                   .orderBy('orderAt', descending: true),
                             ),
                             builder: (context, snapshot) {
@@ -238,6 +232,7 @@ class _AdminOrdersWidgetState extends State<AdminOrdersWidget> {
                               }
                               List<OrdersRecord> listViewOrdersRecordList =
                                   snapshot.data!;
+
                               return ListView.builder(
                                 padding: EdgeInsets.zero,
                                 shrinkWrap: true,
@@ -315,13 +310,9 @@ class _AdminOrdersWidgetState extends State<AdminOrdersWidget> {
                                                                   SelectionArea(
                                                                       child:
                                                                           Text(
-                                                                valueOrDefault<
-                                                                    String>(
-                                                                  listViewOrdersRecord
-                                                                      .userdetails
-                                                                      .firstname,
-                                                                  'Sensible',
-                                                                ),
+                                                                listViewOrdersRecord
+                                                                    .userdetails
+                                                                    .firstName,
                                                                 style: FlutterFlowTheme.of(
                                                                         context)
                                                                     .titleSmall
@@ -385,8 +376,7 @@ class _AdminOrdersWidgetState extends State<AdminOrdersWidget> {
                                                                 valueOrDefault<
                                                                     String>(
                                                                   listViewOrdersRecord
-                                                                      .orderId
-                                                                      .toString(),
+                                                                      .orderId,
                                                                   'Sensible',
                                                                 ),
                                                                 style: FlutterFlowTheme.of(
@@ -618,7 +608,7 @@ class _AdminOrdersWidgetState extends State<AdminOrdersWidget> {
                                                                     TextSpan(
                                                                       text: listViewOrdersRecord
                                                                           .userdetails
-                                                                          .mobileNo,
+                                                                          .mobileNumber,
                                                                       style: FlutterFlowTheme.of(
                                                                               context)
                                                                           .titleSmall
@@ -832,7 +822,7 @@ class _AdminOrdersWidgetState extends State<AdminOrdersWidget> {
                                                               },
                                                             );
 
-                                                            setState(() {});
+                                                            safeSetState(() {});
                                                           },
                                                         ),
                                                         FFButtonWidget(
@@ -843,8 +833,7 @@ class _AdminOrdersWidgetState extends State<AdminOrdersWidget> {
                                                               valueOrDefault<
                                                                   String>(
                                                                 listViewOrdersRecord
-                                                                    .orderId
-                                                                    .toString(),
+                                                                    .orderId,
                                                                 '0',
                                                               ),
                                                               'https://firebasestorage.googleapis.com/v0/b/uvpixcel.appspot.com/o/UVpixel_Logo.png?alt=media&token=26c683fa-016e-4d59-a055-edb7ac98c7eb',
@@ -862,7 +851,7 @@ class _AdminOrdersWidgetState extends State<AdminOrdersWidget> {
                                                                   .userdetails,
                                                             );
 
-                                                            setState(() {});
+                                                            safeSetState(() {});
                                                           },
                                                           text: 'Invoice',
                                                           icon: const Icon(
@@ -1125,6 +1114,7 @@ class _AdminOrdersWidgetState extends State<AdminOrdersWidget> {
                                                             listViewOrdersRecord
                                                                 .orderList
                                                                 .toList();
+
                                                         return ListView.builder(
                                                           padding:
                                                               EdgeInsets.zero,
@@ -1172,7 +1162,7 @@ class _AdminOrdersWidgetState extends State<AdminOrdersWidget> {
                                                                                 BorderRadius.circular(8.0),
                                                                             child:
                                                                                 Image.network(
-                                                                              ordersItem.imageurl,
+                                                                              functions.imgstringToimgPath(ordersItem.images.firstOrNull)!,
                                                                               height: 80.0,
                                                                               fit: BoxFit.contain,
                                                                             ),
@@ -1190,7 +1180,7 @@ class _AdminOrdersWidgetState extends State<AdminOrdersWidget> {
                                                                                     Padding(
                                                                                       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 5.0),
                                                                                       child: Text(
-                                                                                        ordersItem.categoryName,
+                                                                                        ordersItem.name,
                                                                                         style: FlutterFlowTheme.of(context).titleLarge.override(
                                                                                               fontFamily: FlutterFlowTheme.of(context).titleLargeFamily,
                                                                                               letterSpacing: 0.0,
@@ -1198,14 +1188,6 @@ class _AdminOrdersWidgetState extends State<AdminOrdersWidget> {
                                                                                               useGoogleFonts: GoogleFonts.asMap().containsKey(FlutterFlowTheme.of(context).titleLargeFamily),
                                                                                             ),
                                                                                       ),
-                                                                                    ),
-                                                                                    Text(
-                                                                                      '${ordersItem.size},${ordersItem.thickness}',
-                                                                                      style: FlutterFlowTheme.of(context).bodyMedium.override(
-                                                                                            fontFamily: FlutterFlowTheme.of(context).bodyMediumFamily,
-                                                                                            letterSpacing: 0.0,
-                                                                                            useGoogleFonts: GoogleFonts.asMap().containsKey(FlutterFlowTheme.of(context).bodyMediumFamily),
-                                                                                          ),
                                                                                     ),
                                                                                   ],
                                                                                 ),
@@ -1272,7 +1254,7 @@ class _AdminOrdersWidgetState extends State<AdminOrdersWidget> {
                                                                       child:
                                                                           Text(
                                                                         ordersItem
-                                                                            .qty
+                                                                            .quantity
                                                                             .toString(),
                                                                         textAlign:
                                                                             TextAlign.center,
@@ -1313,7 +1295,7 @@ class _AdminOrdersWidgetState extends State<AdminOrdersWidget> {
                                                                                   ),
                                                                             ),
                                                                             TextSpan(
-                                                                              text: ordersItem.finalAmt.toString(),
+                                                                              text: (ordersItem.price * ordersItem.quantity.toDouble()).toString(),
                                                                               style: FlutterFlowTheme.of(context).titleMedium.override(
                                                                                     fontFamily: FlutterFlowTheme.of(context).titleMediumFamily,
                                                                                     letterSpacing: 0.0,
@@ -1335,36 +1317,6 @@ class _AdminOrdersWidgetState extends State<AdminOrdersWidget> {
                                                                         textAlign:
                                                                             TextAlign.center,
                                                                       ),
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    width: 30.0,
-                                                                    height:
-                                                                        30.0,
-                                                                    child: custom_widgets
-                                                                        .DownloadImageWidget(
-                                                                      width:
-                                                                          30.0,
-                                                                      height:
-                                                                          30.0,
-                                                                      imageUrl:
-                                                                          functions
-                                                                              .imageurlToString(ordersItem.imageurl)!,
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    width: 30.0,
-                                                                    height:
-                                                                        30.0,
-                                                                    child: custom_widgets
-                                                                        .DownloadImageWidget(
-                                                                      width:
-                                                                          30.0,
-                                                                      height:
-                                                                          30.0,
-                                                                      imageUrl:
-                                                                          functions
-                                                                              .imageurlToString(ordersItem.originalimage)!,
                                                                     ),
                                                                   ),
                                                                 ].divide(const SizedBox(
@@ -1407,7 +1359,7 @@ class _AdminOrdersWidgetState extends State<AdminOrdersWidget> {
             ),
             wrapWithModel(
               model: _model.headerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const HeaderWidget(),
             ),
           ],

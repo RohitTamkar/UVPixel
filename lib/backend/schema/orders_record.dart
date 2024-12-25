@@ -66,15 +66,15 @@ class OrdersRecord extends FirestoreRecord {
   bool get paymentStatus => _paymentStatus ?? false;
   bool hasPaymentStatus() => _paymentStatus != null;
 
-  // "orderId" field.
-  int? _orderId;
-  int get orderId => _orderId ?? 0;
-  bool hasOrderId() => _orderId != null;
-
   // "orderDate" field.
   String? _orderDate;
   String get orderDate => _orderDate ?? '';
   bool hasOrderDate() => _orderDate != null;
+
+  // "orderId" field.
+  String? _orderId;
+  String get orderId => _orderId ?? '';
+  bool hasOrderId() => _orderId != null;
 
   void _initializeFields() {
     _id = snapshotData['id'] as String?;
@@ -85,14 +85,15 @@ class OrdersRecord extends FirestoreRecord {
     _finalAmt = castToType<double>(snapshotData['finalAmt']);
     _deliveryCharges = castToType<double>(snapshotData['deliveryCharges']);
     _subTotal = castToType<double>(snapshotData['subTotal']);
-    _userdetails =
-        UserOrderdetailsStruct.maybeFromMap(snapshotData['userdetails']);
+    _userdetails = snapshotData['userdetails'] is UserOrderdetailsStruct
+        ? snapshotData['userdetails']
+        : UserOrderdetailsStruct.maybeFromMap(snapshotData['userdetails']);
     _status = snapshotData['status'] as String?;
     _orderAt = castToType<int>(snapshotData['orderAt']);
     _transactionId = snapshotData['transactionId'] as String?;
     _paymentStatus = snapshotData['paymentStatus'] as bool?;
-    _orderId = castToType<int>(snapshotData['orderId']);
     _orderDate = snapshotData['orderDate'] as String?;
+    _orderId = snapshotData['orderId'] as String?;
   }
 
   static CollectionReference get collection =>
@@ -138,8 +139,8 @@ Map<String, dynamic> createOrdersRecordData({
   int? orderAt,
   String? transactionId,
   bool? paymentStatus,
-  int? orderId,
   String? orderDate,
+  String? orderId,
 }) {
   final firestoreData = mapToFirestore(
     <String, dynamic>{
@@ -152,8 +153,8 @@ Map<String, dynamic> createOrdersRecordData({
       'orderAt': orderAt,
       'transactionId': transactionId,
       'paymentStatus': paymentStatus,
-      'orderId': orderId,
       'orderDate': orderDate,
+      'orderId': orderId,
     }.withoutNulls,
   );
 
@@ -179,8 +180,8 @@ class OrdersRecordDocumentEquality implements Equality<OrdersRecord> {
         e1?.orderAt == e2?.orderAt &&
         e1?.transactionId == e2?.transactionId &&
         e1?.paymentStatus == e2?.paymentStatus &&
-        e1?.orderId == e2?.orderId &&
-        e1?.orderDate == e2?.orderDate;
+        e1?.orderDate == e2?.orderDate &&
+        e1?.orderId == e2?.orderId;
   }
 
   @override
@@ -195,8 +196,8 @@ class OrdersRecordDocumentEquality implements Equality<OrdersRecord> {
         e?.orderAt,
         e?.transactionId,
         e?.paymentStatus,
-        e?.orderId,
-        e?.orderDate
+        e?.orderDate,
+        e?.orderId
       ]);
 
   @override

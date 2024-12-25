@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '/backend/backend.dart';
+import '/backend/schema/structs/index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'flutter_flow/flutter_flow_util.dart';
 
@@ -131,19 +132,19 @@ class FFAppState extends ChangeNotifier {
   }
 
   void addToOrderList(OrdersStruct value) {
-    _orderList.add(value);
+    orderList.add(value);
     prefs.setStringList(
         'ff_orderList', _orderList.map((x) => x.serialize()).toList());
   }
 
   void removeFromOrderList(OrdersStruct value) {
-    _orderList.remove(value);
+    orderList.remove(value);
     prefs.setStringList(
         'ff_orderList', _orderList.map((x) => x.serialize()).toList());
   }
 
   void removeAtIndexFromOrderList(int index) {
-    _orderList.removeAt(index);
+    orderList.removeAt(index);
     prefs.setStringList(
         'ff_orderList', _orderList.map((x) => x.serialize()).toList());
   }
@@ -152,13 +153,13 @@ class FFAppState extends ChangeNotifier {
     int index,
     OrdersStruct Function(OrdersStruct) updateFn,
   ) {
-    _orderList[index] = updateFn(_orderList[index]);
+    orderList[index] = updateFn(_orderList[index]);
     prefs.setStringList(
         'ff_orderList', _orderList.map((x) => x.serialize()).toList());
   }
 
   void insertAtIndexInOrderList(int index, OrdersStruct value) {
-    _orderList.insert(index, value);
+    orderList.insert(index, value);
     prefs.setStringList(
         'ff_orderList', _orderList.map((x) => x.serialize()).toList());
   }
@@ -265,29 +266,29 @@ class FFAppState extends ChangeNotifier {
   }
 
   void addToPriceListAndThicknessAppState(ThicknessAndPriceListStruct value) {
-    _priceListAndThicknessAppState.add(value);
+    priceListAndThicknessAppState.add(value);
   }
 
   void removeFromPriceListAndThicknessAppState(
       ThicknessAndPriceListStruct value) {
-    _priceListAndThicknessAppState.remove(value);
+    priceListAndThicknessAppState.remove(value);
   }
 
   void removeAtIndexFromPriceListAndThicknessAppState(int index) {
-    _priceListAndThicknessAppState.removeAt(index);
+    priceListAndThicknessAppState.removeAt(index);
   }
 
   void updatePriceListAndThicknessAppStateAtIndex(
     int index,
     ThicknessAndPriceListStruct Function(ThicknessAndPriceListStruct) updateFn,
   ) {
-    _priceListAndThicknessAppState[index] =
+    priceListAndThicknessAppState[index] =
         updateFn(_priceListAndThicknessAppState[index]);
   }
 
   void insertAtIndexInPriceListAndThicknessAppState(
       int index, ThicknessAndPriceListStruct value) {
-    _priceListAndThicknessAppState.insert(index, value);
+    priceListAndThicknessAppState.insert(index, value);
   }
 
   List<SizeMapStruct> _sizeDetails = [];
@@ -297,26 +298,26 @@ class FFAppState extends ChangeNotifier {
   }
 
   void addToSizeDetails(SizeMapStruct value) {
-    _sizeDetails.add(value);
+    sizeDetails.add(value);
   }
 
   void removeFromSizeDetails(SizeMapStruct value) {
-    _sizeDetails.remove(value);
+    sizeDetails.remove(value);
   }
 
   void removeAtIndexFromSizeDetails(int index) {
-    _sizeDetails.removeAt(index);
+    sizeDetails.removeAt(index);
   }
 
   void updateSizeDetailsAtIndex(
     int index,
     SizeMapStruct Function(SizeMapStruct) updateFn,
   ) {
-    _sizeDetails[index] = updateFn(_sizeDetails[index]);
+    sizeDetails[index] = updateFn(_sizeDetails[index]);
   }
 
   void insertAtIndexInSizeDetails(int index, SizeMapStruct value) {
-    _sizeDetails.insert(index, value);
+    sizeDetails.insert(index, value);
   }
 
   String _estimatedDeliveryDate = '';
@@ -350,26 +351,26 @@ class FFAppState extends ChangeNotifier {
   }
 
   void addToImageUrlListForCollage(String value) {
-    _imageUrlListForCollage.add(value);
+    imageUrlListForCollage.add(value);
   }
 
   void removeFromImageUrlListForCollage(String value) {
-    _imageUrlListForCollage.remove(value);
+    imageUrlListForCollage.remove(value);
   }
 
   void removeAtIndexFromImageUrlListForCollage(int index) {
-    _imageUrlListForCollage.removeAt(index);
+    imageUrlListForCollage.removeAt(index);
   }
 
   void updateImageUrlListForCollageAtIndex(
     int index,
     String Function(String) updateFn,
   ) {
-    _imageUrlListForCollage[index] = updateFn(_imageUrlListForCollage[index]);
+    imageUrlListForCollage[index] = updateFn(_imageUrlListForCollage[index]);
   }
 
   void insertAtIndexInImageUrlListForCollage(int index, String value) {
-    _imageUrlListForCollage.insert(index, value);
+    imageUrlListForCollage.insert(index, value);
   }
 
   String _collageImgUrl1 = '';
@@ -409,26 +410,26 @@ class FFAppState extends ChangeNotifier {
   }
 
   void addToCollagelist(String value) {
-    _collagelist.add(value);
+    collagelist.add(value);
   }
 
   void removeFromCollagelist(String value) {
-    _collagelist.remove(value);
+    collagelist.remove(value);
   }
 
   void removeAtIndexFromCollagelist(int index) {
-    _collagelist.removeAt(index);
+    collagelist.removeAt(index);
   }
 
   void updateCollagelistAtIndex(
     int index,
     String Function(String) updateFn,
   ) {
-    _collagelist[index] = updateFn(_collagelist[index]);
+    collagelist[index] = updateFn(_collagelist[index]);
   }
 
   void insertAtIndexInCollagelist(int index, String value) {
-    _collagelist.insert(index, value);
+    collagelist.insert(index, value);
   }
 
   String _editedimg = '';
@@ -473,26 +474,26 @@ class FFAppState extends ChangeNotifier {
   }
 
   void addToOrdersDetails(OrdersStruct value) {
-    _ordersDetails.add(value);
+    ordersDetails.add(value);
   }
 
   void removeFromOrdersDetails(OrdersStruct value) {
-    _ordersDetails.remove(value);
+    ordersDetails.remove(value);
   }
 
   void removeAtIndexFromOrdersDetails(int index) {
-    _ordersDetails.removeAt(index);
+    ordersDetails.removeAt(index);
   }
 
   void updateOrdersDetailsAtIndex(
     int index,
     OrdersStruct Function(OrdersStruct) updateFn,
   ) {
-    _ordersDetails[index] = updateFn(_ordersDetails[index]);
+    ordersDetails[index] = updateFn(_ordersDetails[index]);
   }
 
   void insertAtIndexInOrdersDetails(int index, OrdersStruct value) {
-    _ordersDetails.insert(index, value);
+    ordersDetails.insert(index, value);
   }
 
   String _carDashboardSide = '';
@@ -602,12 +603,6 @@ class FFAppState extends ChangeNotifier {
   String get uploadedFileUrl => _uploadedFileUrl;
   set uploadedFileUrl(String value) {
     _uploadedFileUrl = value;
-  }
-
-  DocumentReference? _catgerydoc;
-  DocumentReference? get catgerydoc => _catgerydoc;
-  set catgerydoc(DocumentReference? value) {
-    _catgerydoc = value;
   }
 }
 

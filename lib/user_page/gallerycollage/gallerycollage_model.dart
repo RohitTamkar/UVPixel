@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 class GallerycollageModel extends FlutterFlowModel<GallerycollageWidget> {
   ///  State fields for stateful widgets in this page.
 
-  final unfocusNode = FocusNode();
   // Model for FooterWeb component.
   late FooterWebModel footerWebModel;
   // Stores action output result for [Firestore Query - Query a collection] action in Container widget.
@@ -38,7 +37,6 @@ class GallerycollageModel extends FlutterFlowModel<GallerycollageWidget> {
 
   @override
   void dispose() {
-    unfocusNode.dispose();
     footerWebModel.dispose();
     footerMobileModel.dispose();
     headerModel.dispose();

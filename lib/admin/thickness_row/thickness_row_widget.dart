@@ -36,7 +36,7 @@ class _ThicknessRowWidgetState extends State<ThicknessRowWidget> {
     _model.priceTextFeildTextController2 ??= TextEditingController();
     _model.priceTextFeildFocusNode2 ??= FocusNode();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -78,6 +78,7 @@ class _ThicknessRowWidgetState extends State<ThicknessRowWidget> {
                   }
                   List<ThicknessRecord> sizeDropdownThicknessRecordList =
                       snapshot.data!;
+
                   return FlutterFlowDropDown<String>(
                     controller: _model.sizeDropdownValueController ??=
                         FormFieldController<String>(null),
@@ -85,7 +86,7 @@ class _ThicknessRowWidgetState extends State<ThicknessRowWidget> {
                         .map((e) => e.name)
                         .toList(),
                     onChanged: (val) =>
-                        setState(() => _model.sizeDropdownValue = val),
+                        safeSetState(() => _model.sizeDropdownValue = val),
                     width: 300.0,
                     height: 45.0,
                     textStyle: FlutterFlowTheme.of(context).titleLarge.override(

@@ -40,12 +40,11 @@ class _HangingPhotoWidgetState extends State<HangingPhotoWidget> {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      setState(() {
-        FFAppState().productPrice = 299.0;
-        FFAppState().productMRPPrice = 599.0;
-        FFAppState().imageUrl =
-            'https://firebasestorage.googleapis.com/v0/b/uvpixcel.appspot.com/o/shapesImages%2F5%20(2).jpg?alt=media&token=0e547952-f6c4-4e90-952e-5ea287890fc7';
-      });
+      FFAppState().productPrice = 299.0;
+      FFAppState().productMRPPrice = 599.0;
+      FFAppState().imageUrl =
+          'https://firebasestorage.googleapis.com/v0/b/uvpixcel.appspot.com/o/shapesImages%2F5%20(2).jpg?alt=media&token=0e547952-f6c4-4e90-952e-5ea287890fc7';
+      safeSetState(() {});
     });
 
     _model.textController1 ??= TextEditingController();
@@ -54,7 +53,7 @@ class _HangingPhotoWidgetState extends State<HangingPhotoWidget> {
     _model.textController2 ??= TextEditingController();
     _model.textFieldFocusNode2 ??= FocusNode();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -69,9 +68,10 @@ class _HangingPhotoWidgetState extends State<HangingPhotoWidget> {
     context.watch<FFAppState>();
 
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -91,7 +91,7 @@ class _HangingPhotoWidgetState extends State<HangingPhotoWidget> {
             elevation: 16.0,
             child: wrapWithModel(
               model: _model.drawerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const DrawerWidget(),
             ),
           ),
@@ -292,7 +292,7 @@ class _HangingPhotoWidgetState extends State<HangingPhotoWidget> {
                           if (selectedMedia != null &&
                               selectedMedia.every((m) =>
                                   validateFileFormat(m.storagePath, context))) {
-                            setState(() => _model.isDataUploading1 = true);
+                            safeSetState(() => _model.isDataUploading1 = true);
                             var selectedUploadedFiles = <FFUploadedFile>[];
 
                             var downloadUrls = <String>[];
@@ -322,20 +322,19 @@ class _HangingPhotoWidgetState extends State<HangingPhotoWidget> {
                             if (selectedUploadedFiles.length ==
                                     selectedMedia.length &&
                                 downloadUrls.length == selectedMedia.length) {
-                              setState(() {
+                              safeSetState(() {
                                 _model.uploadedLocalFile1 =
                                     selectedUploadedFiles.first;
                                 _model.uploadedFileUrl1 = downloadUrls.first;
                               });
                             } else {
-                              setState(() {});
+                              safeSetState(() {});
                               return;
                             }
                           }
 
-                          setState(() {
-                            FFAppState().imageUrl = _model.uploadedFileUrl1;
-                          });
+                          FFAppState().imageUrl = _model.uploadedFileUrl1;
+                          safeSetState(() {});
                         },
                         text: 'Select Photo',
                         options: FFButtonOptions(
@@ -587,35 +586,31 @@ class _HangingPhotoWidgetState extends State<HangingPhotoWidget> {
                         child: FFButtonWidget(
                           onPressed: () async {
                             if (true) {
-                              setState(() {
-                                FFAppState().count = FFAppState().count +
-                                    FFAppState().orderList.length;
-                              });
-                              setState(() {
-                                FFAppState().updateOrdersStruct(
-                                  (e) => e
-                                    ..imageurl = functions.imgstringToimgPath(
-                                        FFAppState().editedimg)
-                                    ..price = valueOrDefault<double>(
-                                      FFAppState().productPrice,
-                                      599.0,
-                                    )
-                                    ..qty = 1.0
-                                    ..categoryName =
-                                        ' ACRYLIC CAR HANGING PHOTO'
-                                    ..count = FFAppState().count
-                                    ..originalimage =
-                                        functions.imgstringToimgPath(
-                                            FFAppState().imageUrl),
-                                );
-                              });
+                              FFAppState().count = FFAppState().count +
+                                  FFAppState().orderList.length;
+                              safeSetState(() {});
+                              FFAppState().updateOrdersStruct(
+                                (e) => e
+                                  ..imageurl = functions.imgstringToimgPath(
+                                      FFAppState().editedimg)
+                                  ..price = valueOrDefault<double>(
+                                    FFAppState().productPrice,
+                                    599.0,
+                                  )
+                                  ..qty = 1.0
+                                  ..categoryName = ' ACRYLIC CAR HANGING PHOTO'
+                                  ..count = FFAppState().count
+                                  ..originalimage =
+                                      functions.imgstringToimgPath(
+                                          FFAppState().imageUrl),
+                              );
+                              safeSetState(() {});
                               await actions.returnOrderQtyPluslist(
                                 FFAppState().orders,
                               );
-                              setState(() {
-                                FFAppState().orders = OrdersStruct();
-                                FFAppState().editedimg = '';
-                              });
+                              FFAppState().orders = OrdersStruct();
+                              FFAppState().editedimg = '';
+                              safeSetState(() {});
 
                               context.pushNamed('ShoppingCartnew');
                             } else {
@@ -1227,7 +1222,7 @@ class _HangingPhotoWidgetState extends State<HangingPhotoWidget> {
                       ),
                       wrapWithModel(
                         model: _model.footerWebModel,
-                        updateCallback: () => setState(() {}),
+                        updateCallback: () => safeSetState(() {}),
                         child: const FooterWebWidget(),
                       ),
                     ],
@@ -1470,7 +1465,7 @@ class _HangingPhotoWidgetState extends State<HangingPhotoWidget> {
                           if (selectedMedia != null &&
                               selectedMedia.every((m) =>
                                   validateFileFormat(m.storagePath, context))) {
-                            setState(() => _model.isDataUploading2 = true);
+                            safeSetState(() => _model.isDataUploading2 = true);
                             var selectedUploadedFiles = <FFUploadedFile>[];
 
                             var downloadUrls = <String>[];
@@ -1500,20 +1495,19 @@ class _HangingPhotoWidgetState extends State<HangingPhotoWidget> {
                             if (selectedUploadedFiles.length ==
                                     selectedMedia.length &&
                                 downloadUrls.length == selectedMedia.length) {
-                              setState(() {
+                              safeSetState(() {
                                 _model.uploadedLocalFile2 =
                                     selectedUploadedFiles.first;
                                 _model.uploadedFileUrl2 = downloadUrls.first;
                               });
                             } else {
-                              setState(() {});
+                              safeSetState(() {});
                               return;
                             }
                           }
 
-                          setState(() {
-                            FFAppState().imageUrl = _model.uploadedFileUrl2;
-                          });
+                          FFAppState().imageUrl = _model.uploadedFileUrl2;
+                          safeSetState(() {});
                         },
                         text: 'Select Photo',
                         options: FFButtonOptions(
@@ -1702,35 +1696,31 @@ class _HangingPhotoWidgetState extends State<HangingPhotoWidget> {
                         child: FFButtonWidget(
                           onPressed: () async {
                             if (true) {
-                              setState(() {
-                                FFAppState().count = FFAppState().count +
-                                    FFAppState().orderList.length;
-                              });
-                              setState(() {
-                                FFAppState().updateOrdersStruct(
-                                  (e) => e
-                                    ..imageurl = functions.imgstringToimgPath(
-                                        FFAppState().editedimg)
-                                    ..price = valueOrDefault<double>(
-                                      FFAppState().productPrice,
-                                      599.0,
-                                    )
-                                    ..qty = 1.0
-                                    ..categoryName =
-                                        ' ACRYLIC CAR HANGING PHOTO'
-                                    ..count = FFAppState().count
-                                    ..originalimage =
-                                        functions.imgstringToimgPath(
-                                            FFAppState().imageUrl),
-                                );
-                              });
+                              FFAppState().count = FFAppState().count +
+                                  FFAppState().orderList.length;
+                              safeSetState(() {});
+                              FFAppState().updateOrdersStruct(
+                                (e) => e
+                                  ..imageurl = functions.imgstringToimgPath(
+                                      FFAppState().editedimg)
+                                  ..price = valueOrDefault<double>(
+                                    FFAppState().productPrice,
+                                    599.0,
+                                  )
+                                  ..qty = 1.0
+                                  ..categoryName = ' ACRYLIC CAR HANGING PHOTO'
+                                  ..count = FFAppState().count
+                                  ..originalimage =
+                                      functions.imgstringToimgPath(
+                                          FFAppState().imageUrl),
+                              );
+                              safeSetState(() {});
                               await actions.returnOrderQtyPluslist(
                                 FFAppState().orders,
                               );
-                              setState(() {
-                                FFAppState().orders = OrdersStruct();
-                                FFAppState().editedimg = '';
-                              });
+                              FFAppState().orders = OrdersStruct();
+                              FFAppState().editedimg = '';
+                              safeSetState(() {});
 
                               context.pushNamed('ShoppingCartnew');
                             } else {
@@ -2322,7 +2312,7 @@ class _HangingPhotoWidgetState extends State<HangingPhotoWidget> {
                       ),
                       wrapWithModel(
                         model: _model.footerMobileModel,
-                        updateCallback: () => setState(() {}),
+                        updateCallback: () => safeSetState(() {}),
                         child: const FooterMobileWidget(),
                       ),
                     ],
@@ -2331,7 +2321,7 @@ class _HangingPhotoWidgetState extends State<HangingPhotoWidget> {
               ),
             wrapWithModel(
               model: _model.headerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const HeaderWidget(),
             ),
           ],

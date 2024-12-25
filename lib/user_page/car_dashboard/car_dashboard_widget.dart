@@ -40,17 +40,16 @@ class _CarDashboardWidgetState extends State<CarDashboardWidget> {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      setState(() {
-        FFAppState().carDashboardSide = 'One Side';
-        FFAppState().productPrice = getJsonField(
-          functions.carDashboardPriceReturn(FFAppState().carDashboardSide),
-          r'''$.price''',
-        );
-        FFAppState().productMRPPrice = getJsonField(
-          functions.carDashboardPriceReturn(FFAppState().carDashboardSide),
-          r'''$.mrp''',
-        );
-      });
+      FFAppState().carDashboardSide = 'One Side';
+      FFAppState().productPrice = getJsonField(
+        functions.carDashboardPriceReturn(FFAppState().carDashboardSide),
+        r'''$.price''',
+      );
+      FFAppState().productMRPPrice = getJsonField(
+        functions.carDashboardPriceReturn(FFAppState().carDashboardSide),
+        r'''$.mrp''',
+      );
+      safeSetState(() {});
     });
 
     _model.textController1 ??= TextEditingController();
@@ -59,7 +58,7 @@ class _CarDashboardWidgetState extends State<CarDashboardWidget> {
     _model.textController2 ??= TextEditingController();
     _model.textFieldFocusNode2 ??= FocusNode();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -74,9 +73,10 @@ class _CarDashboardWidgetState extends State<CarDashboardWidget> {
     context.watch<FFAppState>();
 
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -96,7 +96,7 @@ class _CarDashboardWidgetState extends State<CarDashboardWidget> {
             elevation: 16.0,
             child: wrapWithModel(
               model: _model.drawerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const DrawerWidget(),
             ),
           ),
@@ -240,9 +240,9 @@ class _CarDashboardWidgetState extends State<CarDashboardWidget> {
                                                                   validateFileFormat(
                                                                       m.storagePath,
                                                                       context))) {
-                                                            setState(() => _model
-                                                                    .isDataUploading1 =
-                                                                true);
+                                                            safeSetState(() =>
+                                                                _model.isDataUploading1 =
+                                                                    true);
                                                             var selectedUploadedFiles =
                                                                 <FFUploadedFile>[];
 
@@ -271,13 +271,14 @@ class _CarDashboardWidgetState extends State<CarDashboardWidget> {
                                                                     .length ==
                                                                 selectedMedia
                                                                     .length) {
-                                                              setState(() {
+                                                              safeSetState(() {
                                                                 _model.uploadedLocalFile1 =
                                                                     selectedUploadedFiles
                                                                         .first;
                                                               });
                                                             } else {
-                                                              setState(() {});
+                                                              safeSetState(
+                                                                  () {});
                                                               return;
                                                             }
                                                           }
@@ -410,19 +411,18 @@ class _CarDashboardWidgetState extends State<CarDashboardWidget> {
                             children: [
                               FFButtonWidget(
                                 onPressed: () async {
-                                  setState(() {
-                                    FFAppState().carDashboardSide = 'One Side';
-                                    FFAppState().productPrice = getJsonField(
-                                      functions.carDashboardPriceReturn(
-                                          FFAppState().carDashboardSide),
-                                      r'''$.price''',
-                                    );
-                                    FFAppState().productMRPPrice = getJsonField(
-                                      functions.carDashboardPriceReturn(
-                                          FFAppState().carDashboardSide),
-                                      r'''$.mrp''',
-                                    );
-                                  });
+                                  FFAppState().carDashboardSide = 'One Side';
+                                  FFAppState().productPrice = getJsonField(
+                                    functions.carDashboardPriceReturn(
+                                        FFAppState().carDashboardSide),
+                                    r'''$.price''',
+                                  );
+                                  FFAppState().productMRPPrice = getJsonField(
+                                    functions.carDashboardPriceReturn(
+                                        FFAppState().carDashboardSide),
+                                    r'''$.mrp''',
+                                  );
+                                  safeSetState(() {});
                                 },
                                 text: 'Single Side',
                                 options: FFButtonOptions(
@@ -463,19 +463,18 @@ class _CarDashboardWidgetState extends State<CarDashboardWidget> {
                               ),
                               FFButtonWidget(
                                 onPressed: () async {
-                                  setState(() {
-                                    FFAppState().carDashboardSide = 'Dual Side';
-                                    FFAppState().productPrice = getJsonField(
-                                      functions.carDashboardPriceReturn(
-                                          FFAppState().carDashboardSide),
-                                      r'''$.price''',
-                                    );
-                                    FFAppState().productMRPPrice = getJsonField(
-                                      functions.carDashboardPriceReturn(
-                                          FFAppState().carDashboardSide),
-                                      r'''$.mrp''',
-                                    );
-                                  });
+                                  FFAppState().carDashboardSide = 'Dual Side';
+                                  FFAppState().productPrice = getJsonField(
+                                    functions.carDashboardPriceReturn(
+                                        FFAppState().carDashboardSide),
+                                    r'''$.price''',
+                                  );
+                                  FFAppState().productMRPPrice = getJsonField(
+                                    functions.carDashboardPriceReturn(
+                                        FFAppState().carDashboardSide),
+                                    r'''$.mrp''',
+                                  );
+                                  safeSetState(() {});
                                 },
                                 text: 'Dual Side',
                                 options: FFButtonOptions(
@@ -742,7 +741,8 @@ class _CarDashboardWidgetState extends State<CarDashboardWidget> {
                             if ((_model.uploadedLocalFile1.bytes?.isNotEmpty ??
                                     false)) {
                               {
-                                setState(() => _model.isDataUploading2 = true);
+                                safeSetState(
+                                    () => _model.isDataUploading2 = true);
                                 var selectedUploadedFiles = <FFUploadedFile>[];
                                 var selectedMedia = <SelectedFile>[];
                                 var downloadUrls = <String>[];
@@ -771,48 +771,43 @@ class _CarDashboardWidgetState extends State<CarDashboardWidget> {
                                         selectedMedia.length &&
                                     downloadUrls.length ==
                                         selectedMedia.length) {
-                                  setState(() {
+                                  safeSetState(() {
                                     _model.uploadedLocalFile2 =
                                         selectedUploadedFiles.first;
                                     _model.uploadedFileUrl2 =
                                         downloadUrls.first;
                                   });
                                 } else {
-                                  setState(() {});
+                                  safeSetState(() {});
                                   return;
                                 }
                               }
 
-                              setState(() {
-                                FFAppState().count = FFAppState().count +
-                                    FFAppState().orderList.length;
-                              });
-                              setState(() {
-                                FFAppState().orders = OrdersStruct(
-                                  imageurl: valueOrDefault<String>(
-                                    functions.imgstringToimgPath(
-                                        FFAppState().editedimg),
-                                    'n',
-                                  ),
-                                  price: FFAppState().productPrice,
-                                  qty: 1.0,
-                                  originalimage: _model.uploadedFileUrl2,
-                                  categoryName:
-                                      'Acrylic Car Dashboard Photo With Stand',
-                                  count: FFAppState().count,
-                                );
-                              });
-                              setState(() {
-                                FFAppState()
-                                    .addToOrderList(FFAppState().orders);
-                              });
+                              FFAppState().count = FFAppState().count +
+                                  FFAppState().orderList.length;
+                              safeSetState(() {});
+                              FFAppState().orders = OrdersStruct(
+                                imageurl: valueOrDefault<String>(
+                                  functions.imgstringToimgPath(
+                                      FFAppState().editedimg),
+                                  'n',
+                                ),
+                                price: FFAppState().productPrice,
+                                qty: 1.0,
+                                originalimage: _model.uploadedFileUrl2,
+                                categoryName:
+                                    'Acrylic Car Dashboard Photo With Stand',
+                                count: FFAppState().count,
+                              );
+                              safeSetState(() {});
+                              FFAppState().addToOrderList(FFAppState().orders);
+                              safeSetState(() {});
                               await actions.returnOrderQtyPluslist(
                                 FFAppState().orders,
                               );
-                              setState(() {
-                                FFAppState().orders = OrdersStruct();
-                                FFAppState().editedimg = '';
-                              });
+                              FFAppState().orders = OrdersStruct();
+                              FFAppState().editedimg = '';
+                              safeSetState(() {});
 
                               context.pushNamed('ShoppingCartnew');
                             } else {
@@ -1424,7 +1419,7 @@ class _CarDashboardWidgetState extends State<CarDashboardWidget> {
                       ),
                       wrapWithModel(
                         model: _model.footerWebModel,
-                        updateCallback: () => setState(() {}),
+                        updateCallback: () => safeSetState(() {}),
                         child: const FooterWebWidget(),
                       ),
                     ],
@@ -1596,7 +1591,7 @@ class _CarDashboardWidgetState extends State<CarDashboardWidget> {
                                                                       selectedMedia.every((m) => validateFileFormat(
                                                                           m.storagePath,
                                                                           context))) {
-                                                                    setState(() =>
+                                                                    safeSetState(() =>
                                                                         _model.isDataUploading3 =
                                                                             true);
                                                                     var selectedUploadedFiles =
@@ -1620,13 +1615,13 @@ class _CarDashboardWidgetState extends State<CarDashboardWidget> {
                                                                             .length ==
                                                                         selectedMedia
                                                                             .length) {
-                                                                      setState(
+                                                                      safeSetState(
                                                                           () {
                                                                         _model.uploadedLocalFile3 =
                                                                             selectedUploadedFiles.first;
                                                                       });
                                                                     } else {
-                                                                      setState(
+                                                                      safeSetState(
                                                                           () {});
                                                                       return;
                                                                     }
@@ -1761,19 +1756,18 @@ class _CarDashboardWidgetState extends State<CarDashboardWidget> {
                             children: [
                               FFButtonWidget(
                                 onPressed: () async {
-                                  setState(() {
-                                    FFAppState().carDashboardSide = 'One Side';
-                                    FFAppState().productPrice = getJsonField(
-                                      functions.carDashboardPriceReturn(
-                                          FFAppState().carDashboardSide),
-                                      r'''$.price''',
-                                    );
-                                    FFAppState().productMRPPrice = getJsonField(
-                                      functions.carDashboardPriceReturn(
-                                          FFAppState().carDashboardSide),
-                                      r'''$.mrp''',
-                                    );
-                                  });
+                                  FFAppState().carDashboardSide = 'One Side';
+                                  FFAppState().productPrice = getJsonField(
+                                    functions.carDashboardPriceReturn(
+                                        FFAppState().carDashboardSide),
+                                    r'''$.price''',
+                                  );
+                                  FFAppState().productMRPPrice = getJsonField(
+                                    functions.carDashboardPriceReturn(
+                                        FFAppState().carDashboardSide),
+                                    r'''$.mrp''',
+                                  );
+                                  safeSetState(() {});
                                 },
                                 text: 'Single Side',
                                 options: FFButtonOptions(
@@ -1814,19 +1808,18 @@ class _CarDashboardWidgetState extends State<CarDashboardWidget> {
                               ),
                               FFButtonWidget(
                                 onPressed: () async {
-                                  setState(() {
-                                    FFAppState().carDashboardSide = 'Dual Side';
-                                    FFAppState().productPrice = getJsonField(
-                                      functions.carDashboardPriceReturn(
-                                          FFAppState().carDashboardSide),
-                                      r'''$.price''',
-                                    );
-                                    FFAppState().productMRPPrice = getJsonField(
-                                      functions.carDashboardPriceReturn(
-                                          FFAppState().carDashboardSide),
-                                      r'''$.mrp''',
-                                    );
-                                  });
+                                  FFAppState().carDashboardSide = 'Dual Side';
+                                  FFAppState().productPrice = getJsonField(
+                                    functions.carDashboardPriceReturn(
+                                        FFAppState().carDashboardSide),
+                                    r'''$.price''',
+                                  );
+                                  FFAppState().productMRPPrice = getJsonField(
+                                    functions.carDashboardPriceReturn(
+                                        FFAppState().carDashboardSide),
+                                    r'''$.mrp''',
+                                  );
+                                  safeSetState(() {});
                                 },
                                 text: 'Dual Side',
                                 options: FFButtonOptions(
@@ -2030,7 +2023,8 @@ class _CarDashboardWidgetState extends State<CarDashboardWidget> {
                             if ((_model.uploadedLocalFile3.bytes?.isNotEmpty ??
                                     false)) {
                               {
-                                setState(() => _model.isDataUploading4 = true);
+                                safeSetState(
+                                    () => _model.isDataUploading4 = true);
                                 var selectedUploadedFiles = <FFUploadedFile>[];
                                 var selectedMedia = <SelectedFile>[];
                                 var downloadUrls = <String>[];
@@ -2059,48 +2053,43 @@ class _CarDashboardWidgetState extends State<CarDashboardWidget> {
                                         selectedMedia.length &&
                                     downloadUrls.length ==
                                         selectedMedia.length) {
-                                  setState(() {
+                                  safeSetState(() {
                                     _model.uploadedLocalFile4 =
                                         selectedUploadedFiles.first;
                                     _model.uploadedFileUrl4 =
                                         downloadUrls.first;
                                   });
                                 } else {
-                                  setState(() {});
+                                  safeSetState(() {});
                                   return;
                                 }
                               }
 
-                              setState(() {
-                                FFAppState().count = FFAppState().count +
-                                    FFAppState().orderList.length;
-                              });
-                              setState(() {
-                                FFAppState().orders = OrdersStruct(
-                                  imageurl: valueOrDefault<String>(
-                                    functions.imgstringToimgPath(
-                                        FFAppState().editedimg),
-                                    'n',
-                                  ),
-                                  price: FFAppState().productPrice,
-                                  qty: 1.0,
-                                  originalimage: _model.uploadedFileUrl4,
-                                  categoryName:
-                                      'Acrylic Car Dashboard Photo With Stand',
-                                  count: FFAppState().count,
-                                );
-                              });
-                              setState(() {
-                                FFAppState()
-                                    .addToOrderList(FFAppState().orders);
-                              });
+                              FFAppState().count = FFAppState().count +
+                                  FFAppState().orderList.length;
+                              safeSetState(() {});
+                              FFAppState().orders = OrdersStruct(
+                                imageurl: valueOrDefault<String>(
+                                  functions.imgstringToimgPath(
+                                      FFAppState().editedimg),
+                                  'n',
+                                ),
+                                price: FFAppState().productPrice,
+                                qty: 1.0,
+                                originalimage: _model.uploadedFileUrl4,
+                                categoryName:
+                                    'Acrylic Car Dashboard Photo With Stand',
+                                count: FFAppState().count,
+                              );
+                              safeSetState(() {});
+                              FFAppState().addToOrderList(FFAppState().orders);
+                              safeSetState(() {});
                               await actions.returnOrderQtyPluslist(
                                 FFAppState().orders,
                               );
-                              setState(() {
-                                FFAppState().orders = OrdersStruct();
-                                FFAppState().editedimg = '';
-                              });
+                              FFAppState().orders = OrdersStruct();
+                              FFAppState().editedimg = '';
+                              safeSetState(() {});
 
                               context.pushNamed('ShoppingCartnew');
                             } else {
@@ -2654,7 +2643,7 @@ class _CarDashboardWidgetState extends State<CarDashboardWidget> {
                       ),
                       wrapWithModel(
                         model: _model.footerMobileModel,
-                        updateCallback: () => setState(() {}),
+                        updateCallback: () => safeSetState(() {}),
                         child: const FooterMobileWidget(),
                       ),
                     ],
@@ -2663,7 +2652,7 @@ class _CarDashboardWidgetState extends State<CarDashboardWidget> {
               ),
             wrapWithModel(
               model: _model.headerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const HeaderWidget(),
             ),
           ],

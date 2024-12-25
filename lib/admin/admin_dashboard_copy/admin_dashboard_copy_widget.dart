@@ -41,18 +41,17 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      setState(() {
-        FFAppState().sizeHide = false;
-        FFAppState().thicknessHide = false;
-        FFAppState().shapeHide = false;
-        FFAppState().catgoryHide = false;
-        FFAppState().dashboardHide = true;
-      });
+      FFAppState().sizeHide = false;
+      FFAppState().thicknessHide = false;
+      FFAppState().shapeHide = false;
+      FFAppState().catgoryHide = false;
+      FFAppState().dashboardHide = true;
+      safeSetState(() {});
     });
 
     _model.expandableExpandableController =
         ExpandableController(initialExpanded: false);
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -67,9 +66,10 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
     context.watch<FFAppState>();
 
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -79,7 +79,7 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
             elevation: 16.0,
             child: wrapWithModel(
               model: _model.drawerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const DrawerWidget(),
             ),
           ),
@@ -200,13 +200,12 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                         hoverColor: Colors.transparent,
                                         highlightColor: Colors.transparent,
                                         onTap: () async {
-                                          setState(() {
-                                            FFAppState().shapeHide = false;
-                                            FFAppState().thicknessHide = false;
-                                            FFAppState().sizeHide = false;
-                                            FFAppState().dashboardHide = true;
-                                            FFAppState().catgoryHide = false;
-                                          });
+                                          FFAppState().shapeHide = false;
+                                          FFAppState().thicknessHide = false;
+                                          FFAppState().sizeHide = false;
+                                          FFAppState().dashboardHide = true;
+                                          FFAppState().catgoryHide = false;
+                                          safeSetState(() {});
                                         },
                                         child: Container(
                                           width: double.infinity,
@@ -335,20 +334,17 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                                   highlightColor:
                                                       Colors.transparent,
                                                   onTap: () async {
-                                                    setState(() {
-                                                      FFAppState().shapeHide =
-                                                          false;
-                                                      FFAppState()
-                                                              .thicknessHide =
-                                                          false;
-                                                      FFAppState().sizeHide =
-                                                          false;
-                                                      FFAppState()
-                                                              .dashboardHide =
-                                                          false;
-                                                      FFAppState().catgoryHide =
-                                                          true;
-                                                    });
+                                                    FFAppState().shapeHide =
+                                                        false;
+                                                    FFAppState().thicknessHide =
+                                                        false;
+                                                    FFAppState().sizeHide =
+                                                        false;
+                                                    FFAppState().dashboardHide =
+                                                        false;
+                                                    FFAppState().catgoryHide =
+                                                        true;
+                                                    safeSetState(() {});
                                                   },
                                                   child: Container(
                                                     width: double.infinity,
@@ -403,18 +399,15 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                                   highlightColor:
                                                       Colors.transparent,
                                                   onTap: () async {
-                                                    setState(() {
-                                                      FFAppState().shapeHide =
-                                                          true;
-                                                      FFAppState()
-                                                              .thicknessHide =
-                                                          false;
-                                                      FFAppState().sizeHide =
-                                                          false;
-                                                      FFAppState()
-                                                              .dashboardHide =
-                                                          false;
-                                                    });
+                                                    FFAppState().shapeHide =
+                                                        true;
+                                                    FFAppState().thicknessHide =
+                                                        false;
+                                                    FFAppState().sizeHide =
+                                                        false;
+                                                    FFAppState().dashboardHide =
+                                                        false;
+                                                    safeSetState(() {});
                                                   },
                                                   child: Container(
                                                     width: double.infinity,
@@ -469,18 +462,15 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                                   highlightColor:
                                                       Colors.transparent,
                                                   onTap: () async {
-                                                    setState(() {
-                                                      FFAppState().sizeHide =
-                                                          true;
-                                                      FFAppState().shapeHide =
-                                                          false;
-                                                      FFAppState()
-                                                              .thicknessHide =
-                                                          false;
-                                                      FFAppState()
-                                                              .dashboardHide =
-                                                          false;
-                                                    });
+                                                    FFAppState().sizeHide =
+                                                        true;
+                                                    FFAppState().shapeHide =
+                                                        false;
+                                                    FFAppState().thicknessHide =
+                                                        false;
+                                                    FFAppState().dashboardHide =
+                                                        false;
+                                                    safeSetState(() {});
                                                   },
                                                   child: Container(
                                                     width: double.infinity,
@@ -535,19 +525,17 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                                   highlightColor:
                                                       Colors.transparent,
                                                   onTap: () async {
-                                                    setState(() {
-                                                      FFAppState()
-                                                          .thicknessHide = true;
-                                                      FFAppState().shapeHide =
-                                                          false;
-                                                      FFAppState().sizeHide =
-                                                          false;
-                                                      FFAppState()
-                                                              .dashboardHide =
-                                                          false;
-                                                      FFAppState().catgoryHide =
-                                                          false;
-                                                    });
+                                                    FFAppState().thicknessHide =
+                                                        true;
+                                                    FFAppState().shapeHide =
+                                                        false;
+                                                    FFAppState().sizeHide =
+                                                        false;
+                                                    FFAppState().dashboardHide =
+                                                        false;
+                                                    FFAppState().catgoryHide =
+                                                        false;
+                                                    safeSetState(() {});
                                                   },
                                                   child: Container(
                                                     width: double.infinity,
@@ -666,9 +654,8 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                             hoverColor: Colors.transparent,
                                             highlightColor: Colors.transparent,
                                             onTap: () async {
-                                              setState(() {
-                                                FFAppState().loggedin = false;
-                                              });
+                                              FFAppState().loggedin = false;
+                                              safeSetState(() {});
                                               GoRouter.of(context)
                                                   .prepareAuthEvent();
                                               await authManager.signOut();
@@ -676,7 +663,7 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                                   .clearRedirectLocation();
 
                                               context.goNamedAuth(
-                                                  'HomePage', context.mounted);
+                                                  'LoginPage', context.mounted);
                                             },
                                             child: Row(
                                               mainAxisSize: MainAxisSize.max,
@@ -703,7 +690,7 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                                           .clearRedirectLocation();
 
                                                       context.goNamedAuth(
-                                                          'HomePage',
+                                                          'LoginPage',
                                                           context.mounted);
                                                     },
                                                     child: Text(
@@ -767,6 +754,7 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                       List<ThicknessRecord>
                                           thicknessThicknessRecordList =
                                           snapshot.data!;
+
                                       return Container(
                                         width: double.infinity,
                                         height: double.infinity,
@@ -869,16 +857,15 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                                                           context)),
                                                               child:
                                                                   GestureDetector(
-                                                                onTap: () => _model
-                                                                        .unfocusNode
-                                                                        .canRequestFocus
-                                                                    ? FocusScope.of(
-                                                                            context)
-                                                                        .requestFocus(_model
-                                                                            .unfocusNode)
-                                                                    : FocusScope.of(
-                                                                            context)
-                                                                        .unfocus(),
+                                                                onTap: () {
+                                                                  FocusScope.of(
+                                                                          dialogContext)
+                                                                      .unfocus();
+                                                                  FocusManager
+                                                                      .instance
+                                                                      .primaryFocus
+                                                                      ?.unfocus();
+                                                                },
                                                                 child:
                                                                     AddThicknessWidget(
                                                                   codeLen: _model
@@ -887,10 +874,9 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                                               ),
                                                             );
                                                           },
-                                                        ).then((value) =>
-                                                            setState(() {}));
+                                                        );
 
-                                                        setState(() {});
+                                                        safeSetState(() {});
                                                       },
                                                       text: 'Add',
                                                       options: FFButtonOptions(
@@ -1200,6 +1186,7 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                                                           (context) {
                                                                         final thicknessList =
                                                                             thicknessThicknessRecordList.toList();
+
                                                                         return ListView
                                                                             .builder(
                                                                           padding:
@@ -1292,14 +1279,17 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                                                                                 backgroundColor: Colors.transparent,
                                                                                                 alignment: const AlignmentDirectional(0.0, 0.0).resolve(Directionality.of(context)),
                                                                                                 child: GestureDetector(
-                                                                                                  onTap: () => _model.unfocusNode.canRequestFocus ? FocusScope.of(context).requestFocus(_model.unfocusNode) : FocusScope.of(context).unfocus(),
+                                                                                                  onTap: () {
+                                                                                                    FocusScope.of(dialogContext).unfocus();
+                                                                                                    FocusManager.instance.primaryFocus?.unfocus();
+                                                                                                  },
                                                                                                   child: EditThicknessWidget(
-                                                                                                    docRefThickness: thicknessThicknessRecordList[thicknessListIndex].reference,
+                                                                                                    docRefThickness: thicknessThicknessRecordList.elementAtOrNull(thicknessListIndex)?.reference,
                                                                                                   ),
                                                                                                 ),
                                                                                               );
                                                                                             },
-                                                                                          ).then((value) => setState(() {}));
+                                                                                          );
                                                                                         },
                                                                                         child: Column(
                                                                                           mainAxisSize: MainAxisSize.max,
@@ -1420,6 +1410,7 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                       List<CategoryRecord>
                                           categoryListCategoryRecordList =
                                           snapshot.data!;
+
                                       return Container(
                                         width: double.infinity,
                                         height: double.infinity,
@@ -1511,10 +1502,6 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                                         categoryListCategoryRecordList
                                                             .toList(),
                                                       );
-                                                      setState(() {
-                                                        FFAppState().img =
-                                                            'https://picsum.photos/seed/895/600';
-                                                      });
 
                                                       context.pushNamed(
                                                         'addCategory',
@@ -1527,7 +1514,7 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                                         }.withoutNulls,
                                                       );
 
-                                                      setState(() {});
+                                                      safeSetState(() {});
                                                     },
                                                     text: 'Add',
                                                     options: FFButtonOptions(
@@ -1665,53 +1652,6 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                                               ),
                                                             ),
                                                             Expanded(
-                                                              child: Container(
-                                                                width: MediaQuery.sizeOf(
-                                                                            context)
-                                                                        .width *
-                                                                    0.06,
-                                                                height: MediaQuery.sizeOf(
-                                                                            context)
-                                                                        .height *
-                                                                    0.035,
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  color: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .secondary,
-                                                                ),
-                                                                child: Column(
-                                                                  mainAxisSize:
-                                                                      MainAxisSize
-                                                                          .max,
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .center,
-                                                                  children: [
-                                                                    Text(
-                                                                      'Image',
-                                                                      style: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleMedium
-                                                                          .override(
-                                                                            fontFamily:
-                                                                                FlutterFlowTheme.of(context).titleMediumFamily,
-                                                                            color:
-                                                                                FlutterFlowTheme.of(context).accent1,
-                                                                            letterSpacing:
-                                                                                0.0,
-                                                                            useGoogleFonts:
-                                                                                GoogleFonts.asMap().containsKey(FlutterFlowTheme.of(context).titleMediumFamily),
-                                                                          ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            Expanded(
                                                               flex: 5,
                                                               child: Container(
                                                                 width: MediaQuery.sizeOf(
@@ -1747,7 +1687,7 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                                                             .start,
                                                                     children: [
                                                                       Text(
-                                                                        'Title ',
+                                                                        'Category Name',
                                                                         style: FlutterFlowTheme.of(context)
                                                                             .titleMedium
                                                                             .override(
@@ -1881,8 +1821,11 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                                                     Builder(
                                                                       builder:
                                                                           (context) {
-                                                                        final categoryList =
-                                                                            categoryListCategoryRecordList.toList();
+                                                                        final categoryList = categoryListCategoryRecordList
+                                                                            .map((e) =>
+                                                                                e)
+                                                                            .toList();
+
                                                                         return ListView
                                                                             .builder(
                                                                           padding:
@@ -1931,13 +1874,6 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                                                                       ),
                                                                                     ),
                                                                                     Expanded(
-                                                                                      child: Image.network(
-                                                                                        categoryListItem.imageUrl,
-                                                                                        height: MediaQuery.sizeOf(context).height * 0.125,
-                                                                                        fit: BoxFit.cover,
-                                                                                      ),
-                                                                                    ),
-                                                                                    Expanded(
                                                                                       flex: 5,
                                                                                       child: Container(
                                                                                         width: MediaQuery.sizeOf(context).width * 0.38,
@@ -1959,7 +1895,7 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                                                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                                                   children: [
                                                                                                     Text(
-                                                                                                      categoryListItem.title,
+                                                                                                      categoryListItem.categoryName,
                                                                                                       style: FlutterFlowTheme.of(context).titleMedium.override(
                                                                                                             fontFamily: FlutterFlowTheme.of(context).titleMediumFamily,
                                                                                                             color: FlutterFlowTheme.of(context).primaryText,
@@ -1988,12 +1924,12 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                                                                             'updateCategory',
                                                                                             queryParameters: {
                                                                                               'catDocRef': serializeParam(
-                                                                                                categoryListCategoryRecordList[categoryListIndex],
+                                                                                                categoryListCategoryRecordList.elementAtOrNull(categoryListIndex),
                                                                                                 ParamType.Document,
                                                                                               ),
                                                                                             }.withoutNulls,
                                                                                             extra: <String, dynamic>{
-                                                                                              'catDocRef': categoryListCategoryRecordList[categoryListIndex],
+                                                                                              'catDocRef': categoryListCategoryRecordList.elementAtOrNull(categoryListIndex),
                                                                                             },
                                                                                           );
                                                                                         },
@@ -2118,6 +2054,7 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                       List<ShapesRecord>
                                           shapesShapesRecordList =
                                           snapshot.data!;
+
                                       return Container(
                                         width: double.infinity,
                                         height: double.infinity,
@@ -2220,16 +2157,15 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                                                           context)),
                                                               child:
                                                                   GestureDetector(
-                                                                onTap: () => _model
-                                                                        .unfocusNode
-                                                                        .canRequestFocus
-                                                                    ? FocusScope.of(
-                                                                            context)
-                                                                        .requestFocus(_model
-                                                                            .unfocusNode)
-                                                                    : FocusScope.of(
-                                                                            context)
-                                                                        .unfocus(),
+                                                                onTap: () {
+                                                                  FocusScope.of(
+                                                                          dialogContext)
+                                                                      .unfocus();
+                                                                  FocusManager
+                                                                      .instance
+                                                                      .primaryFocus
+                                                                      ?.unfocus();
+                                                                },
                                                                 child:
                                                                     AddShapesWidget(
                                                                   codeLen: _model
@@ -2238,12 +2174,11 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                                               ),
                                                             );
                                                           },
-                                                        ).then((value) =>
-                                                            setState(() {}));
+                                                        );
 
                                                         Navigator.pop(context);
 
-                                                        setState(() {});
+                                                        safeSetState(() {});
                                                       },
                                                       text: 'Add',
                                                       options: FFButtonOptions(
@@ -2553,6 +2488,7 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                                                           (context) {
                                                                         final shapeList =
                                                                             shapesShapesRecordList.toList();
+
                                                                         return ListView
                                                                             .builder(
                                                                           padding:
@@ -2660,14 +2596,17 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                                                                                 backgroundColor: Colors.transparent,
                                                                                                 alignment: const AlignmentDirectional(0.0, 0.0).resolve(Directionality.of(context)),
                                                                                                 child: GestureDetector(
-                                                                                                  onTap: () => _model.unfocusNode.canRequestFocus ? FocusScope.of(context).requestFocus(_model.unfocusNode) : FocusScope.of(context).unfocus(),
+                                                                                                  onTap: () {
+                                                                                                    FocusScope.of(dialogContext).unfocus();
+                                                                                                    FocusManager.instance.primaryFocus?.unfocus();
+                                                                                                  },
                                                                                                   child: UpdateShapeWidget(
                                                                                                     shapeDocRef: shapeListItem.reference,
                                                                                                   ),
                                                                                                 ),
                                                                                               );
                                                                                             },
-                                                                                          ).then((value) => setState(() {}));
+                                                                                          );
                                                                                         },
                                                                                         child: Column(
                                                                                           mainAxisSize: MainAxisSize.max,
@@ -2814,6 +2753,7 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                       }
                                       List<SizeRecord> sizesSizeRecordList =
                                           snapshot.data!;
+
                                       return Container(
                                         width: double.infinity,
                                         height: double.infinity,
@@ -2916,16 +2856,15 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                                                           context)),
                                                               child:
                                                                   GestureDetector(
-                                                                onTap: () => _model
-                                                                        .unfocusNode
-                                                                        .canRequestFocus
-                                                                    ? FocusScope.of(
-                                                                            context)
-                                                                        .requestFocus(_model
-                                                                            .unfocusNode)
-                                                                    : FocusScope.of(
-                                                                            context)
-                                                                        .unfocus(),
+                                                                onTap: () {
+                                                                  FocusScope.of(
+                                                                          dialogContext)
+                                                                      .unfocus();
+                                                                  FocusManager
+                                                                      .instance
+                                                                      .primaryFocus
+                                                                      ?.unfocus();
+                                                                },
                                                                 child:
                                                                     AddSizesWidget(
                                                                   codeLen: _model
@@ -2934,10 +2873,9 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                                               ),
                                                             );
                                                           },
-                                                        ).then((value) =>
-                                                            setState(() {}));
+                                                        );
 
-                                                        setState(() {});
+                                                        safeSetState(() {});
                                                       },
                                                       text: 'Add',
                                                       options: FFButtonOptions(
@@ -3247,6 +3185,7 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                                                           (context) {
                                                                         final sizeList =
                                                                             sizesSizeRecordList.toList();
+
                                                                         return ListView
                                                                             .builder(
                                                                           padding:
@@ -3339,15 +3278,18 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                                                                                 backgroundColor: Colors.transparent,
                                                                                                 alignment: const AlignmentDirectional(0.0, 0.0).resolve(Directionality.of(context)),
                                                                                                 child: GestureDetector(
-                                                                                                  onTap: () => _model.unfocusNode.canRequestFocus ? FocusScope.of(context).requestFocus(_model.unfocusNode) : FocusScope.of(context).unfocus(),
+                                                                                                  onTap: () {
+                                                                                                    FocusScope.of(dialogContext).unfocus();
+                                                                                                    FocusManager.instance.primaryFocus?.unfocus();
+                                                                                                  },
                                                                                                   child: UpdateSizeWidget(
-                                                                                                    sizeDocRef: sizesSizeRecordList[sizeListIndex].reference,
+                                                                                                    sizeDocRef: sizesSizeRecordList.elementAtOrNull(sizeListIndex)!.reference,
                                                                                                     sizeDoc: sizeListItem,
                                                                                                   ),
                                                                                                 ),
                                                                                               );
                                                                                             },
-                                                                                          ).then((value) => setState(() {}));
+                                                                                          );
                                                                                         },
                                                                                         child: Column(
                                                                                           mainAxisSize: MainAxisSize.max,
@@ -3575,6 +3517,7 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                                               int textCount =
                                                                   snapshot
                                                                       .data!;
+
                                                               return Text(
                                                                 valueOrDefault<
                                                                     String>(
@@ -3734,6 +3677,7 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                                               int textCount =
                                                                   snapshot
                                                                       .data!;
+
                                                               return Text(
                                                                 valueOrDefault<
                                                                     String>(
@@ -3893,6 +3837,7 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
                                                               int textCount =
                                                                   snapshot
                                                                       .data!;
+
                                                               return Text(
                                                                 valueOrDefault<
                                                                     String>(
@@ -3943,7 +3888,7 @@ class _AdminDashboardCopyWidgetState extends State<AdminDashboardCopyWidget> {
             ),
             wrapWithModel(
               model: _model.headerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const HeaderWidget(),
             ),
           ],

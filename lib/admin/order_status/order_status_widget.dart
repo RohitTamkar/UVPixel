@@ -29,31 +29,28 @@ class _OrderStatusWidgetState extends State<OrderStatusWidget> {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      setState(() {
-        FFAppState().statusFlag = 0;
-      });
+      FFAppState().statusFlag = 0;
+      safeSetState(() {});
       _model.apiResults2w = await CheckStatusCall.call(
         merchantId: 'UVPIXELONLINE',
         merchantTransactionId: FFAppState().merchantTransactionId,
       );
+
       if ((_model.apiResults2w?.succeeded ?? true)) {
         if ('COMPLETED' ==
             getJsonField(
               (_model.apiResults2w?.jsonBody ?? ''),
               r'''$.data.state''',
-            )) {
-          setState(() {
-            FFAppState().statusFlag = 1;
-          });
+            ).toString().toString()) {
+          FFAppState().statusFlag = 1;
+          safeSetState(() {});
         } else {
-          setState(() {
-            FFAppState().statusFlag = 2;
-          });
+          FFAppState().statusFlag = 2;
+          safeSetState(() {});
         }
       } else {
-        setState(() {
-          FFAppState().statusFlag = 2;
-        });
+        FFAppState().statusFlag = 2;
+        safeSetState(() {});
         await showDialog(
           context: context,
           builder: (alertDialogContext) {
@@ -75,7 +72,7 @@ class _OrderStatusWidgetState extends State<OrderStatusWidget> {
       }
     });
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -90,9 +87,10 @@ class _OrderStatusWidgetState extends State<OrderStatusWidget> {
     context.watch<FFAppState>();
 
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -152,7 +150,7 @@ class _OrderStatusWidgetState extends State<OrderStatusWidget> {
                                         50.0, 0.0, 50.0, 0.0),
                                     child: wrapWithModel(
                                       model: _model.successAlertModel,
-                                      updateCallback: () => setState(() {}),
+                                      updateCallback: () => safeSetState(() {}),
                                       child: const SuccessAlertWidget(),
                                     ),
                                   ),
@@ -162,7 +160,7 @@ class _OrderStatusWidgetState extends State<OrderStatusWidget> {
                                         50.0, 0.0, 50.0, 0.0),
                                     child: wrapWithModel(
                                       model: _model.failedAlertModel,
-                                      updateCallback: () => setState(() {}),
+                                      updateCallback: () => safeSetState(() {}),
                                       child: const FailedAlertWidget(),
                                     ),
                                   ),

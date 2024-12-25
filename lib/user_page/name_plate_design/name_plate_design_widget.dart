@@ -44,18 +44,17 @@ class _NamePlateDesignWidgetState extends State<NamePlateDesignWidget> {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      setState(() {
-        FFAppState().productPrice = getJsonField(
-          functions.namePlatePriceList('12 X 8', '3 mm'),
-          r'''$.price''',
-        );
-        FFAppState().productMRPPrice = getJsonField(
-          functions.namePlatePriceList('12 X 8', '3 mm'),
-          r'''$.mrp''',
-        );
-        FFAppState().size = '12 X 8';
-        FFAppState().thickness = '3 mm';
-      });
+      FFAppState().productPrice = getJsonField(
+        functions.namePlatePriceList('12 X 8', '3 mm'),
+        r'''$.price''',
+      );
+      FFAppState().productMRPPrice = getJsonField(
+        functions.namePlatePriceList('12 X 8', '3 mm'),
+        r'''$.mrp''',
+      );
+      FFAppState().size = '12 X 8';
+      FFAppState().thickness = '3 mm';
+      safeSetState(() {});
     });
 
     _model.textController1 ??= TextEditingController();
@@ -94,7 +93,7 @@ class _NamePlateDesignWidgetState extends State<NamePlateDesignWidget> {
     _model.textController12 ??= TextEditingController();
     _model.textFieldFocusNode12 ??= FocusNode();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -109,9 +108,10 @@ class _NamePlateDesignWidgetState extends State<NamePlateDesignWidget> {
     context.watch<FFAppState>();
 
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -131,7 +131,7 @@ class _NamePlateDesignWidgetState extends State<NamePlateDesignWidget> {
             elevation: 16.0,
             child: wrapWithModel(
               model: _model.drawerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const DrawerWidget(),
             ),
           ),
@@ -704,25 +704,22 @@ class _NamePlateDesignWidgetState extends State<NamePlateDesignWidget> {
                                   ),
                                   FFButtonWidget(
                                     onPressed: () async {
-                                      setState(() {
-                                        FFAppState().size = '12 X 8';
-                                      });
-                                      setState(() {
-                                        FFAppState().productPrice =
-                                            getJsonField(
-                                          functions.namePlatePriceList(
-                                              FFAppState().size,
-                                              FFAppState().thickness),
-                                          r'''$.price''',
-                                        );
-                                        FFAppState().productMRPPrice =
-                                            getJsonField(
-                                          functions.namePlatePriceList(
-                                              FFAppState().size,
-                                              FFAppState().thickness),
-                                          r'''$.mrp''',
-                                        );
-                                      });
+                                      FFAppState().size = '12 X 8';
+                                      safeSetState(() {});
+                                      FFAppState().productPrice = getJsonField(
+                                        functions.namePlatePriceList(
+                                            FFAppState().size,
+                                            FFAppState().thickness),
+                                        r'''$.price''',
+                                      );
+                                      FFAppState().productMRPPrice =
+                                          getJsonField(
+                                        functions.namePlatePriceList(
+                                            FFAppState().size,
+                                            FFAppState().thickness),
+                                        r'''$.mrp''',
+                                      );
+                                      safeSetState(() {});
                                     },
                                     text: '12 X 8',
                                     options: FFButtonOptions(
@@ -765,25 +762,22 @@ class _NamePlateDesignWidgetState extends State<NamePlateDesignWidget> {
                                   ),
                                   FFButtonWidget(
                                     onPressed: () async {
-                                      setState(() {
-                                        FFAppState().size = '12 X 18';
-                                      });
-                                      setState(() {
-                                        FFAppState().productPrice =
-                                            getJsonField(
-                                          functions.namePlatePriceList(
-                                              FFAppState().size,
-                                              FFAppState().thickness),
-                                          r'''$.price''',
-                                        );
-                                        FFAppState().productMRPPrice =
-                                            getJsonField(
-                                          functions.namePlatePriceList(
-                                              FFAppState().size,
-                                              FFAppState().thickness),
-                                          r'''$.mrp''',
-                                        );
-                                      });
+                                      FFAppState().size = '12 X 18';
+                                      safeSetState(() {});
+                                      FFAppState().productPrice = getJsonField(
+                                        functions.namePlatePriceList(
+                                            FFAppState().size,
+                                            FFAppState().thickness),
+                                        r'''$.price''',
+                                      );
+                                      FFAppState().productMRPPrice =
+                                          getJsonField(
+                                        functions.namePlatePriceList(
+                                            FFAppState().size,
+                                            FFAppState().thickness),
+                                        r'''$.mrp''',
+                                      );
+                                      safeSetState(() {});
                                     },
                                     text: '12 X 18',
                                     options: FFButtonOptions(
@@ -847,25 +841,22 @@ class _NamePlateDesignWidgetState extends State<NamePlateDesignWidget> {
                                   ),
                                   FFButtonWidget(
                                     onPressed: () async {
-                                      setState(() {
-                                        FFAppState().thickness = '3 mm';
-                                      });
-                                      setState(() {
-                                        FFAppState().productPrice =
-                                            getJsonField(
-                                          functions.namePlatePriceList(
-                                              FFAppState().size,
-                                              FFAppState().thickness),
-                                          r'''$.price''',
-                                        );
-                                        FFAppState().productMRPPrice =
-                                            getJsonField(
-                                          functions.namePlatePriceList(
-                                              FFAppState().size,
-                                              FFAppState().thickness),
-                                          r'''$.mrp''',
-                                        );
-                                      });
+                                      FFAppState().thickness = '3 mm';
+                                      safeSetState(() {});
+                                      FFAppState().productPrice = getJsonField(
+                                        functions.namePlatePriceList(
+                                            FFAppState().size,
+                                            FFAppState().thickness),
+                                        r'''$.price''',
+                                      );
+                                      FFAppState().productMRPPrice =
+                                          getJsonField(
+                                        functions.namePlatePriceList(
+                                            FFAppState().size,
+                                            FFAppState().thickness),
+                                        r'''$.mrp''',
+                                      );
+                                      safeSetState(() {});
                                     },
                                     text: '3 mm',
                                     options: FFButtonOptions(
@@ -908,25 +899,22 @@ class _NamePlateDesignWidgetState extends State<NamePlateDesignWidget> {
                                   ),
                                   FFButtonWidget(
                                     onPressed: () async {
-                                      setState(() {
-                                        FFAppState().thickness = '8 mm';
-                                      });
-                                      setState(() {
-                                        FFAppState().productPrice =
-                                            getJsonField(
-                                          functions.namePlatePriceList(
-                                              FFAppState().size,
-                                              FFAppState().thickness),
-                                          r'''$.price''',
-                                        );
-                                        FFAppState().productMRPPrice =
-                                            getJsonField(
-                                          functions.namePlatePriceList(
-                                              FFAppState().size,
-                                              FFAppState().thickness),
-                                          r'''$.mrp''',
-                                        );
-                                      });
+                                      FFAppState().thickness = '8 mm';
+                                      safeSetState(() {});
+                                      FFAppState().productPrice = getJsonField(
+                                        functions.namePlatePriceList(
+                                            FFAppState().size,
+                                            FFAppState().thickness),
+                                        r'''$.price''',
+                                      );
+                                      FFAppState().productMRPPrice =
+                                          getJsonField(
+                                        functions.namePlatePriceList(
+                                            FFAppState().size,
+                                            FFAppState().thickness),
+                                        r'''$.mrp''',
+                                      );
+                                      safeSetState(() {});
                                     },
                                     text: '8 mm',
                                     options: FFButtonOptions(
@@ -1200,39 +1188,36 @@ class _NamePlateDesignWidgetState extends State<NamePlateDesignWidget> {
                           onPressed: () async {
                             if ((FFAppState().size != '') &&
                                 (FFAppState().thickness != '')) {
-                              setState(() {
-                                FFAppState().count = FFAppState().count +
-                                    valueOrDefault<int>(
-                                      FFAppState().orderList.length,
-                                      1,
-                                    );
-                              });
-                              setState(() {
-                                FFAppState().updateOrdersStruct(
-                                  (e) => e
-                                    ..imageurl = functions.imgstringToimgPath(
-                                        FFAppState().editedimg)
-                                    ..size = FFAppState().size
-                                    ..thickness = FFAppState().thickness
-                                    ..price = valueOrDefault<double>(
-                                      FFAppState().productPrice,
-                                      599.0,
-                                    )
-                                    ..qty = 1.0
-                                    ..categoryName =
-                                        'UVPIXEL TM : NAME PLATE IN ACRYLIC PRINT'
-                                    ..count = FFAppState().count
-                                    ..originalimage = widget.namePlateDesignUrl,
-                                );
-                              });
+                              FFAppState().count = FFAppState().count +
+                                  valueOrDefault<int>(
+                                    FFAppState().orderList.length,
+                                    1,
+                                  );
+                              safeSetState(() {});
+                              FFAppState().updateOrdersStruct(
+                                (e) => e
+                                  ..imageurl = functions.imgstringToimgPath(
+                                      FFAppState().editedimg)
+                                  ..size = FFAppState().size
+                                  ..thickness = FFAppState().thickness
+                                  ..price = valueOrDefault<double>(
+                                    FFAppState().productPrice,
+                                    599.0,
+                                  )
+                                  ..qty = 1.0
+                                  ..categoryName =
+                                      'UVPIXEL TM : NAME PLATE IN ACRYLIC PRINT'
+                                  ..count = FFAppState().count
+                                  ..originalimage = widget.namePlateDesignUrl,
+                              );
+                              safeSetState(() {});
                               _model.returnqty =
                                   await actions.returnOrderQtyPluslist(
                                 FFAppState().orders,
                               );
-                              setState(() {
-                                FFAppState().orders = OrdersStruct();
-                                FFAppState().editedimg = '';
-                              });
+                              FFAppState().orders = OrdersStruct();
+                              FFAppState().editedimg = '';
+                              safeSetState(() {});
 
                               context.pushNamed('ShoppingCartnew');
                             } else {
@@ -1253,7 +1238,7 @@ class _NamePlateDesignWidgetState extends State<NamePlateDesignWidget> {
                               );
                             }
 
-                            setState(() {});
+                            safeSetState(() {});
                           },
                           text: 'Buy Now',
                           options: FFButtonOptions(
@@ -1845,7 +1830,7 @@ class _NamePlateDesignWidgetState extends State<NamePlateDesignWidget> {
                       ),
                       wrapWithModel(
                         model: _model.footerWebModel,
-                        updateCallback: () => setState(() {}),
+                        updateCallback: () => safeSetState(() {}),
                         child: const FooterWebWidget(),
                       ),
                     ],
@@ -1969,19 +1954,19 @@ class _NamePlateDesignWidgetState extends State<NamePlateDesignWidget> {
                                                           width: 500.0,
                                                           height: 400.0,
                                                           text1: _model
-                                                              .textController1
+                                                              .textController6
                                                               .text,
                                                           text2: _model
-                                                              .textController2
+                                                              .textController7
                                                               .text,
                                                           text3: _model
-                                                              .textController3
+                                                              .textController8
                                                               .text,
                                                           text4: _model
-                                                              .textController4
+                                                              .textController9
                                                               .text,
                                                           text5: _model
-                                                              .textController5
+                                                              .textController10
                                                               .text,
                                                           namePlateImage: functions
                                                               .imageurlToString(
@@ -2504,25 +2489,23 @@ class _NamePlateDesignWidgetState extends State<NamePlateDesignWidget> {
                                     ),
                                     FFButtonWidget(
                                       onPressed: () async {
-                                        setState(() {
-                                          FFAppState().size = '12 X 8';
-                                        });
-                                        setState(() {
-                                          FFAppState().productPrice =
-                                              getJsonField(
-                                            functions.namePlatePriceList(
-                                                FFAppState().size,
-                                                FFAppState().thickness),
-                                            r'''$.price''',
-                                          );
-                                          FFAppState().productMRPPrice =
-                                              getJsonField(
-                                            functions.namePlatePriceList(
-                                                FFAppState().size,
-                                                FFAppState().thickness),
-                                            r'''$.mrp''',
-                                          );
-                                        });
+                                        FFAppState().size = '12 X 8';
+                                        safeSetState(() {});
+                                        FFAppState().productPrice =
+                                            getJsonField(
+                                          functions.namePlatePriceList(
+                                              FFAppState().size,
+                                              FFAppState().thickness),
+                                          r'''$.price''',
+                                        );
+                                        FFAppState().productMRPPrice =
+                                            getJsonField(
+                                          functions.namePlatePriceList(
+                                              FFAppState().size,
+                                              FFAppState().thickness),
+                                          r'''$.mrp''',
+                                        );
+                                        safeSetState(() {});
                                       },
                                       text: '12 X 8',
                                       options: FFButtonOptions(
@@ -2568,25 +2551,23 @@ class _NamePlateDesignWidgetState extends State<NamePlateDesignWidget> {
                                     ),
                                     FFButtonWidget(
                                       onPressed: () async {
-                                        setState(() {
-                                          FFAppState().size = '12 X 18';
-                                        });
-                                        setState(() {
-                                          FFAppState().productPrice =
-                                              getJsonField(
-                                            functions.namePlatePriceList(
-                                                FFAppState().size,
-                                                FFAppState().thickness),
-                                            r'''$.price''',
-                                          );
-                                          FFAppState().productMRPPrice =
-                                              getJsonField(
-                                            functions.namePlatePriceList(
-                                                FFAppState().size,
-                                                FFAppState().thickness),
-                                            r'''$.mrp''',
-                                          );
-                                        });
+                                        FFAppState().size = '12 X 18';
+                                        safeSetState(() {});
+                                        FFAppState().productPrice =
+                                            getJsonField(
+                                          functions.namePlatePriceList(
+                                              FFAppState().size,
+                                              FFAppState().thickness),
+                                          r'''$.price''',
+                                        );
+                                        FFAppState().productMRPPrice =
+                                            getJsonField(
+                                          functions.namePlatePriceList(
+                                              FFAppState().size,
+                                              FFAppState().thickness),
+                                          r'''$.mrp''',
+                                        );
+                                        safeSetState(() {});
                                       },
                                       text: '12 X 18',
                                       options: FFButtonOptions(
@@ -2654,25 +2635,22 @@ class _NamePlateDesignWidgetState extends State<NamePlateDesignWidget> {
                                   ),
                                   FFButtonWidget(
                                     onPressed: () async {
-                                      setState(() {
-                                        FFAppState().thickness = '3 mm';
-                                      });
-                                      setState(() {
-                                        FFAppState().productPrice =
-                                            getJsonField(
-                                          functions.namePlatePriceList(
-                                              FFAppState().size,
-                                              FFAppState().thickness),
-                                          r'''$.price''',
-                                        );
-                                        FFAppState().productMRPPrice =
-                                            getJsonField(
-                                          functions.namePlatePriceList(
-                                              FFAppState().size,
-                                              FFAppState().thickness),
-                                          r'''$.mrp''',
-                                        );
-                                      });
+                                      FFAppState().thickness = '3 mm';
+                                      safeSetState(() {});
+                                      FFAppState().productPrice = getJsonField(
+                                        functions.namePlatePriceList(
+                                            FFAppState().size,
+                                            FFAppState().thickness),
+                                        r'''$.price''',
+                                      );
+                                      FFAppState().productMRPPrice =
+                                          getJsonField(
+                                        functions.namePlatePriceList(
+                                            FFAppState().size,
+                                            FFAppState().thickness),
+                                        r'''$.mrp''',
+                                      );
+                                      safeSetState(() {});
                                     },
                                     text: '3 mm',
                                     options: FFButtonOptions(
@@ -2715,25 +2693,22 @@ class _NamePlateDesignWidgetState extends State<NamePlateDesignWidget> {
                                   ),
                                   FFButtonWidget(
                                     onPressed: () async {
-                                      setState(() {
-                                        FFAppState().thickness = '8 mm';
-                                      });
-                                      setState(() {
-                                        FFAppState().productPrice =
-                                            getJsonField(
-                                          functions.namePlatePriceList(
-                                              FFAppState().size,
-                                              FFAppState().thickness),
-                                          r'''$.price''',
-                                        );
-                                        FFAppState().productMRPPrice =
-                                            getJsonField(
-                                          functions.namePlatePriceList(
-                                              FFAppState().size,
-                                              FFAppState().thickness),
-                                          r'''$.mrp''',
-                                        );
-                                      });
+                                      FFAppState().thickness = '8 mm';
+                                      safeSetState(() {});
+                                      FFAppState().productPrice = getJsonField(
+                                        functions.namePlatePriceList(
+                                            FFAppState().size,
+                                            FFAppState().thickness),
+                                        r'''$.price''',
+                                      );
+                                      FFAppState().productMRPPrice =
+                                          getJsonField(
+                                        functions.namePlatePriceList(
+                                            FFAppState().size,
+                                            FFAppState().thickness),
+                                        r'''$.mrp''',
+                                      );
+                                      safeSetState(() {});
                                     },
                                     text: '8 mm',
                                     options: FFButtonOptions(
@@ -2961,42 +2936,39 @@ class _NamePlateDesignWidgetState extends State<NamePlateDesignWidget> {
                                 ),
                                 singleRecord: true,
                               ).then((s) => s.firstOrNull);
-                              setState(() {
-                                FFAppState().count = FFAppState().count +
-                                    valueOrDefault<int>(
-                                      FFAppState().orderList.length,
-                                      1,
-                                    );
-                              });
-                              setState(() {
-                                FFAppState().updateOrdersStruct(
-                                  (e) => e
-                                    ..imageurl = functions.imgstringToimgPath(
-                                        FFAppState().editedimg)
-                                    ..textString = FFAppState().textString
-                                    ..shapes = FFAppState().Shape
-                                    ..size = _model.sizeDocOutputCopy?.title
-                                    ..thickness =
-                                        _model.thicknessDocOutputCopy?.name
-                                    ..price = valueOrDefault<double>(
-                                      FFAppState().productPrice,
-                                      599.0,
-                                    )
-                                    ..qty = 1.0
-                                    ..categoryName =
-                                        'UVPIXEL TM : NAME PLATE IN ACRYLIC PRINT'
-                                    ..count = FFAppState().count
-                                    ..originalimage = widget.namePlateDesignUrl,
-                                );
-                              });
+                              FFAppState().count = FFAppState().count +
+                                  valueOrDefault<int>(
+                                    FFAppState().orderList.length,
+                                    1,
+                                  );
+                              safeSetState(() {});
+                              FFAppState().updateOrdersStruct(
+                                (e) => e
+                                  ..imageurl = functions.imgstringToimgPath(
+                                      FFAppState().editedimg)
+                                  ..textString = FFAppState().textString
+                                  ..shapes = FFAppState().Shape
+                                  ..size = _model.sizeDocOutputCopy?.title
+                                  ..thickness =
+                                      _model.thicknessDocOutputCopy?.name
+                                  ..price = valueOrDefault<double>(
+                                    FFAppState().productPrice,
+                                    599.0,
+                                  )
+                                  ..qty = 1.0
+                                  ..categoryName =
+                                      'UVPIXEL TM : NAME PLATE IN ACRYLIC PRINT'
+                                  ..count = FFAppState().count
+                                  ..originalimage = widget.namePlateDesignUrl,
+                              );
+                              safeSetState(() {});
                               _model.returnqtyCopy =
                                   await actions.returnOrderQtyPluslist(
                                 FFAppState().orders,
                               );
-                              setState(() {
-                                FFAppState().orders = OrdersStruct();
-                                FFAppState().editedimg = '';
-                              });
+                              FFAppState().orders = OrdersStruct();
+                              FFAppState().editedimg = '';
+                              safeSetState(() {});
 
                               context.pushNamed('ShoppingCartnew');
                             } else {
@@ -3017,7 +2989,7 @@ class _NamePlateDesignWidgetState extends State<NamePlateDesignWidget> {
                               );
                             }
 
-                            setState(() {});
+                            safeSetState(() {});
                           },
                           text: 'Buy Now',
                           options: FFButtonOptions(
@@ -3552,7 +3524,7 @@ class _NamePlateDesignWidgetState extends State<NamePlateDesignWidget> {
                       ),
                       wrapWithModel(
                         model: _model.footerMobileModel,
-                        updateCallback: () => setState(() {}),
+                        updateCallback: () => safeSetState(() {}),
                         child: const FooterMobileWidget(),
                       ),
                     ],
@@ -3561,7 +3533,7 @@ class _NamePlateDesignWidgetState extends State<NamePlateDesignWidget> {
               ),
             wrapWithModel(
               model: _model.headerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const HeaderWidget(),
             ),
           ],

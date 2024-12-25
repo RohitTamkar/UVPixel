@@ -28,7 +28,7 @@ class _CalenderWidgetState extends State<CalenderWidget> {
     super.initState();
     _model = createModel(context, () => CalenderModel());
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -151,11 +151,10 @@ class _CalenderWidgetState extends State<CalenderWidget> {
                         return;
                       }
                       _model.calendarSelectedDay = newSelectedDate;
-                      setState(() {
-                        FFAppState().selectedDate =
-                            _model.calendarSelectedDay?.start;
-                      });
-                      setState(() {});
+                      FFAppState().selectedDate =
+                          _model.calendarSelectedDay?.start;
+                      safeSetState(() {});
+                      safeSetState(() {});
                     },
                     titleStyle: FlutterFlowTheme.of(context)
                         .headlineMedium

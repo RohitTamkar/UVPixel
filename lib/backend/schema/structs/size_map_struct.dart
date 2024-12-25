@@ -22,22 +22,29 @@ class SizeMapStruct extends FFFirebaseStruct {
   String? _sizeId;
   String get sizeId => _sizeId ?? '';
   set sizeId(String? val) => _sizeId = val;
+
   bool hasSizeId() => _sizeId != null;
 
   // "thickness" field.
   List<ThicknessAndPriceListStruct>? _thickness;
   List<ThicknessAndPriceListStruct> get thickness => _thickness ?? const [];
   set thickness(List<ThicknessAndPriceListStruct>? val) => _thickness = val;
-  void updateThickness(Function(List<ThicknessAndPriceListStruct>) updateFn) =>
-      updateFn(_thickness ??= []);
+
+  void updateThickness(Function(List<ThicknessAndPriceListStruct>) updateFn) {
+    updateFn(_thickness ??= []);
+  }
+
   bool hasThickness() => _thickness != null;
 
   // "shapes" field.
   List<String>? _shapes;
   List<String> get shapes => _shapes ?? const [];
   set shapes(List<String>? val) => _shapes = val;
-  void updateShapes(Function(List<String>) updateFn) =>
-      updateFn(_shapes ??= []);
+
+  void updateShapes(Function(List<String>) updateFn) {
+    updateFn(_shapes ??= []);
+  }
+
   bool hasShapes() => _shapes != null;
 
   static SizeMapStruct fromMap(Map<String, dynamic> data) => SizeMapStruct(
@@ -67,12 +74,12 @@ class SizeMapStruct extends FFFirebaseStruct {
         'thickness': serializeParam(
           _thickness,
           ParamType.DataStruct,
-          true,
+          isList: true,
         ),
         'shapes': serializeParam(
           _shapes,
           ParamType.String,
-          true,
+          isList: true,
         ),
       }.withoutNulls;
 

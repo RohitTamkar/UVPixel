@@ -28,7 +28,7 @@ class _FooterWebWidgetState extends State<FooterWebWidget> {
     super.initState();
     _model = createModel(context, () => FooterWebModel());
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override

@@ -1,18 +1,3 @@
 {
-  "indexes": [
-    {
-      "collectionGroup": "ORDERS",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "orderDate",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "orderAt",
-          "order": "DESCENDING"
-        }
-      ]
-    }
-  ]
+  "indexes": []
 }

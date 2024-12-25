@@ -1,3 +1,4 @@
+import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/user_page/drawer/drawer_widget.dart';
 import '/user_page/footer_mobile/footer_mobile_widget.dart';
@@ -9,9 +10,10 @@ import 'package:flutter/material.dart';
 class HomePageModel extends FlutterFlowModel<HomePageWidget> {
   ///  State fields for stateful widgets in this page.
 
-  final unfocusNode = FocusNode();
   // Model for FooterWeb component.
   late FooterWebModel footerWebModel;
+  // Stores action output result for [Firestore Query - Query a collection] action in Button widget.
+  CategoryRecord? clock;
   // Model for FooterMobile component.
   late FooterMobileModel footerMobileModel;
   // Model for Header component.
@@ -29,7 +31,6 @@ class HomePageModel extends FlutterFlowModel<HomePageWidget> {
 
   @override
   void dispose() {
-    unfocusNode.dispose();
     footerWebModel.dispose();
     footerMobileModel.dispose();
     headerModel.dispose();

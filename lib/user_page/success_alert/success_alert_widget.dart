@@ -26,7 +26,7 @@ class _SuccessAlertWidgetState extends State<SuccessAlertWidget> {
     super.initState();
     _model = createModel(context, () => SuccessAlertModel());
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override

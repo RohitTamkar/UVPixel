@@ -26,7 +26,7 @@ class _FailedAlertWidgetState extends State<FailedAlertWidget> {
     super.initState();
     _model = createModel(context, () => FailedAlertModel());
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override

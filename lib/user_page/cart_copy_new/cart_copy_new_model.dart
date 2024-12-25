@@ -14,14 +14,14 @@ class CartCopyNewModel extends FlutterFlowModel<CartCopyNewWidget> {
   FFUploadedFile? image;
 
   SizeMapStruct? selectedSize;
-  void updateSelectedSizeStruct(Function(SizeMapStruct) updateFn) =>
-      updateFn(selectedSize ??= SizeMapStruct());
+  void updateSelectedSizeStruct(Function(SizeMapStruct) updateFn) {
+    updateFn(selectedSize ??= SizeMapStruct());
+  }
 
   ///  State fields for stateful widgets in this page.
 
-  final unfocusNode = FocusNode();
   // Stores action output result for [Firestore Query - Query a collection] action in CartCopyNew widget.
-  CategoryRecord? doccat;
+  CategoryRecord? listifcat;
   bool isDataUploading1 = false;
   FFUploadedFile uploadedLocalFile1 =
       FFUploadedFile(bytes: Uint8List.fromList([]));
@@ -83,7 +83,6 @@ class CartCopyNewModel extends FlutterFlowModel<CartCopyNewWidget> {
 
   @override
   void dispose() {
-    unfocusNode.dispose();
     pincodeTextFocusNode?.dispose();
     pincodeTextTextController?.dispose();
 

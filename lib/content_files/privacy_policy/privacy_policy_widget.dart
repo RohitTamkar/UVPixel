@@ -24,7 +24,7 @@ class _PrivacyPolicyWidgetState extends State<PrivacyPolicyWidget> {
     super.initState();
     _model = createModel(context, () => PrivacyPolicyModel());
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -37,9 +37,10 @@ class _PrivacyPolicyWidgetState extends State<PrivacyPolicyWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -59,7 +60,7 @@ class _PrivacyPolicyWidgetState extends State<PrivacyPolicyWidget> {
             elevation: 16.0,
             child: wrapWithModel(
               model: _model.drawerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const DrawerWidget(),
             ),
           ),
@@ -89,7 +90,7 @@ class _PrivacyPolicyWidgetState extends State<PrivacyPolicyWidget> {
                       child: Html(
                         data:
                             '<p><span style=\"font-size: 18pt;\"><strong>Privacy Policy</strong></span></p>\n<p>Welcome to uvpixel.com! These terms and conditions apply to all visitors of uvpixel.com. Please read these terms and conditions carefully before using our website.</p>\n<p>By accessing or using uvpixel.com, you agree to be bound by these terms and conditions. If you do not agree with any part of these terms and conditions, you may not access or use uvpixel.com.</p>\n<p><br />At uvpixel.com we are committed to protecting your privacy and ensuring the security of your personal information. We understand the importance of safeguarding your data and take all necessary measures to ensure its confidentiality.</p>\n<p>Collection of Personal Information:<br />We do not share your personal data with anyone. Your privacy is of utmost importance to us, and we respect it accordingly.<br />Security of Information:</p>\n<p>Your information is protected with the utmost care. We utilize industry-standard security measures to safeguard your personal data against unauthorized access, alteration, disclosure, or destruction.</p>\n<p>Payment Security:</p>\n<p>Rest assured that uvpixel does not have access to any of your bank details or credit card numbers. This ensures that your payment information remains extremely secure during transactions.</p>\n<p>Delivery &nbsp; - Our goods are delivered worldwide by DTDC The are the world\'s largest logistics company. We cannot accept any responsibility for the service they provide. You must notify us within 10 working days if your goods do not arrive within the delivery deadlines.</p>\n<p>Prices -<br />At uvpixel.com, we strive to maintain fair and competitive pricing for all our products. However, in cases of hyperinflation or unforeseen economic circumstances, we reserve the right to adjust our prices accordingly.</p>\n<p>Please Read Carefully<br />uvpixel ( \"uvpixel.com\", \"uvpixel\", \"we\", \"us\", or \"our\") value the private nature of your personal information. To inform you about how we use the information we have collected from you, and how it is used, we have created the \"Privacy policy\".</p>',
-                        onLinkTap: (url, _, __, ___) => launchURL(url!),
+                        onLinkTap: (url, _, __) => launchURL(url!),
                       ),
                     ),
                   ],
@@ -98,7 +99,7 @@ class _PrivacyPolicyWidgetState extends State<PrivacyPolicyWidget> {
             ),
             wrapWithModel(
               model: _model.headerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const HeaderWidget(),
             ),
           ],

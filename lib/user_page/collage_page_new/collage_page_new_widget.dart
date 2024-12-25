@@ -47,16 +47,15 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      setState(() {
-        FFAppState().collageImgUrl1 =
-            'https://firebasestorage.googleapis.com/v0/b/uvpixcel.appspot.com/o/Upload%20img%203.png?alt=media&token=af3a3bd7-fca3-4c08-9598-b75d34a2db8d';
-        FFAppState().collageImgUrl2 =
-            'https://firebasestorage.googleapis.com/v0/b/uvpixcel.appspot.com/o/Upload%20img%203.png?alt=media&token=af3a3bd7-fca3-4c08-9598-b75d34a2db8d';
-        FFAppState().collageImgUrl3 =
-            'https://firebasestorage.googleapis.com/v0/b/uvpixcel.appspot.com/o/Upload%20img%203.png?alt=media&token=af3a3bd7-fca3-4c08-9598-b75d34a2db8d';
-        FFAppState().collageImgUrl4 =
-            'https://firebasestorage.googleapis.com/v0/b/uvpixcel.appspot.com/o/Upload%20img%203.png?alt=media&token=af3a3bd7-fca3-4c08-9598-b75d34a2db8d';
-      });
+      FFAppState().collageImgUrl1 =
+          'https://firebasestorage.googleapis.com/v0/b/uvpixcel.appspot.com/o/Upload%20img%203.png?alt=media&token=af3a3bd7-fca3-4c08-9598-b75d34a2db8d';
+      FFAppState().collageImgUrl2 =
+          'https://firebasestorage.googleapis.com/v0/b/uvpixcel.appspot.com/o/Upload%20img%203.png?alt=media&token=af3a3bd7-fca3-4c08-9598-b75d34a2db8d';
+      FFAppState().collageImgUrl3 =
+          'https://firebasestorage.googleapis.com/v0/b/uvpixcel.appspot.com/o/Upload%20img%203.png?alt=media&token=af3a3bd7-fca3-4c08-9598-b75d34a2db8d';
+      FFAppState().collageImgUrl4 =
+          'https://firebasestorage.googleapis.com/v0/b/uvpixcel.appspot.com/o/Upload%20img%203.png?alt=media&token=af3a3bd7-fca3-4c08-9598-b75d34a2db8d';
+      safeSetState(() {});
     });
 
     _model.textController1 ??= TextEditingController();
@@ -65,7 +64,7 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
     _model.textController2 ??= TextEditingController();
     _model.textFieldFocusNode2 ??= FocusNode();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -80,9 +79,10 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
     context.watch<FFAppState>();
 
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -102,7 +102,7 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
             elevation: 16.0,
             child: wrapWithModel(
               model: _model.drawerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const DrawerWidget(),
             ),
           ),
@@ -229,7 +229,7 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                                                     validateFileFormat(
                                                                         m.storagePath,
                                                                         context))) {
-                                                              setState(() =>
+                                                              safeSetState(() =>
                                                                   _model.isDataUploading1 =
                                                                       true);
                                                               var selectedUploadedFiles =
@@ -278,7 +278,8 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                                                           .length ==
                                                                       selectedMedia
                                                                           .length) {
-                                                                setState(() {
+                                                                safeSetState(
+                                                                    () {
                                                                   _model.uploadedLocalFile1 =
                                                                       selectedUploadedFiles
                                                                           .first;
@@ -287,17 +288,17 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                                                           .first;
                                                                 });
                                                               } else {
-                                                                setState(() {});
+                                                                safeSetState(
+                                                                    () {});
                                                                 return;
                                                               }
                                                             }
 
-                                                            setState(() {
-                                                              FFAppState()
-                                                                      .collageImgUrl1 =
-                                                                  _model
-                                                                      .uploadedFileUrl1;
-                                                            });
+                                                            FFAppState()
+                                                                    .collageImgUrl1 =
+                                                                _model
+                                                                    .uploadedFileUrl1;
+                                                            safeSetState(() {});
                                                           },
                                                           child: SizedBox(
                                                             width: 300.0,
@@ -344,7 +345,7 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                                                     validateFileFormat(
                                                                         m.storagePath,
                                                                         context))) {
-                                                              setState(() =>
+                                                              safeSetState(() =>
                                                                   _model.isDataUploading2 =
                                                                       true);
                                                               var selectedUploadedFiles =
@@ -393,7 +394,8 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                                                           .length ==
                                                                       selectedMedia
                                                                           .length) {
-                                                                setState(() {
+                                                                safeSetState(
+                                                                    () {
                                                                   _model.uploadedLocalFile2 =
                                                                       selectedUploadedFiles
                                                                           .first;
@@ -402,17 +404,17 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                                                           .first;
                                                                 });
                                                               } else {
-                                                                setState(() {});
+                                                                safeSetState(
+                                                                    () {});
                                                                 return;
                                                               }
                                                             }
 
-                                                            setState(() {
-                                                              FFAppState()
-                                                                      .collageImgUrl2 =
-                                                                  _model
-                                                                      .uploadedFileUrl2;
-                                                            });
+                                                            FFAppState()
+                                                                    .collageImgUrl2 =
+                                                                _model
+                                                                    .uploadedFileUrl2;
+                                                            safeSetState(() {});
                                                           },
                                                           child: SizedBox(
                                                             width: 300.0,
@@ -469,7 +471,7 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                                                     validateFileFormat(
                                                                         m.storagePath,
                                                                         context))) {
-                                                              setState(() =>
+                                                              safeSetState(() =>
                                                                   _model.isDataUploading3 =
                                                                       true);
                                                               var selectedUploadedFiles =
@@ -518,7 +520,8 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                                                           .length ==
                                                                       selectedMedia
                                                                           .length) {
-                                                                setState(() {
+                                                                safeSetState(
+                                                                    () {
                                                                   _model.uploadedLocalFile3 =
                                                                       selectedUploadedFiles
                                                                           .first;
@@ -527,17 +530,17 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                                                           .first;
                                                                 });
                                                               } else {
-                                                                setState(() {});
+                                                                safeSetState(
+                                                                    () {});
                                                                 return;
                                                               }
                                                             }
 
-                                                            setState(() {
-                                                              FFAppState()
-                                                                      .collageImgUrl3 =
-                                                                  _model
-                                                                      .uploadedFileUrl3;
-                                                            });
+                                                            FFAppState()
+                                                                    .collageImgUrl3 =
+                                                                _model
+                                                                    .uploadedFileUrl3;
+                                                            safeSetState(() {});
                                                           },
                                                           child: SizedBox(
                                                             width: 300.0,
@@ -584,7 +587,7 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                                                     validateFileFormat(
                                                                         m.storagePath,
                                                                         context))) {
-                                                              setState(() =>
+                                                              safeSetState(() =>
                                                                   _model.isDataUploading4 =
                                                                       true);
                                                               var selectedUploadedFiles =
@@ -633,7 +636,8 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                                                           .length ==
                                                                       selectedMedia
                                                                           .length) {
-                                                                setState(() {
+                                                                safeSetState(
+                                                                    () {
                                                                   _model.uploadedLocalFile4 =
                                                                       selectedUploadedFiles
                                                                           .first;
@@ -642,17 +646,17 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                                                           .first;
                                                                 });
                                                               } else {
-                                                                setState(() {});
+                                                                safeSetState(
+                                                                    () {});
                                                                 return;
                                                               }
                                                             }
 
-                                                            setState(() {
-                                                              FFAppState()
-                                                                      .collageImgUrl4 =
-                                                                  _model
-                                                                      .uploadedFileUrl4;
-                                                            });
+                                                            FFAppState()
+                                                                    .collageImgUrl4 =
+                                                                _model
+                                                                    .uploadedFileUrl4;
+                                                            safeSetState(() {});
                                                           },
                                                           child: SizedBox(
                                                             width: 300.0,
@@ -844,6 +848,7 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                               .categorydoc?.sizeMap
                                               .toList() ??
                                           [];
+
                                       return GridView.builder(
                                         padding: EdgeInsets.zero,
                                         gridDelegate:
@@ -901,28 +906,29 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                                       ? buttonSizeRecordList
                                                           .first
                                                       : null;
+
                                               return FFButtonWidget(
                                                 onPressed: () async {
-                                                  setState(() {
-                                                    FFAppState().size =
-                                                        buttonSizeRecord.id;
-                                                  });
-                                                  setState(() {
-                                                    _model.selectedSize =
-                                                        sizeListItem;
-                                                  });
-                                                  setState(() {
-                                                    FFAppState().thickness =
-                                                        sizeListItem
-                                                            .thickness.first.id;
-                                                    FFAppState().productPrice =
-                                                        sizeListItem.thickness
-                                                            .first.sellingPrice;
-                                                    FFAppState()
-                                                            .productMRPPrice =
-                                                        sizeListItem.thickness
-                                                            .first.mrpPrice;
-                                                  });
+                                                  FFAppState().size =
+                                                      buttonSizeRecord.id;
+                                                  safeSetState(() {});
+                                                  _model.selectedSize =
+                                                      sizeListItem;
+                                                  safeSetState(() {});
+                                                  FFAppState().thickness =
+                                                      sizeListItem.thickness
+                                                          .firstOrNull!.id;
+                                                  FFAppState().productPrice =
+                                                      sizeListItem
+                                                          .thickness
+                                                          .firstOrNull!
+                                                          .sellingPrice;
+                                                  FFAppState().productMRPPrice =
+                                                      sizeListItem
+                                                          .thickness
+                                                          .firstOrNull!
+                                                          .mrpPrice;
+                                                  safeSetState(() {});
                                                 },
                                                 text: buttonSizeRecord!.title,
                                                 options: FFButtonOptions(
@@ -1029,6 +1035,7 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                               .selectedSize?.thickness
                                               .toList() ??
                                           [];
+
                                       return GridView.builder(
                                         padding: EdgeInsets.zero,
                                         gridDelegate:
@@ -1087,20 +1094,18 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                                       ? buttonThicknessRecordList
                                                           .first
                                                       : null;
+
                                               return FFButtonWidget(
                                                 onPressed: () async {
-                                                  setState(() {
-                                                    FFAppState().thickness =
-                                                        buttonThicknessRecord
-                                                            .id;
-                                                    FFAppState().productPrice =
-                                                        thicknessListItem
-                                                            .sellingPrice;
-                                                    FFAppState()
-                                                            .productMRPPrice =
-                                                        thicknessListItem
-                                                            .mrpPrice;
-                                                  });
+                                                  FFAppState().thickness =
+                                                      buttonThicknessRecord.id;
+                                                  FFAppState().productPrice =
+                                                      thicknessListItem
+                                                          .sellingPrice;
+                                                  FFAppState().productMRPPrice =
+                                                      thicknessListItem
+                                                          .mrpPrice;
+                                                  safeSetState(() {});
                                                   await queryCategoryRecordOnce(
                                                     queryBuilder:
                                                         (categoryRecord) =>
@@ -1418,61 +1423,53 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                 ),
                                 singleRecord: true,
                               ).then((s) => s.firstOrNull);
-                              setState(() {
-                                FFAppState().count = FFAppState().count +
-                                    valueOrDefault<int>(
-                                      FFAppState().orderList.length,
-                                      1,
-                                    );
-                              });
-                              setState(() {
-                                FFAppState()
-                                    .addToCollagelist(_model.uploadedFileUrl1);
-                              });
-                              setState(() {
-                                FFAppState()
-                                    .addToCollagelist(_model.uploadedFileUrl2);
-                              });
-                              setState(() {
-                                FFAppState()
-                                    .addToCollagelist(_model.uploadedFileUrl3);
-                              });
-                              setState(() {
-                                FFAppState()
-                                    .addToCollagelist(_model.uploadedFileUrl4);
-                              });
-                              setState(() {
-                                FFAppState().updateOrdersStruct(
-                                  (e) => e
-                                    ..imageurl = functions.imgstringToimgPath(
-                                        FFAppState().editedimg)
-                                    ..textString = FFAppState().textString
-                                    ..shapes = FFAppState().Shape
-                                    ..size = _model.sizeDocOutput?.title
-                                    ..thickness =
-                                        _model.thicknessDocOutput?.name
-                                    ..price = valueOrDefault<double>(
-                                      FFAppState().productPrice,
-                                      599.0,
-                                    )
-                                    ..qty = 1.0
-                                    ..collageimages =
-                                        FFAppState().collagelist.toList()
-                                    ..categoryName = valueOrDefault<String>(
-                                      widget.categorydoc?.heading,
-                                      'uv',
-                                    )
-                                    ..count = FFAppState().count,
-                                );
-                              });
+                              FFAppState().count = FFAppState().count +
+                                  valueOrDefault<int>(
+                                    FFAppState().orderList.length,
+                                    1,
+                                  );
+                              safeSetState(() {});
+                              FFAppState()
+                                  .addToCollagelist(_model.uploadedFileUrl1);
+                              safeSetState(() {});
+                              FFAppState()
+                                  .addToCollagelist(_model.uploadedFileUrl2);
+                              safeSetState(() {});
+                              FFAppState()
+                                  .addToCollagelist(_model.uploadedFileUrl3);
+                              safeSetState(() {});
+                              FFAppState()
+                                  .addToCollagelist(_model.uploadedFileUrl4);
+                              safeSetState(() {});
+                              FFAppState().updateOrdersStruct(
+                                (e) => e
+                                  ..imageurl = functions.imgstringToimgPath(
+                                      FFAppState().editedimg)
+                                  ..textString = FFAppState().textString
+                                  ..shapes = FFAppState().Shape
+                                  ..size = _model.sizeDocOutput?.title
+                                  ..thickness = _model.thicknessDocOutput?.name
+                                  ..price = valueOrDefault<double>(
+                                    FFAppState().productPrice,
+                                    599.0,
+                                  )
+                                  ..qty = 1.0
+                                  ..collageimages =
+                                      FFAppState().collagelist.toList()
+                                  ..categoryName = valueOrDefault<String>(
+                                    widget.categorydoc?.heading,
+                                    'uv',
+                                  )
+                                  ..count = FFAppState().count,
+                              );
+                              safeSetState(() {});
                               _model.returnqty =
                                   await actions.returnOrderQtyPluslist(
                                 FFAppState().orders,
                               );
-                              setState(() {
-                                FFAppState().orders = OrdersStruct();
-                                FFAppState().editedimg = '';
-                              });
+                              FFAppState().orders = OrdersStruct();
+                              FFAppState().editedimg = '';
+                              safeSetState(() {});
 
                               context.pushNamed('ShoppingCartnew');
                             } else {
@@ -1493,7 +1490,7 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                               );
                             }
 
-                            setState(() {});
+                            safeSetState(() {});
                           },
                           text: 'Buy Now',
                           options: FFButtonOptions(
@@ -2085,7 +2082,7 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                       ),
                       wrapWithModel(
                         model: _model.footerWebModel,
-                        updateCallback: () => setState(() {}),
+                        updateCallback: () => safeSetState(() {}),
                         child: const FooterWebWidget(),
                       ),
                     ],
@@ -2240,7 +2237,7 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                                                           selectedMedia.every((m) => validateFileFormat(
                                                                               m.storagePath,
                                                                               context))) {
-                                                                        setState(() =>
+                                                                        safeSetState(() =>
                                                                             _model.isDataUploading5 =
                                                                                 true);
                                                                         var selectedUploadedFiles =
@@ -2274,7 +2271,7 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                                                         if (selectedUploadedFiles.length == selectedMedia.length &&
                                                                             downloadUrls.length ==
                                                                                 selectedMedia.length) {
-                                                                          setState(
+                                                                          safeSetState(
                                                                               () {
                                                                             _model.uploadedLocalFile5 =
                                                                                 selectedUploadedFiles.first;
@@ -2282,17 +2279,18 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                                                                 downloadUrls.first;
                                                                           });
                                                                         } else {
-                                                                          setState(
+                                                                          safeSetState(
                                                                               () {});
                                                                           return;
                                                                         }
                                                                       }
 
-                                                                      setState(
-                                                                          () {
-                                                                        FFAppState().collageImgUrl1 =
-                                                                            _model.uploadedFileUrl5;
-                                                                      });
+                                                                      FFAppState()
+                                                                              .collageImgUrl1 =
+                                                                          _model
+                                                                              .uploadedFileUrl5;
+                                                                      safeSetState(
+                                                                          () {});
                                                                     },
                                                                     child:
                                                                         SizedBox(
@@ -2349,7 +2347,7 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                                                           selectedMedia.every((m) => validateFileFormat(
                                                                               m.storagePath,
                                                                               context))) {
-                                                                        setState(() =>
+                                                                        safeSetState(() =>
                                                                             _model.isDataUploading6 =
                                                                                 true);
                                                                         var selectedUploadedFiles =
@@ -2383,7 +2381,7 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                                                         if (selectedUploadedFiles.length == selectedMedia.length &&
                                                                             downloadUrls.length ==
                                                                                 selectedMedia.length) {
-                                                                          setState(
+                                                                          safeSetState(
                                                                               () {
                                                                             _model.uploadedLocalFile6 =
                                                                                 selectedUploadedFiles.first;
@@ -2391,17 +2389,18 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                                                                 downloadUrls.first;
                                                                           });
                                                                         } else {
-                                                                          setState(
+                                                                          safeSetState(
                                                                               () {});
                                                                           return;
                                                                         }
                                                                       }
 
-                                                                      setState(
-                                                                          () {
-                                                                        FFAppState().collageImgUrl2 =
-                                                                            _model.uploadedFileUrl6;
-                                                                      });
+                                                                      FFAppState()
+                                                                              .collageImgUrl2 =
+                                                                          _model
+                                                                              .uploadedFileUrl6;
+                                                                      safeSetState(
+                                                                          () {});
                                                                     },
                                                                     child:
                                                                         SizedBox(
@@ -2470,7 +2469,7 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                                                           selectedMedia.every((m) => validateFileFormat(
                                                                               m.storagePath,
                                                                               context))) {
-                                                                        setState(() =>
+                                                                        safeSetState(() =>
                                                                             _model.isDataUploading7 =
                                                                                 true);
                                                                         var selectedUploadedFiles =
@@ -2504,7 +2503,7 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                                                         if (selectedUploadedFiles.length == selectedMedia.length &&
                                                                             downloadUrls.length ==
                                                                                 selectedMedia.length) {
-                                                                          setState(
+                                                                          safeSetState(
                                                                               () {
                                                                             _model.uploadedLocalFile7 =
                                                                                 selectedUploadedFiles.first;
@@ -2512,17 +2511,18 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                                                                 downloadUrls.first;
                                                                           });
                                                                         } else {
-                                                                          setState(
+                                                                          safeSetState(
                                                                               () {});
                                                                           return;
                                                                         }
                                                                       }
 
-                                                                      setState(
-                                                                          () {
-                                                                        FFAppState().collageImgUrl3 =
-                                                                            _model.uploadedFileUrl7;
-                                                                      });
+                                                                      FFAppState()
+                                                                              .collageImgUrl3 =
+                                                                          _model
+                                                                              .uploadedFileUrl7;
+                                                                      safeSetState(
+                                                                          () {});
                                                                     },
                                                                     child:
                                                                         SizedBox(
@@ -2579,7 +2579,7 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                                                           selectedMedia.every((m) => validateFileFormat(
                                                                               m.storagePath,
                                                                               context))) {
-                                                                        setState(() =>
+                                                                        safeSetState(() =>
                                                                             _model.isDataUploading8 =
                                                                                 true);
                                                                         var selectedUploadedFiles =
@@ -2613,7 +2613,7 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                                                         if (selectedUploadedFiles.length == selectedMedia.length &&
                                                                             downloadUrls.length ==
                                                                                 selectedMedia.length) {
-                                                                          setState(
+                                                                          safeSetState(
                                                                               () {
                                                                             _model.uploadedLocalFile8 =
                                                                                 selectedUploadedFiles.first;
@@ -2621,17 +2621,18 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                                                                 downloadUrls.first;
                                                                           });
                                                                         } else {
-                                                                          setState(
+                                                                          safeSetState(
                                                                               () {});
                                                                           return;
                                                                         }
                                                                       }
 
-                                                                      setState(
-                                                                          () {
-                                                                        FFAppState().collageImgUrl4 =
-                                                                            _model.uploadedFileUrl8;
-                                                                      });
+                                                                      FFAppState()
+                                                                              .collageImgUrl4 =
+                                                                          _model
+                                                                              .uploadedFileUrl8;
+                                                                      safeSetState(
+                                                                          () {});
                                                                     },
                                                                     child:
                                                                         SizedBox(
@@ -2888,6 +2889,7 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                               .categorydoc?.sizeMap
                                               .toList() ??
                                           [];
+
                                       return GridView.builder(
                                         padding: EdgeInsets.zero,
                                         gridDelegate:
@@ -2945,28 +2947,29 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                                       ? buttonSizeRecordList
                                                           .first
                                                       : null;
+
                                               return FFButtonWidget(
                                                 onPressed: () async {
-                                                  setState(() {
-                                                    FFAppState().size =
-                                                        buttonSizeRecord.id;
-                                                  });
-                                                  setState(() {
-                                                    _model.selectedSize =
-                                                        sizeListItem;
-                                                  });
-                                                  setState(() {
-                                                    FFAppState().thickness =
-                                                        sizeListItem
-                                                            .thickness.first.id;
-                                                    FFAppState().productPrice =
-                                                        sizeListItem.thickness
-                                                            .first.sellingPrice;
-                                                    FFAppState()
-                                                            .productMRPPrice =
-                                                        sizeListItem.thickness
-                                                            .first.mrpPrice;
-                                                  });
+                                                  FFAppState().size =
+                                                      buttonSizeRecord.id;
+                                                  safeSetState(() {});
+                                                  _model.selectedSize =
+                                                      sizeListItem;
+                                                  safeSetState(() {});
+                                                  FFAppState().thickness =
+                                                      sizeListItem.thickness
+                                                          .firstOrNull!.id;
+                                                  FFAppState().productPrice =
+                                                      sizeListItem
+                                                          .thickness
+                                                          .firstOrNull!
+                                                          .sellingPrice;
+                                                  FFAppState().productMRPPrice =
+                                                      sizeListItem
+                                                          .thickness
+                                                          .firstOrNull!
+                                                          .mrpPrice;
+                                                  safeSetState(() {});
                                                 },
                                                 text: buttonSizeRecord!.title,
                                                 options: FFButtonOptions(
@@ -3073,6 +3076,7 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                               .selectedSize?.thickness
                                               .toList() ??
                                           [];
+
                                       return GridView.builder(
                                         padding: EdgeInsets.zero,
                                         gridDelegate:
@@ -3131,20 +3135,18 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                                       ? buttonThicknessRecordList
                                                           .first
                                                       : null;
+
                                               return FFButtonWidget(
                                                 onPressed: () async {
-                                                  setState(() {
-                                                    FFAppState().thickness =
-                                                        buttonThicknessRecord
-                                                            .id;
-                                                    FFAppState().productPrice =
-                                                        thicknessListItem
-                                                            .sellingPrice;
-                                                    FFAppState()
-                                                            .productMRPPrice =
-                                                        thicknessListItem
-                                                            .mrpPrice;
-                                                  });
+                                                  FFAppState().thickness =
+                                                      buttonThicknessRecord.id;
+                                                  FFAppState().productPrice =
+                                                      thicknessListItem
+                                                          .sellingPrice;
+                                                  FFAppState().productMRPPrice =
+                                                      thicknessListItem
+                                                          .mrpPrice;
+                                                  safeSetState(() {});
                                                   await queryCategoryRecordOnce(
                                                     queryBuilder:
                                                         (categoryRecord) =>
@@ -3400,61 +3402,54 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                                 ),
                                 singleRecord: true,
                               ).then((s) => s.firstOrNull);
-                              setState(() {
-                                FFAppState().count = FFAppState().count +
-                                    valueOrDefault<int>(
-                                      FFAppState().orderList.length,
-                                      1,
-                                    );
-                              });
-                              setState(() {
-                                FFAppState()
-                                    .addToCollagelist(_model.uploadedFileUrl5);
-                              });
-                              setState(() {
-                                FFAppState()
-                                    .addToCollagelist(_model.uploadedFileUrl6);
-                              });
-                              setState(() {
-                                FFAppState()
-                                    .addToCollagelist(_model.uploadedFileUrl7);
-                              });
-                              setState(() {
-                                FFAppState()
-                                    .addToCollagelist(_model.uploadedFileUrl8);
-                              });
-                              setState(() {
-                                FFAppState().updateOrdersStruct(
-                                  (e) => e
-                                    ..imageurl = functions.imgstringToimgPath(
-                                        FFAppState().editedimg)
-                                    ..textString = FFAppState().textString
-                                    ..shapes = FFAppState().Shape
-                                    ..size = _model.sizeDocOutputCopy?.title
-                                    ..thickness =
-                                        _model.thicknessDocOutputCopy?.name
-                                    ..price = valueOrDefault<double>(
-                                      FFAppState().productPrice,
-                                      599.0,
-                                    )
-                                    ..qty = 1.0
-                                    ..collageimages =
-                                        FFAppState().collagelist.toList()
-                                    ..categoryName = valueOrDefault<String>(
-                                      widget.categorydoc?.heading,
-                                      'uv',
-                                    )
-                                    ..count = FFAppState().count,
-                                );
-                              });
+                              FFAppState().count = FFAppState().count +
+                                  valueOrDefault<int>(
+                                    FFAppState().orderList.length,
+                                    1,
+                                  );
+                              safeSetState(() {});
+                              FFAppState()
+                                  .addToCollagelist(_model.uploadedFileUrl5);
+                              safeSetState(() {});
+                              FFAppState()
+                                  .addToCollagelist(_model.uploadedFileUrl6);
+                              safeSetState(() {});
+                              FFAppState()
+                                  .addToCollagelist(_model.uploadedFileUrl7);
+                              safeSetState(() {});
+                              FFAppState()
+                                  .addToCollagelist(_model.uploadedFileUrl8);
+                              safeSetState(() {});
+                              FFAppState().updateOrdersStruct(
+                                (e) => e
+                                  ..imageurl = functions.imgstringToimgPath(
+                                      FFAppState().editedimg)
+                                  ..textString = FFAppState().textString
+                                  ..shapes = FFAppState().Shape
+                                  ..size = _model.sizeDocOutputCopy?.title
+                                  ..thickness =
+                                      _model.thicknessDocOutputCopy?.name
+                                  ..price = valueOrDefault<double>(
+                                    FFAppState().productPrice,
+                                    599.0,
+                                  )
+                                  ..qty = 1.0
+                                  ..collageimages =
+                                      FFAppState().collagelist.toList()
+                                  ..categoryName = valueOrDefault<String>(
+                                    widget.categorydoc?.heading,
+                                    'uv',
+                                  )
+                                  ..count = FFAppState().count,
+                              );
+                              safeSetState(() {});
                               _model.returnqtyCopy =
                                   await actions.returnOrderQtyPluslist(
                                 FFAppState().orders,
                               );
-                              setState(() {
-                                FFAppState().orders = OrdersStruct();
-                                FFAppState().editedimg = '';
-                              });
+                              FFAppState().orders = OrdersStruct();
+                              FFAppState().editedimg = '';
+                              safeSetState(() {});
 
                               context.pushNamed('ShoppingCartnew');
                             } else {
@@ -3475,7 +3470,7 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                               );
                             }
 
-                            setState(() {});
+                            safeSetState(() {});
                           },
                           text: 'Buy Now',
                           options: FFButtonOptions(
@@ -4009,7 +4004,7 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
                       ),
                       wrapWithModel(
                         model: _model.footerMobileModel,
-                        updateCallback: () => setState(() {}),
+                        updateCallback: () => safeSetState(() {}),
                         child: const FooterMobileWidget(),
                       ),
                     ],
@@ -4018,7 +4013,7 @@ class _CollagePageNewWidgetState extends State<CollagePageNewWidget> {
               ),
             wrapWithModel(
               model: _model.headerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const HeaderWidget(),
             ),
           ],

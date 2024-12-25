@@ -13,12 +13,12 @@ class NamePlateDesignModel extends FlutterFlowModel<NamePlateDesignWidget> {
   FFUploadedFile? image;
 
   SizeMapStruct? selectedSize;
-  void updateSelectedSizeStruct(Function(SizeMapStruct) updateFn) =>
-      updateFn(selectedSize ??= SizeMapStruct());
+  void updateSelectedSizeStruct(Function(SizeMapStruct) updateFn) {
+    updateFn(selectedSize ??= SizeMapStruct());
+  }
 
   ///  State fields for stateful widgets in this page.
 
-  final unfocusNode = FocusNode();
   // State field(s) for TextField widget.
   FocusNode? textFieldFocusNode1;
   TextEditingController? textController1;
@@ -94,7 +94,6 @@ class NamePlateDesignModel extends FlutterFlowModel<NamePlateDesignWidget> {
 
   @override
   void dispose() {
-    unfocusNode.dispose();
     textFieldFocusNode1?.dispose();
     textController1?.dispose();
 

@@ -13,12 +13,12 @@ class FrameDesignPageModel extends FlutterFlowModel<FrameDesignPageWidget> {
   FFUploadedFile? image;
 
   SizeMapStruct? selectedSize;
-  void updateSelectedSizeStruct(Function(SizeMapStruct) updateFn) =>
-      updateFn(selectedSize ??= SizeMapStruct());
+  void updateSelectedSizeStruct(Function(SizeMapStruct) updateFn) {
+    updateFn(selectedSize ??= SizeMapStruct());
+  }
 
   ///  State fields for stateful widgets in this page.
 
-  final unfocusNode = FocusNode();
   bool isDataUploading1 = false;
   FFUploadedFile uploadedLocalFile1 =
       FFUploadedFile(bytes: Uint8List.fromList([]));
@@ -72,7 +72,6 @@ class FrameDesignPageModel extends FlutterFlowModel<FrameDesignPageWidget> {
 
   @override
   void dispose() {
-    unfocusNode.dispose();
     textFieldFocusNode1?.dispose();
     textController1?.dispose();
 

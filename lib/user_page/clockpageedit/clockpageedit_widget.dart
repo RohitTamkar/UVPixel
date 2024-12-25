@@ -55,21 +55,20 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       if ((_model.uploadedLocalFile1.bytes?.isNotEmpty ?? false)) {
-        setState(() {});
+        safeSetState(() {});
       } else {
-        setState(() {
-          FFAppState().imageUrl =
-              'https://firebasestorage.googleapis.com/v0/b/uvpixcel.appspot.com/o/importantImages%2FMAIN%20IMAGE%20new.jpg?alt=media&token=cdcd026f-349a-4d22-bc17-7e4d3730b5a2';
-          FFAppState().Shape = 'square';
-          FFAppState().clockdigitsimg =
-              'https://firebasestorage.googleapis.com/v0/b/uvpixcel.appspot.com/o/shapesImages%2FSquare%20number%20image.png?alt=media&token=648ea395-2f6f-49a7-ba4e-2f814f9d9993';
-        });
+        FFAppState().imageUrl =
+            'https://firebasestorage.googleapis.com/v0/b/uvpixcel.appspot.com/o/importantImages%2FMAIN%20IMAGE%20new.jpg?alt=media&token=cdcd026f-349a-4d22-bc17-7e4d3730b5a2';
+        FFAppState().Shape = 'square';
+        FFAppState().clockdigitsimg =
+            'https://firebasestorage.googleapis.com/v0/b/uvpixcel.appspot.com/o/shapesImages%2FSquare%20number%20image.png?alt=media&token=8c7c635d-eb0f-43f3-8703-5c947eff7fb4';
+        safeSetState(() {});
       }
 
-      setState(() {
-        FFAppState().size = widget.category!.sizeMap.first.sizeId;
+      if (widget.category != null) {
+        FFAppState().size = widget.category!.sizeMap.firstOrNull!.sizeId;
         FFAppState().thickness =
-            widget.category!.sizeMap.first.thickness.first.id;
+            widget.category!.sizeMap.firstOrNull!.thickness.firstOrNull!.id;
         FFAppState().showClock =
             widget.category?.title == 'Acrylic Clock' ? true : false;
         FFAppState().showFrame =
@@ -77,10 +76,41 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                 ? true
                 : false;
         FFAppState().zoomPer = 1.4;
-      });
-      setState(() {
-        _model.selectedSize = widget.category?.sizeMap.first;
-      });
+        safeSetState(() {});
+        _model.selectedSize = widget.category?.sizeMap.firstOrNull;
+        safeSetState(() {});
+      } else {
+        _model.listifcat2 = await queryCategoryRecordOnce(
+          queryBuilder: (categoryRecord) => categoryRecord.where(
+            'title',
+            isEqualTo: 'Acrylic Clock',
+          ),
+          singleRecord: true,
+        ).then((s) => s.firstOrNull);
+        FFAppState().size = valueOrDefault<String>(
+          _model.listifcat2?.sizeMap.firstOrNull?.sizeId,
+          '0',
+        );
+        FFAppState().thickness = valueOrDefault<String>(
+          _model.listifcat2?.sizeMap.firstOrNull?.thickness.firstOrNull?.id,
+          '0',
+        );
+        FFAppState().showClock =
+            _model.listifcat2?.title == 'Acrylic Clock' ? true : false;
+        FFAppState().showFrame = () {
+          if (_model.listifcat2?.title == 'Acrylic Frame With High Gloss') {
+            return true;
+          } else if (_model.listifcat2?.title == 'Transparent Acrylic Photo') {
+            return true;
+          } else {
+            return false;
+          }
+        }();
+        FFAppState().zoomPer = 1.4;
+        safeSetState(() {});
+        _model.selectedSize = _model.listifcat2?.sizeMap.firstOrNull;
+        safeSetState(() {});
+      }
     });
 
     _model.pincodeTextTextController ??= TextEditingController();
@@ -89,7 +119,7 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
     _model.textController2 ??= TextEditingController();
     _model.textFieldFocusNode ??= FocusNode();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -104,9 +134,10 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
     context.watch<FFAppState>();
 
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -126,7 +157,7 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
             elevation: 16.0,
             child: wrapWithModel(
               model: _model.drawerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const DrawerWidget(),
             ),
           ),
@@ -208,6 +239,7 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                 containerSizeRecordList.isNotEmpty
                                     ? containerSizeRecordList.first
                                     : null;
+
                             return Container(
                               width: double.infinity,
                               decoration: BoxDecoration(
@@ -444,22 +476,19 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                                                   Directionality.of(
                                                                       context)),
                                                       child: GestureDetector(
-                                                        onTap: () => _model
-                                                                .unfocusNode
-                                                                .canRequestFocus
-                                                            ? FocusScope.of(
-                                                                    context)
-                                                                .requestFocus(_model
-                                                                    .unfocusNode)
-                                                            : FocusScope.of(
-                                                                    context)
-                                                                .unfocus(),
+                                                        onTap: () {
+                                                          FocusScope.of(
+                                                                  dialogContext)
+                                                              .unfocus();
+                                                          FocusManager.instance
+                                                              .primaryFocus
+                                                              ?.unfocus();
+                                                        },
                                                         child: const SizeHelpWidget(),
                                                       ),
                                                     );
                                                   },
-                                                ).then(
-                                                    (value) => setState(() {}));
+                                                );
                                               },
                                               text: 'Size ?',
                                               options: FFButtonOptions(
@@ -586,10 +615,9 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                         size: 18.0,
                                       ),
                                       onPressed: () async {
-                                        setState(() {
-                                          FFAppState().zoomPer =
-                                              FFAppState().zoomPer + -0.1;
-                                        });
+                                        FFAppState().zoomPer =
+                                            FFAppState().zoomPer + -0.1;
+                                        safeSetState(() {});
                                       },
                                     ),
                                     Padding(
@@ -614,10 +642,9 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                         size: 18.0,
                                       ),
                                       onPressed: () async {
-                                        setState(() {
-                                          FFAppState().zoomPer =
-                                              FFAppState().zoomPer + 0.1;
-                                        });
+                                        FFAppState().zoomPer =
+                                            FFAppState().zoomPer + 0.1;
+                                        safeSetState(() {});
                                       },
                                     ),
                                   ],
@@ -637,7 +664,7 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                       selectedMedia.every((m) =>
                                           validateFileFormat(
                                               m.storagePath, context))) {
-                                    setState(
+                                    safeSetState(
                                         () => _model.isDataUploading1 = true);
                                     var selectedUploadedFiles =
                                         <FFUploadedFile>[];
@@ -659,12 +686,12 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                     }
                                     if (selectedUploadedFiles.length ==
                                         selectedMedia.length) {
-                                      setState(() {
+                                      safeSetState(() {
                                         _model.uploadedLocalFile1 =
                                             selectedUploadedFiles.first;
                                       });
                                     } else {
-                                      setState(() {});
+                                      safeSetState(() {});
                                       return;
                                     }
                                   }
@@ -672,13 +699,12 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                   if ((_model.uploadedLocalFile1.bytes
                                               ?.isNotEmpty ??
                                           false)) {
-                                    setState(() {
-                                      FFAppState().img =
-                                          'https://picsum.photos/seed/895/600';
-                                      FFAppState().imageUrl =
-                                          functions.imageToBase64new(
-                                              _model.uploadedLocalFile1)!;
-                                    });
+                                    FFAppState().img =
+                                        'https://picsum.photos/seed/895/600';
+                                    FFAppState().imageUrl =
+                                        functions.imageToBase64new(
+                                            _model.uploadedLocalFile1)!;
+                                    safeSetState(() {});
                                   }
                                 },
                                 text: 'Select Photo',
@@ -738,13 +764,12 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                               .resolve(
                                                   Directionality.of(context)),
                                           child: GestureDetector(
-                                            onTap: () => _model
-                                                    .unfocusNode.canRequestFocus
-                                                ? FocusScope.of(context)
-                                                    .requestFocus(
-                                                        _model.unfocusNode)
-                                                : FocusScope.of(context)
-                                                    .unfocus(),
+                                            onTap: () {
+                                              FocusScope.of(dialogContext)
+                                                  .unfocus();
+                                              FocusManager.instance.primaryFocus
+                                                  ?.unfocus();
+                                            },
                                             child: const SizedBox(
                                               height: 200.0,
                                               width: 400.0,
@@ -753,7 +778,7 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                           ),
                                         );
                                       },
-                                    ).then((value) => setState(() {}));
+                                    );
                                   },
                                   text: 'Add Text',
                                   icon: Icon(
@@ -872,6 +897,7 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                         .toList()
                                         .toList() ??
                                     [];
+
                                 return ListView.separated(
                                   padding: EdgeInsets.zero,
                                   shrinkWrap: true,
@@ -920,26 +946,25 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                             imageShapesRecordList.isNotEmpty
                                                 ? imageShapesRecordList.first
                                                 : null;
+
                                         return InkWell(
                                           splashColor: Colors.transparent,
                                           focusColor: Colors.transparent,
                                           hoverColor: Colors.transparent,
                                           highlightColor: Colors.transparent,
                                           onTap: () async {
-                                            setState(() {
-                                              FFAppState().Shape =
-                                                  imageShapesRecord.name;
-                                            });
+                                            FFAppState().Shape =
+                                                imageShapesRecord.name;
+                                            safeSetState(() {});
                                             _model.clockurl =
                                                 await actions.updateclockDigits(
                                               imageShapesRecord.name,
                                             );
-                                            setState(() {
-                                              FFAppState().clockdigitsimg =
-                                                  _model.clockurl!;
-                                            });
+                                            FFAppState().clockdigitsimg =
+                                                _model.clockurl!;
+                                            safeSetState(() {});
 
-                                            setState(() {});
+                                            safeSetState(() {});
                                           },
                                           child: ClipRRect(
                                             borderRadius:
@@ -997,6 +1022,7 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                 richTextSizeRecordList.isNotEmpty
                                     ? richTextSizeRecordList.first
                                     : null;
+
                             return RichText(
                               textScaler: MediaQuery.of(context).textScaler,
                               text: TextSpan(
@@ -1088,11 +1114,11 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                     alignment: const AlignmentDirectional(0.0, 0.0)
                                         .resolve(Directionality.of(context)),
                                     child: GestureDetector(
-                                      onTap: () => _model
-                                              .unfocusNode.canRequestFocus
-                                          ? FocusScope.of(context)
-                                              .requestFocus(_model.unfocusNode)
-                                          : FocusScope.of(context).unfocus(),
+                                      onTap: () {
+                                        FocusScope.of(dialogContext).unfocus();
+                                        FocusManager.instance.primaryFocus
+                                            ?.unfocus();
+                                      },
                                       child: SizedBox(
                                         height:
                                             MediaQuery.sizeOf(context).height *
@@ -1103,7 +1129,7 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                     ),
                                   );
                                 },
-                              ).then((value) => setState(() {}));
+                              );
                             },
                             child: RichText(
                               textScaler: MediaQuery.of(context).textScaler,
@@ -1208,6 +1234,7 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                       final sizeList =
                                           widget.category?.sizeMap.toList() ??
                                               [];
+
                                       return GridView.builder(
                                         padding: EdgeInsets.zero,
                                         gridDelegate:
@@ -1265,28 +1292,29 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                                       ? buttonSizeRecordList
                                                           .first
                                                       : null;
+
                                               return FFButtonWidget(
                                                 onPressed: () async {
-                                                  setState(() {
-                                                    FFAppState().size =
-                                                        buttonSizeRecord.id;
-                                                  });
-                                                  setState(() {
-                                                    _model.selectedSize =
-                                                        sizeListItem;
-                                                  });
-                                                  setState(() {
-                                                    FFAppState().thickness =
-                                                        sizeListItem
-                                                            .thickness.first.id;
-                                                    FFAppState().productPrice =
-                                                        sizeListItem.thickness
-                                                            .first.sellingPrice;
-                                                    FFAppState()
-                                                            .productMRPPrice =
-                                                        sizeListItem.thickness
-                                                            .first.mrpPrice;
-                                                  });
+                                                  FFAppState().size =
+                                                      buttonSizeRecord.id;
+                                                  safeSetState(() {});
+                                                  _model.selectedSize =
+                                                      sizeListItem;
+                                                  safeSetState(() {});
+                                                  FFAppState().thickness =
+                                                      sizeListItem.thickness
+                                                          .firstOrNull!.id;
+                                                  FFAppState().productPrice =
+                                                      sizeListItem
+                                                          .thickness
+                                                          .firstOrNull!
+                                                          .sellingPrice;
+                                                  FFAppState().productMRPPrice =
+                                                      sizeListItem
+                                                          .thickness
+                                                          .firstOrNull!
+                                                          .mrpPrice;
+                                                  safeSetState(() {});
                                                 },
                                                 text: buttonSizeRecord!.title,
                                                 options: FFButtonOptions(
@@ -1394,6 +1422,7 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                               .selectedSize?.thickness
                                               .toList() ??
                                           [];
+
                                       return GridView.builder(
                                         padding: EdgeInsets.zero,
                                         gridDelegate:
@@ -1453,20 +1482,18 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                                       ? buttonThicknessRecordList
                                                           .first
                                                       : null;
+
                                               return FFButtonWidget(
                                                 onPressed: () async {
-                                                  setState(() {
-                                                    FFAppState().thickness =
-                                                        buttonThicknessRecord
-                                                            .id;
-                                                    FFAppState().productPrice =
-                                                        thicknessListItem
-                                                            .sellingPrice;
-                                                    FFAppState()
-                                                            .productMRPPrice =
-                                                        thicknessListItem
-                                                            .mrpPrice;
-                                                  });
+                                                  FFAppState().thickness =
+                                                      buttonThicknessRecord.id;
+                                                  FFAppState().productPrice =
+                                                      thicknessListItem
+                                                          .sellingPrice;
+                                                  FFAppState().productMRPPrice =
+                                                      thicknessListItem
+                                                          .mrpPrice;
+                                                  safeSetState(() {});
                                                   await queryCategoryRecordOnce(
                                                     queryBuilder:
                                                         (categoryRecord) =>
@@ -1793,7 +1820,7 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                   singleRecord: true,
                                 ).then((s) => s.firstOrNull);
                                 {
-                                  setState(
+                                  safeSetState(
                                       () => _model.isDataUploading2 = true);
                                   var selectedUploadedFiles =
                                       <FFUploadedFile>[];
@@ -1826,58 +1853,53 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                           selectedMedia.length &&
                                       downloadUrls.length ==
                                           selectedMedia.length) {
-                                    setState(() {
+                                    safeSetState(() {
                                       _model.uploadedLocalFile2 =
                                           selectedUploadedFiles.first;
                                       _model.uploadedFileUrl2 =
                                           downloadUrls.first;
                                     });
                                   } else {
-                                    setState(() {});
+                                    safeSetState(() {});
                                     return;
                                   }
                                 }
 
-                                setState(() {
-                                  FFAppState().imageUrl =
-                                      _model.uploadedFileUrl2;
-                                });
-                                setState(() {
-                                  FFAppState().count = FFAppState().count +
-                                      valueOrDefault<int>(
-                                        FFAppState().orderList.length,
-                                        1,
-                                      );
-                                });
-                                setState(() {
-                                  FFAppState().updateOrdersStruct(
-                                    (e) => e
-                                      ..imageurl = functions.imgstringToimgPath(
-                                          FFAppState().editedimg)
-                                      ..textString = FFAppState().textString
-                                      ..shapes = FFAppState().Shape
-                                      ..size = _model.sizeDocOutput?.title
-                                      ..thickness =
-                                          _model.thicknessDocOutput?.name
-                                      ..price = valueOrDefault<double>(
-                                        FFAppState().productPrice,
-                                        599.0,
-                                      )
-                                      ..qty = 1.0
-                                      ..categoryName = widget.category?.title
-                                      ..count = FFAppState().count
-                                      ..originalimage =
-                                          functions.imgstringToimgPath(
-                                              FFAppState().imageUrl),
-                                  );
-                                });
+                                FFAppState().imageUrl = _model.uploadedFileUrl2;
+                                safeSetState(() {});
+                                FFAppState().count = FFAppState().count +
+                                    valueOrDefault<int>(
+                                      FFAppState().orderList.length,
+                                      1,
+                                    );
+                                safeSetState(() {});
+                                FFAppState().updateOrdersStruct(
+                                  (e) => e
+                                    ..imageurl = functions.imgstringToimgPath(
+                                        FFAppState().editedimg)
+                                    ..textString = FFAppState().textString
+                                    ..shapes = FFAppState().Shape
+                                    ..size = _model.sizeDocOutput?.title
+                                    ..thickness =
+                                        _model.thicknessDocOutput?.name
+                                    ..price = valueOrDefault<double>(
+                                      FFAppState().productPrice,
+                                      599.0,
+                                    )
+                                    ..qty = 1.0
+                                    ..categoryName = widget.category?.title
+                                    ..count = FFAppState().count
+                                    ..originalimage =
+                                        functions.imgstringToimgPath(
+                                            FFAppState().imageUrl),
+                                );
+                                safeSetState(() {});
                                 await actions.returnOrderQtyPluslist(
                                   FFAppState().orders,
                                 );
-                                setState(() {
-                                  FFAppState().orders = OrdersStruct();
-                                  FFAppState().editedimg = '';
-                                });
+                                FFAppState().orders = OrdersStruct();
+                                FFAppState().editedimg = '';
+                                safeSetState(() {});
 
                                 context.pushNamed('ShoppingCartnew');
                               } else {
@@ -1917,7 +1939,7 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                               );
                             }
 
-                            setState(() {});
+                            safeSetState(() {});
                           },
                           text: 'Buy Now',
                           options: FFButtonOptions(
@@ -2097,30 +2119,27 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                           pincode: _model
                                               .pincodeTextTextController.text,
                                         );
+
                                         if (getJsonField(
                                               (_model.apiResultepc?.jsonBody ??
                                                   ''),
                                               r'''$["tat"]''',
                                             ) !=
                                             null) {
-                                          setState(() {
-                                            FFAppState().tat = getJsonField(
-                                              (_model.apiResultepc?.jsonBody ??
-                                                  ''),
-                                              r'''$["tat"]''',
-                                            ).toString();
-                                            FFAppState().showEstimatedDate =
-                                                true;
-                                          });
+                                          FFAppState().tat = getJsonField(
+                                            (_model.apiResultepc?.jsonBody ??
+                                                ''),
+                                            r'''$["tat"]''',
+                                          ).toString();
+                                          FFAppState().showEstimatedDate = true;
+                                          safeSetState(() {});
                                         } else {
-                                          setState(() {
-                                            FFAppState().tat = 'notFound';
-                                            FFAppState().showEstimatedDate =
-                                                true;
-                                          });
+                                          FFAppState().tat = 'notFound';
+                                          FFAppState().showEstimatedDate = true;
+                                          safeSetState(() {});
                                         }
 
-                                        setState(() {});
+                                        safeSetState(() {});
                                       },
                                       text: 'Check',
                                       options: FFButtonOptions(
@@ -2550,7 +2569,7 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                       ),
                       wrapWithModel(
                         model: _model.footerWebModel,
-                        updateCallback: () => setState(() {}),
+                        updateCallback: () => safeSetState(() {}),
                         child: const FooterWebWidget(),
                       ),
                     ],
@@ -2647,6 +2666,7 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                 containerSizeRecordList.isNotEmpty
                                     ? containerSizeRecordList.first
                                     : null;
+
                             return Container(
                               width: double.infinity,
                               height: MediaQuery.sizeOf(context).height * 0.45,
@@ -2840,7 +2860,7 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                                                     height: double
                                                                         .infinity,
                                                                     child: custom_widgets
-                                                                        .Uimage(
+                                                                        .UimageClock(
                                                                       width: double
                                                                           .infinity,
                                                                       height: double
@@ -2852,7 +2872,7 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                                                               String>(
                                                                         FFAppState()
                                                                             .imageUrl,
-                                                                        'https://picsum.photos/seed/879/600',
+                                                                        'https://firebasestorage.googleapis.com/v0/b/uvpixcel.appspot.com/o/importantImages%2FMAIN%20IMAGE%20new.jpg?alt=media&token=cdcd026f-349a-4d22-bc17-7e4d3730b5a2',
                                                                       ),
                                                                       zoomPercent:
                                                                           FFAppState()
@@ -2919,16 +2939,14 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                                                 Directionality.of(
                                                                     context)),
                                                     child: GestureDetector(
-                                                      onTap: () => _model
-                                                              .unfocusNode
-                                                              .canRequestFocus
-                                                          ? FocusScope.of(
-                                                                  context)
-                                                              .requestFocus(_model
-                                                                  .unfocusNode)
-                                                          : FocusScope.of(
-                                                                  context)
-                                                              .unfocus(),
+                                                      onTap: () {
+                                                        FocusScope.of(
+                                                                dialogContext)
+                                                            .unfocus();
+                                                        FocusManager.instance
+                                                            .primaryFocus
+                                                            ?.unfocus();
+                                                      },
                                                       child: SizedBox(
                                                         width:
                                                             MediaQuery.sizeOf(
@@ -2940,8 +2958,7 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                                     ),
                                                   );
                                                 },
-                                              ).then(
-                                                  (value) => setState(() {}));
+                                              );
                                             },
                                             text: 'Size ?',
                                             options: FFButtonOptions(
@@ -3068,10 +3085,9 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                         size: 18.0,
                                       ),
                                       onPressed: () async {
-                                        setState(() {
-                                          FFAppState().zoomPer =
-                                              FFAppState().zoomPer + -0.1;
-                                        });
+                                        FFAppState().zoomPer =
+                                            FFAppState().zoomPer + -0.1;
+                                        safeSetState(() {});
                                       },
                                     ),
                                     Padding(
@@ -3097,10 +3113,9 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                         size: 18.0,
                                       ),
                                       onPressed: () async {
-                                        setState(() {
-                                          FFAppState().zoomPer =
-                                              FFAppState().zoomPer + 0.1;
-                                        });
+                                        FFAppState().zoomPer =
+                                            FFAppState().zoomPer + 0.1;
+                                        safeSetState(() {});
                                       },
                                     ),
                                   ],
@@ -3120,7 +3135,7 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                       selectedMedia.every((m) =>
                                           validateFileFormat(
                                               m.storagePath, context))) {
-                                    setState(
+                                    safeSetState(
                                         () => _model.isDataUploading3 = true);
                                     var selectedUploadedFiles =
                                         <FFUploadedFile>[];
@@ -3142,12 +3157,12 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                     }
                                     if (selectedUploadedFiles.length ==
                                         selectedMedia.length) {
-                                      setState(() {
+                                      safeSetState(() {
                                         _model.uploadedLocalFile3 =
                                             selectedUploadedFiles.first;
                                       });
                                     } else {
-                                      setState(() {});
+                                      safeSetState(() {});
                                       return;
                                     }
                                   }
@@ -3155,13 +3170,12 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                   if ((_model.uploadedLocalFile3.bytes
                                               ?.isNotEmpty ??
                                           false)) {
-                                    setState(() {
-                                      FFAppState().img =
-                                          'https://picsum.photos/seed/895/600';
-                                      FFAppState().imageUrl =
-                                          functions.imageToBase64new(
-                                              _model.uploadedLocalFile3)!;
-                                    });
+                                    FFAppState().img =
+                                        'https://picsum.photos/seed/895/600';
+                                    FFAppState().imageUrl =
+                                        functions.imageToBase64new(
+                                            _model.uploadedLocalFile3)!;
+                                    safeSetState(() {});
                                   }
                                 },
                                 text: 'Select Photo',
@@ -3231,13 +3245,12 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                               .resolve(
                                                   Directionality.of(context)),
                                           child: GestureDetector(
-                                            onTap: () => _model
-                                                    .unfocusNode.canRequestFocus
-                                                ? FocusScope.of(context)
-                                                    .requestFocus(
-                                                        _model.unfocusNode)
-                                                : FocusScope.of(context)
-                                                    .unfocus(),
+                                            onTap: () {
+                                              FocusScope.of(dialogContext)
+                                                  .unfocus();
+                                              FocusManager.instance.primaryFocus
+                                                  ?.unfocus();
+                                            },
                                             child: const SizedBox(
                                               height: 200.0,
                                               width: 350.0,
@@ -3246,7 +3259,7 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                           ),
                                         );
                                       },
-                                    ).then((value) => setState(() {}));
+                                    );
                                   },
                                   text: 'Add Text',
                                   icon: Icon(
@@ -3365,6 +3378,7 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                         .toList()
                                         .toList() ??
                                     [];
+
                                 return ListView.separated(
                                   padding: EdgeInsets.zero,
                                   shrinkWrap: true,
@@ -3413,26 +3427,25 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                             imageShapesRecordList.isNotEmpty
                                                 ? imageShapesRecordList.first
                                                 : null;
+
                                         return InkWell(
                                           splashColor: Colors.transparent,
                                           focusColor: Colors.transparent,
                                           hoverColor: Colors.transparent,
                                           highlightColor: Colors.transparent,
                                           onTap: () async {
-                                            setState(() {
-                                              FFAppState().Shape =
-                                                  imageShapesRecord.name;
-                                            });
+                                            FFAppState().Shape =
+                                                imageShapesRecord.name;
+                                            safeSetState(() {});
                                             _model.clockurl2 =
                                                 await actions.updateclockDigits(
                                               imageShapesRecord.name,
                                             );
-                                            setState(() {
-                                              FFAppState().clockdigitsimg =
-                                                  _model.clockurl2!;
-                                            });
+                                            FFAppState().clockdigitsimg =
+                                                _model.clockurl2!;
+                                            safeSetState(() {});
 
-                                            setState(() {});
+                                            safeSetState(() {});
                                           },
                                           child: ClipRRect(
                                             borderRadius:
@@ -3490,6 +3503,7 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                 richTextSizeRecordList.isNotEmpty
                                     ? richTextSizeRecordList.first
                                     : null;
+
                             return RichText(
                               textScaler: MediaQuery.of(context).textScaler,
                               text: TextSpan(
@@ -3581,11 +3595,11 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                     alignment: const AlignmentDirectional(0.0, 0.0)
                                         .resolve(Directionality.of(context)),
                                     child: GestureDetector(
-                                      onTap: () => _model
-                                              .unfocusNode.canRequestFocus
-                                          ? FocusScope.of(context)
-                                              .requestFocus(_model.unfocusNode)
-                                          : FocusScope.of(context).unfocus(),
+                                      onTap: () {
+                                        FocusScope.of(dialogContext).unfocus();
+                                        FocusManager.instance.primaryFocus
+                                            ?.unfocus();
+                                      },
                                       child: SizedBox(
                                         height:
                                             MediaQuery.sizeOf(context).height *
@@ -3598,7 +3612,7 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                     ),
                                   );
                                 },
-                              ).then((value) => setState(() {}));
+                              );
                             },
                             child: RichText(
                               textScaler: MediaQuery.of(context).textScaler,
@@ -3704,6 +3718,7 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                       final sizeList =
                                           widget.category?.sizeMap.toList() ??
                                               [];
+
                                       return GridView.builder(
                                         padding: EdgeInsets.zero,
                                         gridDelegate:
@@ -3761,28 +3776,29 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                                       ? buttonSizeRecordList
                                                           .first
                                                       : null;
+
                                               return FFButtonWidget(
                                                 onPressed: () async {
-                                                  setState(() {
-                                                    FFAppState().size =
-                                                        buttonSizeRecord.id;
-                                                  });
-                                                  setState(() {
-                                                    _model.selectedSize =
-                                                        sizeListItem;
-                                                  });
-                                                  setState(() {
-                                                    FFAppState().thickness =
-                                                        sizeListItem
-                                                            .thickness.first.id;
-                                                    FFAppState().productPrice =
-                                                        sizeListItem.thickness
-                                                            .first.sellingPrice;
-                                                    FFAppState()
-                                                            .productMRPPrice =
-                                                        sizeListItem.thickness
-                                                            .first.mrpPrice;
-                                                  });
+                                                  FFAppState().size =
+                                                      buttonSizeRecord.id;
+                                                  safeSetState(() {});
+                                                  _model.selectedSize =
+                                                      sizeListItem;
+                                                  safeSetState(() {});
+                                                  FFAppState().thickness =
+                                                      sizeListItem.thickness
+                                                          .firstOrNull!.id;
+                                                  FFAppState().productPrice =
+                                                      sizeListItem
+                                                          .thickness
+                                                          .firstOrNull!
+                                                          .sellingPrice;
+                                                  FFAppState().productMRPPrice =
+                                                      sizeListItem
+                                                          .thickness
+                                                          .firstOrNull!
+                                                          .mrpPrice;
+                                                  safeSetState(() {});
                                                 },
                                                 text: buttonSizeRecord!.title,
                                                 options: FFButtonOptions(
@@ -3890,6 +3906,7 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                               .selectedSize?.thickness
                                               .toList() ??
                                           [];
+
                                       return GridView.builder(
                                         padding: EdgeInsets.zero,
                                         gridDelegate:
@@ -3948,20 +3965,18 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                                       ? buttonThicknessRecordList
                                                           .first
                                                       : null;
+
                                               return FFButtonWidget(
                                                 onPressed: () async {
-                                                  setState(() {
-                                                    FFAppState().thickness =
-                                                        buttonThicknessRecord
-                                                            .id;
-                                                    FFAppState().productPrice =
-                                                        thicknessListItem
-                                                            .sellingPrice;
-                                                    FFAppState()
-                                                            .productMRPPrice =
-                                                        thicknessListItem
-                                                            .mrpPrice;
-                                                  });
+                                                  FFAppState().thickness =
+                                                      buttonThicknessRecord.id;
+                                                  FFAppState().productPrice =
+                                                      thicknessListItem
+                                                          .sellingPrice;
+                                                  FFAppState().productMRPPrice =
+                                                      thicknessListItem
+                                                          .mrpPrice;
+                                                  safeSetState(() {});
                                                   await queryCategoryRecordOnce(
                                                     queryBuilder:
                                                         (categoryRecord) =>
@@ -4073,14 +4088,13 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                             ),
                                     singleRecord: true,
                                   ).then((s) => s.firstOrNull);
-                                  setState(() {
-                                    FFAppState().productPrice =
-                                        _model.priceDetailss!.price;
-                                    FFAppState().productMRPPrice =
-                                        _model.priceDetailss!.mrp;
-                                  });
+                                  FFAppState().productPrice =
+                                      _model.priceDetailss!.price;
+                                  FFAppState().productMRPPrice =
+                                      _model.priceDetailss!.mrp;
+                                  safeSetState(() {});
 
-                                  setState(() {});
+                                  safeSetState(() {});
                                 },
                                 child: Text(
                                   '₹ ${FFAppState().productPrice.toString()}',
@@ -4253,7 +4267,7 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                   singleRecord: true,
                                 ).then((s) => s.firstOrNull);
                                 {
-                                  setState(
+                                  safeSetState(
                                       () => _model.isDataUploading4 = true);
                                   var selectedUploadedFiles =
                                       <FFUploadedFile>[];
@@ -4286,59 +4300,54 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                                           selectedMedia.length &&
                                       downloadUrls.length ==
                                           selectedMedia.length) {
-                                    setState(() {
+                                    safeSetState(() {
                                       _model.uploadedLocalFile4 =
                                           selectedUploadedFiles.first;
                                       _model.uploadedFileUrl4 =
                                           downloadUrls.first;
                                     });
                                   } else {
-                                    setState(() {});
+                                    safeSetState(() {});
                                     return;
                                   }
                                 }
 
-                                setState(() {
-                                  FFAppState().imageUrl =
-                                      _model.uploadedFileUrl4;
-                                });
-                                setState(() {
-                                  FFAppState().count = FFAppState().count +
-                                      valueOrDefault<int>(
-                                        FFAppState().orderList.length,
-                                        1,
-                                      );
-                                });
-                                setState(() {
-                                  FFAppState().updateOrdersStruct(
-                                    (e) => e
-                                      ..imageurl = functions.imgstringToimgPath(
-                                          FFAppState().editedimg)
-                                      ..textString = FFAppState().textString
-                                      ..shapes = FFAppState().Shape
-                                      ..size = _model.sizeDocOutput?.title
-                                      ..thickness =
-                                          _model.thicknessDocOutput?.name
-                                      ..price = valueOrDefault<double>(
-                                        FFAppState().productPrice,
-                                        599.0,
-                                      )
-                                      ..qty = 1.0
-                                      ..originalimage =
-                                          functions.imgstringToimgPath(
-                                              FFAppState().imageUrl)
-                                      ..categoryName = widget.category?.title
-                                      ..count = FFAppState().count,
-                                  );
-                                });
+                                FFAppState().imageUrl = _model.uploadedFileUrl4;
+                                safeSetState(() {});
+                                FFAppState().count = FFAppState().count +
+                                    valueOrDefault<int>(
+                                      FFAppState().orderList.length,
+                                      1,
+                                    );
+                                safeSetState(() {});
+                                FFAppState().updateOrdersStruct(
+                                  (e) => e
+                                    ..imageurl = functions.imgstringToimgPath(
+                                        FFAppState().editedimg)
+                                    ..textString = FFAppState().textString
+                                    ..shapes = FFAppState().Shape
+                                    ..size = _model.sizeDocOutput?.title
+                                    ..thickness =
+                                        _model.thicknessDocOutput?.name
+                                    ..price = valueOrDefault<double>(
+                                      FFAppState().productPrice,
+                                      599.0,
+                                    )
+                                    ..qty = 1.0
+                                    ..originalimage =
+                                        functions.imgstringToimgPath(
+                                            FFAppState().imageUrl)
+                                    ..categoryName = widget.category?.title
+                                    ..count = FFAppState().count,
+                                );
+                                safeSetState(() {});
                                 _model.returnqty2 =
                                     await actions.returnOrderQtyPluslist(
                                   FFAppState().orders,
                                 );
-                                setState(() {
-                                  FFAppState().orders = OrdersStruct();
-                                  FFAppState().editedimg = '';
-                                });
+                                FFAppState().orders = OrdersStruct();
+                                FFAppState().editedimg = '';
+                                safeSetState(() {});
 
                                 context.pushNamed('ShoppingCartnew');
                               } else {
@@ -4377,7 +4386,7 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                               );
                             }
 
-                            setState(() {});
+                            safeSetState(() {});
                           },
                           text: 'Buy Now',
                           options: FFButtonOptions(
@@ -4911,7 +4920,7 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
                       ),
                       wrapWithModel(
                         model: _model.footerMobileModel,
-                        updateCallback: () => setState(() {}),
+                        updateCallback: () => safeSetState(() {}),
                         child: const FooterMobileWidget(),
                       ),
                     ],
@@ -4920,7 +4929,7 @@ class _ClockpageeditWidgetState extends State<ClockpageeditWidget> {
               ),
             wrapWithModel(
               model: _model.headerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const HeaderWidget(),
             ),
           ],

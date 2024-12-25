@@ -50,16 +50,14 @@ class _CutoutPageWidgetState extends State<CutoutPageWidget> {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      setState(() {
-        FFAppState().size = widget.category!.sizeMap.first.sizeId;
-        FFAppState().thickness =
-            widget.category!.sizeMap.first.thickness.first.id;
-        FFAppState().cutoutImagePath =
-            'https://firebasestorage.googleapis.com/v0/b/uvpixcel.appspot.com/o/importantImages%2Fcutout%20page.jpg?alt=media&token=e0cdc159-da87-4fe0-a4f4-2d7c6d3c853e';
-      });
-      setState(() {
-        _model.selectedSize = widget.category?.sizeMap.first;
-      });
+      FFAppState().size = widget.category!.sizeMap.firstOrNull!.sizeId;
+      FFAppState().thickness =
+          widget.category!.sizeMap.firstOrNull!.thickness.firstOrNull!.id;
+      FFAppState().cutoutImagePath =
+          'https://firebasestorage.googleapis.com/v0/b/uvpixcel.appspot.com/o/importantImages%2Fcutout%20page.jpg?alt=media&token=e0cdc159-da87-4fe0-a4f4-2d7c6d3c853e';
+      safeSetState(() {});
+      _model.selectedSize = widget.category?.sizeMap.firstOrNull;
+      safeSetState(() {});
     });
 
     _model.textController1 ??= TextEditingController();
@@ -68,7 +66,7 @@ class _CutoutPageWidgetState extends State<CutoutPageWidget> {
     _model.textController2 ??= TextEditingController();
     _model.textFieldFocusNode2 ??= FocusNode();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -83,9 +81,10 @@ class _CutoutPageWidgetState extends State<CutoutPageWidget> {
     context.watch<FFAppState>();
 
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -105,7 +104,7 @@ class _CutoutPageWidgetState extends State<CutoutPageWidget> {
             elevation: 16.0,
             child: wrapWithModel(
               model: _model.drawerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const DrawerWidget(),
             ),
           ),
@@ -187,6 +186,7 @@ class _CutoutPageWidgetState extends State<CutoutPageWidget> {
                                 containerSizeRecordList.isNotEmpty
                                     ? containerSizeRecordList.first
                                     : null;
+
                             return Container(
                               width: double.infinity,
                               decoration: BoxDecoration(
@@ -494,7 +494,7 @@ class _CutoutPageWidgetState extends State<CutoutPageWidget> {
                                       selectedMedia.every((m) =>
                                           validateFileFormat(
                                               m.storagePath, context))) {
-                                    setState(
+                                    safeSetState(
                                         () => _model.isDataUploading1 = true);
                                     var selectedUploadedFiles =
                                         <FFUploadedFile>[];
@@ -516,21 +516,20 @@ class _CutoutPageWidgetState extends State<CutoutPageWidget> {
                                     }
                                     if (selectedUploadedFiles.length ==
                                         selectedMedia.length) {
-                                      setState(() {
+                                      safeSetState(() {
                                         _model.uploadedLocalFile1 =
                                             selectedUploadedFiles.first;
                                       });
                                     } else {
-                                      setState(() {});
+                                      safeSetState(() {});
                                       return;
                                     }
                                   }
 
-                                  setState(() {
-                                    FFAppState().imageUrl =
-                                        functions.imageToBase64new(
-                                            _model.uploadedLocalFile2)!;
-                                  });
+                                  FFAppState().imageUrl =
+                                      functions.imageToBase64new(
+                                          _model.uploadedLocalFile2)!;
+                                  safeSetState(() {});
                                 },
                                 text: 'Select Photo',
                                 icon: const Icon(
@@ -684,6 +683,7 @@ class _CutoutPageWidgetState extends State<CutoutPageWidget> {
                                               .categorydoc?.sizeMap
                                               .toList() ??
                                           [];
+
                                       return GridView.builder(
                                         padding: EdgeInsets.zero,
                                         gridDelegate:
@@ -741,31 +741,31 @@ class _CutoutPageWidgetState extends State<CutoutPageWidget> {
                                                       ? buttonSizeRecordList
                                                           .first
                                                       : null;
+
                                               return FFButtonWidget(
                                                 onPressed: () async {
-                                                  setState(() {
-                                                    FFAppState().size =
-                                                        buttonSizeRecord.id;
-                                                  });
-                                                  setState(() {
-                                                    FFAppState().flagimg = true;
-                                                  });
-                                                  setState(() {
-                                                    _model.selectedSize =
-                                                        sizeListItem;
-                                                  });
-                                                  setState(() {
-                                                    FFAppState().thickness =
-                                                        sizeListItem
-                                                            .thickness.first.id;
-                                                    FFAppState().productPrice =
-                                                        sizeListItem.thickness
-                                                            .first.sellingPrice;
-                                                    FFAppState()
-                                                            .productMRPPrice =
-                                                        sizeListItem.thickness
-                                                            .first.mrpPrice;
-                                                  });
+                                                  FFAppState().size =
+                                                      buttonSizeRecord.id;
+                                                  safeSetState(() {});
+                                                  FFAppState().flagimg = true;
+                                                  safeSetState(() {});
+                                                  _model.selectedSize =
+                                                      sizeListItem;
+                                                  safeSetState(() {});
+                                                  FFAppState().thickness =
+                                                      sizeListItem.thickness
+                                                          .firstOrNull!.id;
+                                                  FFAppState().productPrice =
+                                                      sizeListItem
+                                                          .thickness
+                                                          .firstOrNull!
+                                                          .sellingPrice;
+                                                  FFAppState().productMRPPrice =
+                                                      sizeListItem
+                                                          .thickness
+                                                          .firstOrNull!
+                                                          .mrpPrice;
+                                                  safeSetState(() {});
                                                 },
                                                 text: buttonSizeRecord!.title,
                                                 options: FFButtonOptions(
@@ -872,6 +872,7 @@ class _CutoutPageWidgetState extends State<CutoutPageWidget> {
                                               .selectedSize?.thickness
                                               .toList() ??
                                           [];
+
                                       return GridView.builder(
                                         padding: EdgeInsets.zero,
                                         gridDelegate:
@@ -930,20 +931,18 @@ class _CutoutPageWidgetState extends State<CutoutPageWidget> {
                                                       ? buttonThicknessRecordList
                                                           .first
                                                       : null;
+
                                               return FFButtonWidget(
                                                 onPressed: () async {
-                                                  setState(() {
-                                                    FFAppState().thickness =
-                                                        buttonThicknessRecord
-                                                            .id;
-                                                    FFAppState().productPrice =
-                                                        thicknessListItem
-                                                            .sellingPrice;
-                                                    FFAppState()
-                                                            .productMRPPrice =
-                                                        thicknessListItem
-                                                            .mrpPrice;
-                                                  });
+                                                  FFAppState().thickness =
+                                                      buttonThicknessRecord.id;
+                                                  FFAppState().productPrice =
+                                                      thicknessListItem
+                                                          .sellingPrice;
+                                                  FFAppState().productMRPPrice =
+                                                      thicknessListItem
+                                                          .mrpPrice;
+                                                  safeSetState(() {});
                                                   await queryCategoryRecordOnce(
                                                     queryBuilder:
                                                         (categoryRecord) =>
@@ -1278,26 +1277,24 @@ class _CutoutPageWidgetState extends State<CutoutPageWidget> {
                                 ),
                                 singleRecord: true,
                               ).then((s) => s.firstOrNull);
-                              setState(() {
-                                FFAppState().count =
-                                    FFAppState().orderList.length;
-                              });
-                              setState(() {
-                                FFAppState().updateOrdersStruct(
-                                  (e) => e
-                                    ..imageurl = functions.imgstringToimgPath(
-                                        FFAppState().imageUrl)
-                                    ..size = _model.sizeDocOutCutOut?.title
-                                    ..thickness =
-                                        _model.thicknessDocOutCutOut?.name
-                                    ..price = valueOrDefault<double>(
-                                      FFAppState().productPrice,
-                                      599.0,
-                                    )
-                                    ..qty = 1.0
-                                    ..categoryName = widget.category?.title,
-                                );
-                              });
+                              FFAppState().count =
+                                  FFAppState().orderList.length;
+                              safeSetState(() {});
+                              FFAppState().updateOrdersStruct(
+                                (e) => e
+                                  ..imageurl = functions
+                                      .imgstringToimgPath(FFAppState().imageUrl)
+                                  ..size = _model.sizeDocOutCutOut?.title
+                                  ..thickness =
+                                      _model.thicknessDocOutCutOut?.name
+                                  ..price = valueOrDefault<double>(
+                                    FFAppState().productPrice,
+                                    599.0,
+                                  )
+                                  ..qty = 1.0
+                                  ..categoryName = widget.category?.title,
+                              );
+                              safeSetState(() {});
                               await actions.returnOrderQtyPluslist(
                                 FFAppState().orders,
                               );
@@ -1322,7 +1319,7 @@ class _CutoutPageWidgetState extends State<CutoutPageWidget> {
                               );
                             }
 
-                            setState(() {});
+                            safeSetState(() {});
                           },
                           text: 'Buy Now',
                           options: FFButtonOptions(
@@ -1917,7 +1914,7 @@ class _CutoutPageWidgetState extends State<CutoutPageWidget> {
                       ),
                       wrapWithModel(
                         model: _model.footerWebModel,
-                        updateCallback: () => setState(() {}),
+                        updateCallback: () => safeSetState(() {}),
                         child: const FooterWebWidget(),
                       ),
                     ],
@@ -2142,7 +2139,7 @@ class _CutoutPageWidgetState extends State<CutoutPageWidget> {
                                       selectedMedia.every((m) =>
                                           validateFileFormat(
                                               m.storagePath, context))) {
-                                    setState(
+                                    safeSetState(
                                         () => _model.isDataUploading2 = true);
                                     var selectedUploadedFiles =
                                         <FFUploadedFile>[];
@@ -2164,29 +2161,28 @@ class _CutoutPageWidgetState extends State<CutoutPageWidget> {
                                     }
                                     if (selectedUploadedFiles.length ==
                                         selectedMedia.length) {
-                                      setState(() {
+                                      safeSetState(() {
                                         _model.uploadedLocalFile2 =
                                             selectedUploadedFiles.first;
                                       });
                                     } else {
-                                      setState(() {});
+                                      safeSetState(() {});
                                       return;
                                     }
                                   }
 
-                                  setState(() {
-                                    FFAppState().cutoutImagePath =
-                                        functions.imageToBase64(
-                                            _model.uploadedLocalFile2)!;
-                                  });
+                                  FFAppState().cutoutImagePath =
+                                      functions.imageToBase64(
+                                          _model.uploadedLocalFile2)!;
+                                  safeSetState(() {});
                                   _model.apiResult1 = await RemoveCall.call(
                                     image: FFAppState().cutoutImagePath,
                                   );
+
                                   if ((_model.apiResult1?.succeeded ?? true)) {
-                                    setState(() {
-                                      FFAppState().cutoutImagePath =
-                                          (_model.apiResult1?.bodyText ?? '');
-                                    });
+                                    FFAppState().cutoutImagePath =
+                                        (_model.apiResult1?.bodyText ?? '');
+                                    safeSetState(() {});
                                   } else {
                                     await showDialog(
                                       context: context,
@@ -2207,7 +2203,7 @@ class _CutoutPageWidgetState extends State<CutoutPageWidget> {
                                     );
                                   }
 
-                                  setState(() {});
+                                  safeSetState(() {});
                                 },
                                 text: 'Select Photo',
                                 icon: const Icon(
@@ -2352,6 +2348,7 @@ class _CutoutPageWidgetState extends State<CutoutPageWidget> {
                                               .categorydoc?.sizeMap
                                               .toList() ??
                                           [];
+
                                       return GridView.builder(
                                         padding: EdgeInsets.zero,
                                         gridDelegate:
@@ -2409,31 +2406,31 @@ class _CutoutPageWidgetState extends State<CutoutPageWidget> {
                                                       ? buttonSizeRecordList
                                                           .first
                                                       : null;
+
                                               return FFButtonWidget(
                                                 onPressed: () async {
-                                                  setState(() {
-                                                    FFAppState().size =
-                                                        buttonSizeRecord.id;
-                                                  });
-                                                  setState(() {
-                                                    FFAppState().flagimg = true;
-                                                  });
-                                                  setState(() {
-                                                    _model.selectedSize =
-                                                        sizeListItem;
-                                                  });
-                                                  setState(() {
-                                                    FFAppState().thickness =
-                                                        sizeListItem
-                                                            .thickness.first.id;
-                                                    FFAppState().productPrice =
-                                                        sizeListItem.thickness
-                                                            .first.sellingPrice;
-                                                    FFAppState()
-                                                            .productMRPPrice =
-                                                        sizeListItem.thickness
-                                                            .first.mrpPrice;
-                                                  });
+                                                  FFAppState().size =
+                                                      buttonSizeRecord.id;
+                                                  safeSetState(() {});
+                                                  FFAppState().flagimg = true;
+                                                  safeSetState(() {});
+                                                  _model.selectedSize =
+                                                      sizeListItem;
+                                                  safeSetState(() {});
+                                                  FFAppState().thickness =
+                                                      sizeListItem.thickness
+                                                          .firstOrNull!.id;
+                                                  FFAppState().productPrice =
+                                                      sizeListItem
+                                                          .thickness
+                                                          .firstOrNull!
+                                                          .sellingPrice;
+                                                  FFAppState().productMRPPrice =
+                                                      sizeListItem
+                                                          .thickness
+                                                          .firstOrNull!
+                                                          .mrpPrice;
+                                                  safeSetState(() {});
                                                 },
                                                 text: buttonSizeRecord!.title,
                                                 options: FFButtonOptions(
@@ -2540,6 +2537,7 @@ class _CutoutPageWidgetState extends State<CutoutPageWidget> {
                                               .selectedSize?.thickness
                                               .toList() ??
                                           [];
+
                                       return GridView.builder(
                                         padding: EdgeInsets.zero,
                                         gridDelegate:
@@ -2598,20 +2596,18 @@ class _CutoutPageWidgetState extends State<CutoutPageWidget> {
                                                       ? buttonThicknessRecordList
                                                           .first
                                                       : null;
+
                                               return FFButtonWidget(
                                                 onPressed: () async {
-                                                  setState(() {
-                                                    FFAppState().thickness =
-                                                        buttonThicknessRecord
-                                                            .id;
-                                                    FFAppState().productPrice =
-                                                        thicknessListItem
-                                                            .sellingPrice;
-                                                    FFAppState()
-                                                            .productMRPPrice =
-                                                        thicknessListItem
-                                                            .mrpPrice;
-                                                  });
+                                                  FFAppState().thickness =
+                                                      buttonThicknessRecord.id;
+                                                  FFAppState().productPrice =
+                                                      thicknessListItem
+                                                          .sellingPrice;
+                                                  FFAppState().productMRPPrice =
+                                                      thicknessListItem
+                                                          .mrpPrice;
+                                                  safeSetState(() {});
                                                   await queryCategoryRecordOnce(
                                                     queryBuilder:
                                                         (categoryRecord) =>
@@ -2870,7 +2866,7 @@ class _CutoutPageWidgetState extends State<CutoutPageWidget> {
                                   singleRecord: true,
                                 ).then((s) => s.firstOrNull);
                                 {
-                                  setState(
+                                  safeSetState(
                                       () => _model.isDataUploading3 = true);
                                   var selectedUploadedFiles =
                                       <FFUploadedFile>[];
@@ -2903,56 +2899,52 @@ class _CutoutPageWidgetState extends State<CutoutPageWidget> {
                                           selectedMedia.length &&
                                       downloadUrls.length ==
                                           selectedMedia.length) {
-                                    setState(() {
+                                    safeSetState(() {
                                       _model.uploadedLocalFile3 =
                                           selectedUploadedFiles.first;
                                       _model.uploadedFileUrl3 =
                                           downloadUrls.first;
                                     });
                                   } else {
-                                    setState(() {});
+                                    safeSetState(() {});
                                     return;
                                   }
                                 }
 
-                                setState(() {
-                                  FFAppState().count = FFAppState().count +
-                                      valueOrDefault<int>(
-                                        FFAppState().orderList.length,
-                                        1,
-                                      );
-                                  FFAppState().imageUrl =
-                                      _model.uploadedFileUrl3;
-                                });
-                                setState(() {
-                                  FFAppState().updateOrdersStruct(
-                                    (e) => e
-                                      ..imageurl = functions.imgstringToimgPath(
-                                          FFAppState().editedimg)
-                                      ..textString = FFAppState().textString
-                                      ..shapes = FFAppState().Shape
-                                      ..size = _model.sizeDocOutput?.title
-                                      ..thickness =
-                                          _model.thicknessDocOutput?.name
-                                      ..price = valueOrDefault<double>(
-                                        FFAppState().productPrice,
-                                        599.0,
-                                      )
-                                      ..qty = 1.0
-                                      ..categoryName = widget.category?.title
-                                      ..count = FFAppState().count
-                                      ..originalimage =
-                                          functions.imgstringToimgPath(
-                                              FFAppState().imageUrl),
-                                  );
-                                });
+                                FFAppState().count = FFAppState().count +
+                                    valueOrDefault<int>(
+                                      FFAppState().orderList.length,
+                                      1,
+                                    );
+                                FFAppState().imageUrl = _model.uploadedFileUrl3;
+                                safeSetState(() {});
+                                FFAppState().updateOrdersStruct(
+                                  (e) => e
+                                    ..imageurl = functions.imgstringToimgPath(
+                                        FFAppState().editedimg)
+                                    ..textString = FFAppState().textString
+                                    ..shapes = FFAppState().Shape
+                                    ..size = _model.sizeDocOutput?.title
+                                    ..thickness =
+                                        _model.thicknessDocOutput?.name
+                                    ..price = valueOrDefault<double>(
+                                      FFAppState().productPrice,
+                                      599.0,
+                                    )
+                                    ..qty = 1.0
+                                    ..categoryName = widget.category?.title
+                                    ..count = FFAppState().count
+                                    ..originalimage =
+                                        functions.imgstringToimgPath(
+                                            FFAppState().imageUrl),
+                                );
+                                safeSetState(() {});
                                 await actions.returnOrderQtyPluslist(
                                   FFAppState().orders,
                                 );
-                                setState(() {
-                                  FFAppState().orders = OrdersStruct();
-                                  FFAppState().editedimg = '';
-                                });
+                                FFAppState().orders = OrdersStruct();
+                                FFAppState().editedimg = '';
+                                safeSetState(() {});
 
                                 context.pushNamed('ShoppingCartnew');
                               } else {
@@ -2992,7 +2984,7 @@ class _CutoutPageWidgetState extends State<CutoutPageWidget> {
                               );
                             }
 
-                            setState(() {});
+                            safeSetState(() {});
                           },
                           text: 'Buy Now',
                           options: FFButtonOptions(
@@ -3526,7 +3518,7 @@ class _CutoutPageWidgetState extends State<CutoutPageWidget> {
                       ),
                       wrapWithModel(
                         model: _model.footerMobileModel,
-                        updateCallback: () => setState(() {}),
+                        updateCallback: () => safeSetState(() {}),
                         child: const FooterMobileWidget(),
                       ),
                     ],
@@ -3535,7 +3527,7 @@ class _CutoutPageWidgetState extends State<CutoutPageWidget> {
               ),
             wrapWithModel(
               model: _model.headerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const HeaderWidget(),
             ),
           ],

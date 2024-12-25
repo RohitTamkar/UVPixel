@@ -27,7 +27,7 @@ class _GalleryWidgetState extends State<GalleryWidget> {
     super.initState();
     _model = createModel(context, () => GalleryModel());
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -40,9 +40,10 @@ class _GalleryWidgetState extends State<GalleryWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -62,7 +63,7 @@ class _GalleryWidgetState extends State<GalleryWidget> {
             elevation: 16.0,
             child: wrapWithModel(
               model: _model.drawerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const DrawerWidget(),
             ),
           ),
@@ -144,6 +145,7 @@ class _GalleryWidgetState extends State<GalleryWidget> {
                                     List<CategoryRecord>
                                         containerCategoryRecordList =
                                         snapshot.data!;
+
                                     return Container(
                                       decoration: const BoxDecoration(),
                                       child: Builder(
@@ -152,6 +154,7 @@ class _GalleryWidgetState extends State<GalleryWidget> {
                                               containerCategoryRecordList
                                                   .map((e) => e)
                                                   .toList();
+
                                           return GridView.builder(
                                             padding: EdgeInsets.zero,
                                             gridDelegate:
@@ -229,17 +232,18 @@ class _GalleryWidgetState extends State<GalleryWidget> {
                                                                 ),
                                                                 'category':
                                                                     serializeParam(
-                                                                  containerCategoryRecordList[
-                                                                      categoryListIndex],
+                                                                  containerCategoryRecordList
+                                                                      .elementAtOrNull(
+                                                                          categoryListIndex),
                                                                   ParamType
                                                                       .Document,
                                                                 ),
                                                               }.withoutNulls,
                                                               extra: <String,
                                                                   dynamic>{
-                                                                'category':
-                                                                    containerCategoryRecordList[
-                                                                        categoryListIndex],
+                                                                'category': containerCategoryRecordList
+                                                                    .elementAtOrNull(
+                                                                        categoryListIndex),
                                                               },
                                                             );
                                                           },
@@ -330,7 +334,7 @@ class _GalleryWidgetState extends State<GalleryWidget> {
                       ),
                       wrapWithModel(
                         model: _model.footerWebModel,
-                        updateCallback: () => setState(() {}),
+                        updateCallback: () => safeSetState(() {}),
                         child: const FooterWebWidget(),
                       ),
                     ],
@@ -412,6 +416,7 @@ class _GalleryWidgetState extends State<GalleryWidget> {
                                     List<CatalogueRecord>
                                         containerCatalogueRecordList =
                                         snapshot.data!;
+
                                     return Container(
                                       decoration: const BoxDecoration(),
                                       child: Builder(
@@ -419,6 +424,7 @@ class _GalleryWidgetState extends State<GalleryWidget> {
                                           final list =
                                               containerCatalogueRecordList
                                                   .toList();
+
                                           return GridView.builder(
                                             padding: EdgeInsets.zero,
                                             gridDelegate:
@@ -547,7 +553,7 @@ class _GalleryWidgetState extends State<GalleryWidget> {
                       ),
                       wrapWithModel(
                         model: _model.footerMobileModel,
-                        updateCallback: () => setState(() {}),
+                        updateCallback: () => safeSetState(() {}),
                         child: const FooterMobileWidget(),
                       ),
                     ],
@@ -556,7 +562,7 @@ class _GalleryWidgetState extends State<GalleryWidget> {
               ),
             wrapWithModel(
               model: _model.headerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const HeaderWidget(),
             ),
           ],

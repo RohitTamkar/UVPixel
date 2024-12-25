@@ -10,7 +10,6 @@ class ColorfullFrameGallaryModel
     extends FlutterFlowModel<ColorfullFrameGallaryWidget> {
   ///  State fields for stateful widgets in this page.
 
-  final unfocusNode = FocusNode();
   // Model for FooterWeb component.
   late FooterWebModel footerWebModel;
   // Model for FooterMobile component.
@@ -30,7 +29,6 @@ class ColorfullFrameGallaryModel
 
   @override
   void dispose() {
-    unfocusNode.dispose();
     footerWebModel.dispose();
     footerMobileModel.dispose();
     headerModel.dispose();

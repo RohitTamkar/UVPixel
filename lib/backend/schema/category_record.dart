@@ -85,6 +85,16 @@ class CategoryRecord extends FirestoreRecord {
   bool get isDeleted => _isDeleted ?? false;
   bool hasIsDeleted() => _isDeleted != null;
 
+  // "categoryName" field.
+  String? _categoryName;
+  String get categoryName => _categoryName ?? '';
+  bool hasCategoryName() => _categoryName != null;
+
+  // "id" field.
+  String? _id;
+  String get id => _id ?? '';
+  bool hasId() => _id != null;
+
   void _initializeFields() {
     _categoryId = snapshotData['categoryId'] as String?;
     _title = snapshotData['title'] as String?;
@@ -103,6 +113,8 @@ class CategoryRecord extends FirestoreRecord {
     );
     _qty = snapshotData['qty'] as String?;
     _isDeleted = snapshotData['isDeleted'] as bool?;
+    _categoryName = snapshotData['categoryName'] as String?;
+    _id = snapshotData['id'] as String?;
   }
 
   static CollectionReference get collection =>
@@ -153,6 +165,8 @@ Map<String, dynamic> createCategoryRecordData({
   String? image2,
   String? qty,
   bool? isDeleted,
+  String? categoryName,
+  String? id,
 }) {
   final firestoreData = mapToFirestore(
     <String, dynamic>{
@@ -169,6 +183,8 @@ Map<String, dynamic> createCategoryRecordData({
       'image2': image2,
       'qty': qty,
       'isDeleted': isDeleted,
+      'categoryName': categoryName,
+      'id': id,
     }.withoutNulls,
   );
 
@@ -194,7 +210,9 @@ class CategoryRecordDocumentEquality implements Equality<CategoryRecord> {
         e1?.image2 == e2?.image2 &&
         listEquality.equals(e1?.sizeMap, e2?.sizeMap) &&
         e1?.qty == e2?.qty &&
-        e1?.isDeleted == e2?.isDeleted;
+        e1?.isDeleted == e2?.isDeleted &&
+        e1?.categoryName == e2?.categoryName &&
+        e1?.id == e2?.id;
   }
 
   @override
@@ -212,7 +230,9 @@ class CategoryRecordDocumentEquality implements Equality<CategoryRecord> {
         e?.image2,
         e?.sizeMap,
         e?.qty,
-        e?.isDeleted
+        e?.isDeleted,
+        e?.categoryName,
+        e?.id
       ]);
 
   @override

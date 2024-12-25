@@ -14,12 +14,14 @@ class ClockpageeditModel extends FlutterFlowModel<ClockpageeditWidget> {
   FFUploadedFile? image;
 
   SizeMapStruct? selectedSize;
-  void updateSelectedSizeStruct(Function(SizeMapStruct) updateFn) =>
-      updateFn(selectedSize ??= SizeMapStruct());
+  void updateSelectedSizeStruct(Function(SizeMapStruct) updateFn) {
+    updateFn(selectedSize ??= SizeMapStruct());
+  }
 
   ///  State fields for stateful widgets in this page.
 
-  final unfocusNode = FocusNode();
+  // Stores action output result for [Firestore Query - Query a collection] action in Clockpageedit widget.
+  CategoryRecord? listifcat2;
   bool isDataUploading1 = false;
   FFUploadedFile uploadedLocalFile1 =
       FFUploadedFile(bytes: Uint8List.fromList([]));
@@ -83,7 +85,6 @@ class ClockpageeditModel extends FlutterFlowModel<ClockpageeditWidget> {
 
   @override
   void dispose() {
-    unfocusNode.dispose();
     pincodeTextFocusNode?.dispose();
     pincodeTextTextController?.dispose();
 

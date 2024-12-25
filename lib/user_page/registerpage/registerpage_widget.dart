@@ -44,7 +44,7 @@ class _RegisterpageWidgetState extends State<RegisterpageWidget> {
     _model.confirmpasswordTextController ??= TextEditingController();
     _model.confirmpasswordFocusNode ??= FocusNode();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -57,9 +57,10 @@ class _RegisterpageWidgetState extends State<RegisterpageWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: const Color(0x271D252D),
@@ -648,7 +649,7 @@ class _RegisterpageWidgetState extends State<RegisterpageWidget> {
                                       borderRadius: BorderRadius.circular(8.0),
                                     ),
                                     suffixIcon: InkWell(
-                                      onTap: () => setState(
+                                      onTap: () => safeSetState(
                                         () => _model.passwordVisibility =
                                             !_model.passwordVisibility,
                                       ),
@@ -766,7 +767,7 @@ class _RegisterpageWidgetState extends State<RegisterpageWidget> {
                                       borderRadius: BorderRadius.circular(8.0),
                                     ),
                                     suffixIcon: InkWell(
-                                      onTap: () => setState(
+                                      onTap: () => safeSetState(
                                         () => _model.confirmpasswordVisibility =
                                             !_model.confirmpasswordVisibility,
                                       ),

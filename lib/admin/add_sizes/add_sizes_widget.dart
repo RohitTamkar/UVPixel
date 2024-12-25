@@ -46,7 +46,7 @@ class _AddSizesWidgetState extends State<AddSizesWidget> {
         TextEditingController(text: widget.codeLen?.toString());
     _model.textCatalogueCodeFocusNode ??= FocusNode();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -380,7 +380,7 @@ class _AddSizesWidgetState extends State<AddSizesWidget> {
                             onChanged: (_) => EasyDebounce.debounce(
                               '_model.textCatalogueCodeTextController',
                               const Duration(milliseconds: 2000),
-                              () => setState(() {}),
+                              () => safeSetState(() {}),
                             ),
                             autofocus: true,
                             readOnly: true,
@@ -567,7 +567,7 @@ class _AddSizesWidgetState extends State<AddSizesWidget> {
                             );
                             Navigator.pop(context);
 
-                            setState(() {});
+                            safeSetState(() {});
                           },
                           child: Container(
                             width: 200.0,

@@ -15,6 +15,11 @@ class UserOrderdetailsStruct extends FFFirebaseStruct {
     String? pincode,
     String? mobileNo,
     String? state,
+    String? city,
+    String? firstName,
+    String? lastName,
+    String? mobileNumber,
+    String? zipCode,
     FirestoreUtilData firestoreUtilData = const FirestoreUtilData(),
   })  : _email = email,
         _firstname = firstname,
@@ -23,49 +28,96 @@ class UserOrderdetailsStruct extends FFFirebaseStruct {
         _pincode = pincode,
         _mobileNo = mobileNo,
         _state = state,
+        _city = city,
+        _firstName = firstName,
+        _lastName = lastName,
+        _mobileNumber = mobileNumber,
+        _zipCode = zipCode,
         super(firestoreUtilData);
 
   // "email" field.
   String? _email;
   String get email => _email ?? '';
   set email(String? val) => _email = val;
+
   bool hasEmail() => _email != null;
 
   // "firstname" field.
   String? _firstname;
   String get firstname => _firstname ?? '';
   set firstname(String? val) => _firstname = val;
+
   bool hasFirstname() => _firstname != null;
 
   // "lastname" field.
   String? _lastname;
   String get lastname => _lastname ?? '';
   set lastname(String? val) => _lastname = val;
+
   bool hasLastname() => _lastname != null;
 
   // "address" field.
   String? _address;
   String get address => _address ?? '';
   set address(String? val) => _address = val;
+
   bool hasAddress() => _address != null;
 
   // "pincode" field.
   String? _pincode;
   String get pincode => _pincode ?? '';
   set pincode(String? val) => _pincode = val;
+
   bool hasPincode() => _pincode != null;
 
   // "mobileNo" field.
   String? _mobileNo;
   String get mobileNo => _mobileNo ?? '';
   set mobileNo(String? val) => _mobileNo = val;
+
   bool hasMobileNo() => _mobileNo != null;
 
   // "state" field.
   String? _state;
   String get state => _state ?? '';
   set state(String? val) => _state = val;
+
   bool hasState() => _state != null;
+
+  // "city" field.
+  String? _city;
+  String get city => _city ?? '';
+  set city(String? val) => _city = val;
+
+  bool hasCity() => _city != null;
+
+  // "firstName" field.
+  String? _firstName;
+  String get firstName => _firstName ?? '';
+  set firstName(String? val) => _firstName = val;
+
+  bool hasFirstName() => _firstName != null;
+
+  // "lastName" field.
+  String? _lastName;
+  String get lastName => _lastName ?? '';
+  set lastName(String? val) => _lastName = val;
+
+  bool hasLastName() => _lastName != null;
+
+  // "mobileNumber" field.
+  String? _mobileNumber;
+  String get mobileNumber => _mobileNumber ?? '';
+  set mobileNumber(String? val) => _mobileNumber = val;
+
+  bool hasMobileNumber() => _mobileNumber != null;
+
+  // "zipCode" field.
+  String? _zipCode;
+  String get zipCode => _zipCode ?? '';
+  set zipCode(String? val) => _zipCode = val;
+
+  bool hasZipCode() => _zipCode != null;
 
   static UserOrderdetailsStruct fromMap(Map<String, dynamic> data) =>
       UserOrderdetailsStruct(
@@ -76,6 +128,11 @@ class UserOrderdetailsStruct extends FFFirebaseStruct {
         pincode: data['pincode'] as String?,
         mobileNo: data['mobileNo'] as String?,
         state: data['state'] as String?,
+        city: data['city'] as String?,
+        firstName: data['firstName'] as String?,
+        lastName: data['lastName'] as String?,
+        mobileNumber: data['mobileNumber'] as String?,
+        zipCode: data['zipCode'] as String?,
       );
 
   static UserOrderdetailsStruct? maybeFromMap(dynamic data) => data is Map
@@ -90,6 +147,11 @@ class UserOrderdetailsStruct extends FFFirebaseStruct {
         'pincode': _pincode,
         'mobileNo': _mobileNo,
         'state': _state,
+        'city': _city,
+        'firstName': _firstName,
+        'lastName': _lastName,
+        'mobileNumber': _mobileNumber,
+        'zipCode': _zipCode,
       }.withoutNulls;
 
   @override
@@ -120,6 +182,26 @@ class UserOrderdetailsStruct extends FFFirebaseStruct {
         ),
         'state': serializeParam(
           _state,
+          ParamType.String,
+        ),
+        'city': serializeParam(
+          _city,
+          ParamType.String,
+        ),
+        'firstName': serializeParam(
+          _firstName,
+          ParamType.String,
+        ),
+        'lastName': serializeParam(
+          _lastName,
+          ParamType.String,
+        ),
+        'mobileNumber': serializeParam(
+          _mobileNumber,
+          ParamType.String,
+        ),
+        'zipCode': serializeParam(
+          _zipCode,
           ParamType.String,
         ),
       }.withoutNulls;
@@ -162,6 +244,31 @@ class UserOrderdetailsStruct extends FFFirebaseStruct {
           ParamType.String,
           false,
         ),
+        city: deserializeParam(
+          data['city'],
+          ParamType.String,
+          false,
+        ),
+        firstName: deserializeParam(
+          data['firstName'],
+          ParamType.String,
+          false,
+        ),
+        lastName: deserializeParam(
+          data['lastName'],
+          ParamType.String,
+          false,
+        ),
+        mobileNumber: deserializeParam(
+          data['mobileNumber'],
+          ParamType.String,
+          false,
+        ),
+        zipCode: deserializeParam(
+          data['zipCode'],
+          ParamType.String,
+          false,
+        ),
       );
 
   @override
@@ -176,12 +283,29 @@ class UserOrderdetailsStruct extends FFFirebaseStruct {
         address == other.address &&
         pincode == other.pincode &&
         mobileNo == other.mobileNo &&
-        state == other.state;
+        state == other.state &&
+        city == other.city &&
+        firstName == other.firstName &&
+        lastName == other.lastName &&
+        mobileNumber == other.mobileNumber &&
+        zipCode == other.zipCode;
   }
 
   @override
-  int get hashCode => const ListEquality()
-      .hash([email, firstname, lastname, address, pincode, mobileNo, state]);
+  int get hashCode => const ListEquality().hash([
+        email,
+        firstname,
+        lastname,
+        address,
+        pincode,
+        mobileNo,
+        state,
+        city,
+        firstName,
+        lastName,
+        mobileNumber,
+        zipCode
+      ]);
 }
 
 UserOrderdetailsStruct createUserOrderdetailsStruct({
@@ -192,6 +316,11 @@ UserOrderdetailsStruct createUserOrderdetailsStruct({
   String? pincode,
   String? mobileNo,
   String? state,
+  String? city,
+  String? firstName,
+  String? lastName,
+  String? mobileNumber,
+  String? zipCode,
   Map<String, dynamic> fieldValues = const {},
   bool clearUnsetFields = true,
   bool create = false,
@@ -205,6 +334,11 @@ UserOrderdetailsStruct createUserOrderdetailsStruct({
       pincode: pincode,
       mobileNo: mobileNo,
       state: state,
+      city: city,
+      firstName: firstName,
+      lastName: lastName,
+      mobileNumber: mobileNumber,
+      zipCode: zipCode,
       firestoreUtilData: FirestoreUtilData(
         clearUnsetFields: clearUnsetFields,
         create: create,

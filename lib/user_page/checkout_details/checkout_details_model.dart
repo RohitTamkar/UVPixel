@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 class CheckoutDetailsModel extends FlutterFlowModel<CheckoutDetailsWidget> {
   ///  State fields for stateful widgets in this page.
 
-  final unfocusNode = FocusNode();
   // State field(s) for TextField widget.
   FocusNode? textFieldFocusNode1;
   TextEditingController? textController1;
@@ -106,7 +105,6 @@ class CheckoutDetailsModel extends FlutterFlowModel<CheckoutDetailsWidget> {
 
   @override
   void dispose() {
-    unfocusNode.dispose();
     textFieldFocusNode1?.dispose();
     textController1?.dispose();
 

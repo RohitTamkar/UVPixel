@@ -51,7 +51,7 @@ class _UpdateSizeWidgetState extends State<UpdateSizeWidget> {
         TextEditingController(text: widget.sizeDoc?.code.toString());
     _model.textCatalogueCodeFocusNode ??= FocusNode();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -385,7 +385,7 @@ class _UpdateSizeWidgetState extends State<UpdateSizeWidget> {
                             onChanged: (_) => EasyDebounce.debounce(
                               '_model.textCatalogueCodeTextController',
                               const Duration(milliseconds: 2000),
-                              () => setState(() {}),
+                              () => safeSetState(() {}),
                             ),
                             autofocus: true,
                             readOnly: true,

@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 class ShoppingCartnewModel extends FlutterFlowModel<ShoppingCartnewWidget> {
   ///  State fields for stateful widgets in this page.
 
-  final unfocusNode = FocusNode();
   // Stores action output result for [Custom Action - returnOrderQtyminuslist] action in IconButton widget.
   List<OrdersStruct>? qtyminus;
   // Stores action output result for [Custom Action - returnOrderQtyPluslist] action in IconButton widget.
@@ -30,7 +29,6 @@ class ShoppingCartnewModel extends FlutterFlowModel<ShoppingCartnewWidget> {
 
   @override
   void dispose() {
-    unfocusNode.dispose();
     headerModel.dispose();
     drawerModel.dispose();
   }

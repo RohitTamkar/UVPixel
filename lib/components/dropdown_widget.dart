@@ -33,7 +33,7 @@ class _DropdownWidgetState extends State<DropdownWidget> {
     super.initState();
     _model = createModel(context, () => DropdownModel());
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -55,10 +55,9 @@ class _DropdownWidgetState extends State<DropdownWidget> {
       ),
       options: const ['Pending', 'Dispatch', 'Delivered'],
       onChanged: (val) async {
-        setState(() => _model.dropDownValue = val);
-        setState(() {
-          FFAppState().dropdown = _model.dropDownValue!;
-        });
+        safeSetState(() => _model.dropDownValue = val);
+        FFAppState().dropdown = _model.dropDownValue!;
+        safeSetState(() {});
       },
       width: 200.0,
       height: 50.0,

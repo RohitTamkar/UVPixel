@@ -81,7 +81,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
     _model.textController16 ??= TextEditingController();
     _model.textFieldFocusNode16 ??= FocusNode();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -96,9 +96,10 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
     context.watch<FFAppState>();
 
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -118,7 +119,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
             elevation: 16.0,
             child: wrapWithModel(
               model: _model.drawerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const DrawerWidget(),
             ),
           ),
@@ -1181,7 +1182,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                                       'Uttarakhand',
                                       'West Bengal'
                                     ],
-                                    onChanged: (val) => setState(
+                                    onChanged: (val) => safeSetState(
                                         () => _model.dropDownValue1 = val),
                                     width: double.infinity,
                                     height: 56.0,
@@ -1703,45 +1704,36 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                                                   descending: true),
                                           singleRecord: true,
                                         ).then((s) => s.firstOrNull);
-                                        if (_model.orderid?.orderId != null) {
-                                          setState(() {
-                                            FFAppState().orderId =
-                                                valueOrDefault<int>(
-                                              _model.orderid?.orderId,
-                                              0,
-                                            );
-                                          });
+                                        if (_model.orderid?.orderId != null &&
+                                            _model.orderid?.orderId != '') {
                                         } else {
-                                          setState(() {
-                                            FFAppState().orderId = 100000;
-                                          });
+                                          FFAppState().orderId = 100000;
+                                          safeSetState(() {});
                                         }
 
-                                        setState(() {
-                                          FFAppState()
-                                              .updateUserOrderDetailsStruct(
-                                            (e) => e
-                                              ..email =
-                                                  _model.textController1.text
-                                              ..firstname =
-                                                  _model.textController3.text
-                                              ..lastname =
-                                                  _model.textController4.text
-                                              ..address =
-                                                  'house no${_model.textController5.text},${_model.textController6.text},${_model.textController8.text},${_model.textController7.text}'
-                                              ..pincode =
-                                                  _model.textController7.text
-                                              ..mobileNo =
-                                                  _model.textController2.text
-                                              ..state = _model.dropDownValue1,
-                                          );
-                                          FFAppState().orderId =
-                                              FFAppState().orderId + 1;
-                                        });
-                                        setState(() {
-                                          FFAppState().merchantTransactionId =
-                                              'MTI${getCurrentTimestamp.millisecondsSinceEpoch.toString()}';
-                                        });
+                                        FFAppState()
+                                            .updateUserOrderDetailsStruct(
+                                          (e) => e
+                                            ..email =
+                                                _model.textController1.text
+                                            ..firstname =
+                                                _model.textController3.text
+                                            ..lastname =
+                                                _model.textController4.text
+                                            ..address =
+                                                'house no${_model.textController5.text},${_model.textController6.text},${_model.textController8.text},${_model.textController7.text}'
+                                            ..pincode =
+                                                _model.textController7.text
+                                            ..mobileNo =
+                                                _model.textController2.text
+                                            ..state = _model.dropDownValue1,
+                                        );
+                                        FFAppState().orderId =
+                                            FFAppState().orderId + 1;
+                                        safeSetState(() {});
+                                        FFAppState().merchantTransactionId =
+                                            'MTI${getCurrentTimestamp.millisecondsSinceEpoch.toString()}';
+                                        safeSetState(() {});
 
                                         var ordersRecordReference =
                                             OrdersRecord.collection.doc();
@@ -1759,9 +1751,9 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                                             ),
                                             orderAt: getCurrentTimestamp
                                                 .millisecondsSinceEpoch,
-                                            orderId: valueOrDefault<int>(
-                                              FFAppState().orderId,
-                                              0,
+                                            orderId: valueOrDefault<String>(
+                                              FFAppState().orderId.toString(),
+                                              '0',
                                             ),
                                             status: 'Pending',
                                             transactionId: FFAppState()
@@ -1794,9 +1786,9 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                                             ),
                                             orderAt: getCurrentTimestamp
                                                 .millisecondsSinceEpoch,
-                                            orderId: valueOrDefault<int>(
-                                              FFAppState().orderId,
-                                              0,
+                                            orderId: valueOrDefault<String>(
+                                              FFAppState().orderId.toString(),
+                                              '0',
                                             ),
                                             status: 'Pending',
                                             transactionId: FFAppState()
@@ -1866,14 +1858,14 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                                         )),
                                         type: 'PAY_PAGE',
                                       );
+
                                       if ((_model.apiResultnbp?.succeeded ??
                                           true)) {
-                                        setState(() {
-                                          FFAppState().orderList = [];
-                                          FFAppState().FinalAmt = 0.0;
-                                          FFAppState().userOrderDetails =
-                                              UserOrderdetailsStruct();
-                                        });
+                                        FFAppState().orderList = [];
+                                        FFAppState().FinalAmt = 0.0;
+                                        FFAppState().userOrderDetails =
+                                            UserOrderdetailsStruct();
+                                        safeSetState(() {});
                                         await actions.launchUrl(
                                           getJsonField(
                                             (_model.apiResultnbp?.jsonBody ??
@@ -1906,7 +1898,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                                       context.pushNamed('ShoppingCartnew');
                                     }
 
-                                    setState(() {});
+                                    safeSetState(() {});
                                   },
                                   text: 'Continue to Payment',
                                   options: FFButtonOptions(
@@ -3003,7 +2995,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                                         'Uttarakhand',
                                         'West Bengal'
                                       ],
-                                      onChanged: (val) => setState(
+                                      onChanged: (val) => safeSetState(
                                           () => _model.dropDownValue2 = val),
                                       width: double.infinity,
                                       height: 56.0,
@@ -3503,42 +3495,37 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                                 (_model.textController10.text != '') &&
                                 (_model.textController11.text != '') &&
                                 (_model.textController14.text != '')) {
-                              setState(() {
-                                FFAppState().updateUserOrderDetailsStruct(
-                                  (e) => e
-                                    ..email = _model.textController9.text
-                                    ..firstname = _model.textController11.text
-                                    ..lastname = _model.textController12.text
-                                    ..address = valueOrDefault<String>(
-                                      '${_model.textController13.text},${_model.textController14.text},${_model.textController16.text},${_model.textController15.text}',
-                                      '0',
-                                    )
-                                    ..pincode = _model.textController15.text
-                                    ..mobileNo = _model.textController10.text
-                                    ..state = _model.dropDownValue2,
-                                );
-                              });
+                              FFAppState().updateUserOrderDetailsStruct(
+                                (e) => e
+                                  ..email = _model.textController9.text
+                                  ..firstname = _model.textController11.text
+                                  ..lastname = _model.textController12.text
+                                  ..address = valueOrDefault<String>(
+                                    '${_model.textController13.text},${_model.textController14.text},${_model.textController16.text},${_model.textController15.text}',
+                                    '0',
+                                  )
+                                  ..pincode = _model.textController15.text
+                                  ..mobileNo = _model.textController10.text
+                                  ..state = _model.dropDownValue2,
+                              );
+                              safeSetState(() {});
                               _model.orderid2 = await queryOrdersRecordOnce(
                                 queryBuilder: (ordersRecord) => ordersRecord
                                     .orderBy('orderId', descending: true),
                                 singleRecord: true,
                               ).then((s) => s.firstOrNull);
-                              if (_model.orderid2?.orderId != null) {
-                                setState(() {
-                                  FFAppState().orderId =
-                                      _model.orderid2!.orderId;
-                                });
+                              if (_model.orderid2?.orderId != null &&
+                                  _model.orderid2?.orderId != '') {
+                                safeSetState(() {});
                               } else {
-                                setState(() {
-                                  FFAppState().orderId = 100000;
-                                });
+                                FFAppState().orderId = 100000;
+                                safeSetState(() {});
                               }
 
-                              setState(() {
-                                FFAppState().merchantTransactionId =
-                                    'MTI${getCurrentTimestamp.millisecondsSinceEpoch.toString()}';
-                                FFAppState().orderId = FFAppState().orderId + 1;
-                              });
+                              FFAppState().merchantTransactionId =
+                                  'MTI${getCurrentTimestamp.millisecondsSinceEpoch.toString()}';
+                              FFAppState().orderId = FFAppState().orderId + 1;
+                              safeSetState(() {});
 
                               var ordersRecordReference =
                                   OrdersRecord.collection.doc();
@@ -3553,7 +3540,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                                     clearUnsetFields: false,
                                     create: true,
                                   ),
-                                  orderId: FFAppState().orderId,
+                                  orderId: FFAppState().orderId.toString(),
                                   status: 'Pending',
                                   orderAt: getCurrentTimestamp
                                       .millisecondsSinceEpoch,
@@ -3583,7 +3570,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                                     clearUnsetFields: false,
                                     create: true,
                                   ),
-                                  orderId: FFAppState().orderId,
+                                  orderId: FFAppState().orderId.toString(),
                                   status: 'Pending',
                                   orderAt: getCurrentTimestamp
                                       .millisecondsSinceEpoch,
@@ -3644,13 +3631,13 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                               )),
                               type: 'PAY_PAGE',
                             );
+
                             if ((_model.apiResultnbp2?.succeeded ?? true)) {
-                              setState(() {
-                                FFAppState().orderList = [];
-                                FFAppState().FinalAmt = 0.0;
-                                FFAppState().userOrderDetails =
-                                    UserOrderdetailsStruct();
-                              });
+                              FFAppState().orderList = [];
+                              FFAppState().FinalAmt = 0.0;
+                              FFAppState().userOrderDetails =
+                                  UserOrderdetailsStruct();
+                              safeSetState(() {});
                               await actions.launchUrl(
                                 getJsonField(
                                   (_model.apiResultnbp2?.jsonBody ?? ''),
@@ -3680,7 +3667,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                             context.pushNamed('ShoppingCartnew');
                           }
 
-                          setState(() {});
+                          safeSetState(() {});
                         },
                         text: 'Continue to Payment',
                         options: FFButtonOptions(
@@ -3716,7 +3703,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
               ),
             wrapWithModel(
               model: _model.headerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const HeaderWidget(),
             ),
           ],

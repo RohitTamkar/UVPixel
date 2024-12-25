@@ -29,7 +29,7 @@ class _ColorfullFrameGallaryWidgetState
     super.initState();
     _model = createModel(context, () => ColorfullFrameGallaryModel());
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -42,9 +42,10 @@ class _ColorfullFrameGallaryWidgetState
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -64,7 +65,7 @@ class _ColorfullFrameGallaryWidgetState
             elevation: 16.0,
             child: wrapWithModel(
               model: _model.drawerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const DrawerWidget(),
             ),
           ),
@@ -158,6 +159,7 @@ class _ColorfullFrameGallaryWidgetState
                                         containerCategoryRecordList.isNotEmpty
                                             ? containerCategoryRecordList.first
                                             : null;
+
                                     return Container(
                                       decoration: const BoxDecoration(),
                                       child: GridView(
@@ -1522,7 +1524,7 @@ class _ColorfullFrameGallaryWidgetState
                       ),
                       wrapWithModel(
                         model: _model.footerWebModel,
-                        updateCallback: () => setState(() {}),
+                        updateCallback: () => safeSetState(() {}),
                         child: const FooterWebWidget(),
                       ),
                     ],
@@ -1624,6 +1626,7 @@ class _ColorfullFrameGallaryWidgetState
                                                 ? containerCategoryRecordList
                                                     .first
                                                 : null;
+
                                         return Container(
                                           decoration: const BoxDecoration(),
                                           child: GridView(
@@ -3039,7 +3042,7 @@ class _ColorfullFrameGallaryWidgetState
                       ),
                       wrapWithModel(
                         model: _model.footerMobileModel,
-                        updateCallback: () => setState(() {}),
+                        updateCallback: () => safeSetState(() {}),
                         child: const FooterMobileWidget(),
                       ),
                     ],
@@ -3048,7 +3051,7 @@ class _ColorfullFrameGallaryWidgetState
               ),
             wrapWithModel(
               model: _model.headerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const HeaderWidget(),
             ),
           ],

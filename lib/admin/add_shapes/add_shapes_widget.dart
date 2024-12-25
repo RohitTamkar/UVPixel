@@ -43,7 +43,7 @@ class _AddShapesWidgetState extends State<AddShapesWidget> {
         TextEditingController(text: widget.codeLen?.toString());
     _model.textCatalogueCodeFocusNode ??= FocusNode();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -280,7 +280,7 @@ class _AddShapesWidgetState extends State<AddShapesWidget> {
                             onChanged: (_) => EasyDebounce.debounce(
                               '_model.textCatalogueCodeTextController',
                               const Duration(milliseconds: 2000),
-                              () => setState(() {}),
+                              () => safeSetState(() {}),
                             ),
                             autofocus: true,
                             readOnly: true,
@@ -461,7 +461,7 @@ class _AddShapesWidgetState extends State<AddShapesWidget> {
                             );
                             Navigator.pop(context);
 
-                            setState(() {});
+                            safeSetState(() {});
                           },
                           child: Container(
                             width: 200.0,

@@ -45,11 +45,10 @@ class _UpdateSizeCategoryWidgetState extends State<UpdateSizeCategoryWidget> {
 
     // On component load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      setState(() {
-        FFAppState().priceListAndThicknessAppState = widget.sizeMap!.thickness
-            .toList()
-            .cast<ThicknessAndPriceListStruct>();
-      });
+      FFAppState().priceListAndThicknessAppState = widget.sizeMap!.thickness
+          .toList()
+          .cast<ThicknessAndPriceListStruct>();
+      safeSetState(() {});
     });
 
     _model.mrpTextFeildTextController ??= TextEditingController();
@@ -58,7 +57,7 @@ class _UpdateSizeCategoryWidgetState extends State<UpdateSizeCategoryWidget> {
     _model.priceTextFeildTextController ??= TextEditingController();
     _model.priceTextFeildFocusNode ??= FocusNode();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -112,6 +111,7 @@ class _UpdateSizeCategoryWidgetState extends State<UpdateSizeCategoryWidget> {
                   containerCategoryRecordList.isNotEmpty
                       ? containerCategoryRecordList.first
                       : null;
+
               return Container(
                 width: 650.0,
                 height: 600.0,
@@ -177,6 +177,7 @@ class _UpdateSizeCategoryWidgetState extends State<UpdateSizeCategoryWidget> {
                             }
                             List<SizeRecord> dropDownSizeRecordList =
                                 snapshot.data!;
+
                             return FlutterFlowDropDown<String>(
                               controller: _model.dropDownValueController ??=
                                   FormFieldController<String>(
@@ -188,8 +189,8 @@ class _UpdateSizeCategoryWidgetState extends State<UpdateSizeCategoryWidget> {
                               optionLabels: dropDownSizeRecordList
                                   .map((e) => e.title)
                                   .toList(),
-                              onChanged: (val) =>
-                                  setState(() => _model.dropDownValue = val),
+                              onChanged: (val) => safeSetState(
+                                  () => _model.dropDownValue = val),
                               width: 300.0,
                               textStyle: FlutterFlowTheme.of(context)
                                   .titleSmall
@@ -219,8 +220,8 @@ class _UpdateSizeCategoryWidgetState extends State<UpdateSizeCategoryWidget> {
                               margin: const EdgeInsetsDirectional.fromSTEB(
                                   16.0, 0.0, 16.0, 0.0),
                               hidesUnderline: true,
-                              disabled:
-                                  widget.sizeId != null && widget.sizeId != '',
+                              disabled: widget.sizeId != null &&
+                                  widget.sizeId != '',
                               isOverButton: true,
                               isSearchable: false,
                               isMultiSelect: false,
@@ -282,13 +283,14 @@ class _UpdateSizeCategoryWidgetState extends State<UpdateSizeCategoryWidget> {
                                       List<ShapesRecord>
                                           choiceChipsShapesRecordList =
                                           snapshot.data!;
+
                                       return FlutterFlowChoiceChips(
                                         options: choiceChipsShapesRecordList
                                             .map((e) => e.name)
                                             .toList()
                                             .map((label) => ChipData(label))
                                             .toList(),
-                                        onChanged: (val) => setState(() =>
+                                        onChanged: (val) => safeSetState(() =>
                                             _model.choiceChipsValues = val),
                                         selectedChipStyle: ChipStyle(
                                           backgroundColor:
@@ -396,6 +398,7 @@ class _UpdateSizeCategoryWidgetState extends State<UpdateSizeCategoryWidget> {
                                         final list = FFAppState()
                                             .priceListAndThicknessAppState
                                             .toList();
+
                                         return ListView.builder(
                                           padding: EdgeInsets.zero,
                                           shrinkWrap: true,
@@ -516,6 +519,7 @@ class _UpdateSizeCategoryWidgetState extends State<UpdateSizeCategoryWidget> {
                                                                       ? textThicknessRecordList
                                                                           .first
                                                                       : null;
+
                                                                   return Text(
                                                                     valueOrDefault<
                                                                         String>(
@@ -731,11 +735,10 @@ class _UpdateSizeCategoryWidgetState extends State<UpdateSizeCategoryWidget> {
                                                                   ) ??
                                                                   false;
                                                           if (confirmDialogResponse) {
-                                                            setState(() {
-                                                              FFAppState()
-                                                                  .removeFromPriceListAndThicknessAppState(
-                                                                      listItem);
-                                                            });
+                                                            FFAppState()
+                                                                .removeFromPriceListAndThicknessAppState(
+                                                                    listItem);
+                                                            safeSetState(() {});
                                                             ScaffoldMessenger
                                                                     .of(context)
                                                                 .showSnackBar(
@@ -820,6 +823,7 @@ class _UpdateSizeCategoryWidgetState extends State<UpdateSizeCategoryWidget> {
                                                   List<ThicknessRecord>
                                                       sizeDropdownThicknessRecordList =
                                                       snapshot.data!;
+
                                                   return FlutterFlowDropDown<
                                                       String>(
                                                     controller: _model
@@ -838,7 +842,7 @@ class _UpdateSizeCategoryWidgetState extends State<UpdateSizeCategoryWidget> {
                                                             .map((e) => e.name)
                                                             .toList(),
                                                     onChanged: (val) =>
-                                                        setState(() => _model
+                                                        safeSetState(() => _model
                                                                 .sizeDropdownValue =
                                                             val),
                                                     width: 300.0,
@@ -1164,26 +1168,24 @@ class _UpdateSizeCategoryWidgetState extends State<UpdateSizeCategoryWidget> {
                                           ),
                                           FFButtonWidget(
                                             onPressed: () async {
-                                              setState(() {
-                                                FFAppState()
-                                                    .addToPriceListAndThicknessAppState(
-                                                        ThicknessAndPriceListStruct(
-                                                  mrpPrice: double.tryParse(_model
-                                                      .mrpTextFeildTextController
-                                                      .text),
-                                                  sellingPrice: double.tryParse(
-                                                      _model
-                                                          .priceTextFeildTextController
-                                                          .text),
-                                                  id: _model.sizeDropdownValue,
-                                                ));
-                                              });
-                                              setState(() {
+                                              FFAppState()
+                                                  .addToPriceListAndThicknessAppState(
+                                                      ThicknessAndPriceListStruct(
+                                                mrpPrice: double.tryParse(_model
+                                                    .mrpTextFeildTextController
+                                                    .text),
+                                                sellingPrice: double.tryParse(_model
+                                                    .priceTextFeildTextController
+                                                    .text),
+                                                id: _model.sizeDropdownValue,
+                                              ));
+                                              safeSetState(() {});
+                                              safeSetState(() {
                                                 _model
                                                     .sizeDropdownValueController
                                                     ?.reset();
                                               });
-                                              setState(() {
+                                              safeSetState(() {
                                                 _model
                                                     .mrpTextFeildTextController
                                                     ?.clear();
@@ -1295,18 +1297,15 @@ class _UpdateSizeCategoryWidgetState extends State<UpdateSizeCategoryWidget> {
                               hoverColor: Colors.transparent,
                               highlightColor: Colors.transparent,
                               onTap: () async {
-                                setState(() {
-                                  FFAppState().addToSizeDetails(SizeMapStruct(
-                                    sizeId: _model.dropDownValue,
-                                    thickness: FFAppState()
-                                        .priceListAndThicknessAppState,
-                                    shapes: _model.choiceChipsValues,
-                                  ));
-                                });
-                                setState(() {
-                                  FFAppState().priceListAndThicknessAppState =
-                                      [];
-                                });
+                                FFAppState().addToSizeDetails(SizeMapStruct(
+                                  sizeId: _model.dropDownValue,
+                                  thickness: FFAppState()
+                                      .priceListAndThicknessAppState,
+                                  shapes: _model.choiceChipsValues,
+                                ));
+                                safeSetState(() {});
+                                FFAppState().priceListAndThicknessAppState = [];
+                                safeSetState(() {});
                                 Navigator.pop(context);
                               },
                               child: Container(

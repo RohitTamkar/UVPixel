@@ -24,7 +24,7 @@ class _ShippingPolicyWidgetState extends State<ShippingPolicyWidget> {
     super.initState();
     _model = createModel(context, () => ShippingPolicyModel());
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -37,9 +37,10 @@ class _ShippingPolicyWidgetState extends State<ShippingPolicyWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -59,7 +60,7 @@ class _ShippingPolicyWidgetState extends State<ShippingPolicyWidget> {
             elevation: 16.0,
             child: wrapWithModel(
               model: _model.drawerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const DrawerWidget(),
             ),
           ),
@@ -89,7 +90,7 @@ class _ShippingPolicyWidgetState extends State<ShippingPolicyWidget> {
                       child: Html(
                         data:
                             '<p><span style=\"font-size: 18pt;\"><strong>Shipping Policy</strong></span></p>\n<p><br></p><p><span style=\"color: rgb(29, 28, 29);\">Thank you for choosing uvpixel for your personalized items. We want to ensure a smooth and timely delivery of your order. Please review our shipping policy below for important information regarding shipping methods, processing times, and delivery estimates.Processing Time:Customization: Our personalized gifts require a certain amount of time for customization. The processing time for each item usually takes 3-7 days. Please note that this processing time is in addition to the shipping time.</span></p><p><span style=\"color: rgb(29, 28, 29);\">Shipping Methods:We offer various shipping methods to accommodate different delivery needs. The available shipping methods and associated costs will be displayed during the checkout process.</span></p><p><span style=\"color: rgb(29, 28, 29);\">Shipping Courier: This is our default shipping method, which typically takes 2-7 days to deliver your order within.</span></p><p><br></p><p><span style=\"color: rgb(29, 28, 29);\">DTDC courier&nbsp;usually deliver in 2-7 days.Tracking Information:Please do contact us with order id after 5 working days we will provide with tracking number.</span></p><p><span style=\"color: rgb(29, 28, 29);\">If you have any questions or need further assistance regarding our shipping policy, please contact our customer service team, and we will be happy to assist you.Thank you for choosing UVPIXEL for your personalized gifts.UVPIXEL</span></p><p><br></p><p><span style=\"color: rgb(29, 28, 29);\">WhatsApp</span></p><p><span style=\"color: rgb(29, 28, 29);\">+91 96897 29777</span></p>',
-                        onLinkTap: (url, _, __, ___) => launchURL(url!),
+                        onLinkTap: (url, _, __) => launchURL(url!),
                       ),
                     ),
                   ],
@@ -98,7 +99,7 @@ class _ShippingPolicyWidgetState extends State<ShippingPolicyWidget> {
             ),
             wrapWithModel(
               model: _model.headerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const HeaderWidget(),
             ),
           ],

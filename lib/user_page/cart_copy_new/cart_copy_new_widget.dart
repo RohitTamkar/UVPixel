@@ -56,65 +56,88 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       if ((_model.uploadedLocalFile1.bytes?.isNotEmpty ?? false)) {
-        setState(() {
-          FFAppState().img = '';
-        });
+        FFAppState().img = '';
+        safeSetState(() {});
       } else {
-        setState(() {
-          FFAppState().imageUrl =
-              'https://firebasestorage.googleapis.com/v0/b/uvpixcel.appspot.com/o/importantImages%2FMAIN%20IMAGE%20new.jpg?alt=media&token=cdcd026f-349a-4d22-bc17-7e4d3730b5a2';
-          FFAppState().Shape = 'square';
-        });
+        FFAppState().imageUrl =
+            'https://firebasestorage.googleapis.com/v0/b/uvpixcel.appspot.com/o/importantImages%2FMAIN%20IMAGE%20new.jpg?alt=media&token=cdcd026f-349a-4d22-bc17-7e4d3730b5a2';
+        FFAppState().Shape = 'square';
+        safeSetState(() {});
       }
 
-      _model.doccat = await queryCategoryRecordOnce(
-        queryBuilder: (categoryRecord) => categoryRecord.where(
-          'categoryId',
-          isEqualTo: valueOrDefault<String>(
-            FFAppState().catgerydoc?.id,
-            '0',
+      if (widget.category != null) {
+        FFAppState().size = widget.category!.sizeMap.firstOrNull!.sizeId;
+        FFAppState().thickness =
+            widget.category!.sizeMap.firstOrNull!.thickness.firstOrNull!.id;
+        FFAppState().showClock =
+            widget.category?.title == 'Acrylic Clock' ? true : false;
+        FFAppState().showFrame = () {
+          if (widget.category?.title == 'Acrylic Frame With High Gloss') {
+            return true;
+          } else if (widget.category?.title == 'Transparent Acrylic Photo') {
+            return true;
+          } else {
+            return false;
+          }
+        }();
+        safeSetState(() {});
+        _model.selectedSize = widget.category?.sizeMap.firstOrNull;
+        safeSetState(() {});
+      } else {
+        _model.listifcat = await queryCategoryRecordOnce(
+          queryBuilder: (categoryRecord) => categoryRecord.where(
+            'title',
+            isEqualTo: 'Premium Acrylic Photo',
           ),
-        ),
-        singleRecord: true,
-      ).then((s) => s.firstOrNull);
-      setState(() {
+          singleRecord: true,
+        ).then((s) => s.firstOrNull);
         FFAppState().size = valueOrDefault<String>(
-          _model.doccat?.sizeMap.first.sizeId,
+          _model.listifcat?.sizeMap.firstOrNull?.sizeId,
           '0',
         );
         FFAppState().thickness = valueOrDefault<String>(
-          _model.doccat?.sizeMap.first.thickness.first.id,
+          _model.listifcat?.sizeMap.firstOrNull?.thickness.firstOrNull?.id,
           '0',
         );
-        FFAppState().showClock = valueOrDefault<bool>(
-          _model.doccat?.title == 'Acrylic Clock' ? true : false,
-          false,
-        );
-        FFAppState().showFrame = valueOrDefault<bool>(
-          () {
-            if (_model.doccat?.title == 'Acrylic Frame With High Gloss') {
-              return true;
-            } else if (_model.doccat?.title == 'Transparent Acrylic Photo') {
-              return true;
-            } else {
-              return false;
-            }
-          }(),
-          false,
-        );
-      });
-      setState(() {
-        _model.selectedSize = widget.category?.sizeMap.first;
-      });
+        FFAppState().showClock = valueOrDefault<String>(
+                  _model.listifcat?.title,
+                  '0',
+                ) ==
+                'Acrylic Clock'
+            ? true
+            : false;
+        FFAppState().showFrame = () {
+          if (valueOrDefault<String>(
+                _model.listifcat?.title,
+                '0',
+              ) ==
+              'Acrylic Frame With High Gloss') {
+            return true;
+          } else if (valueOrDefault<String>(
+                _model.listifcat?.title,
+                '0',
+              ) ==
+              'Transparent Acrylic Photo') {
+            return true;
+          } else {
+            return false;
+          }
+        }();
+        safeSetState(() {});
+        _model.selectedSize = _model.listifcat?.sizeMap.firstOrNull;
+        safeSetState(() {});
+      }
     });
 
+    _model.switchValue1 = FFAppState().showPortrait;
     _model.pincodeTextTextController ??= TextEditingController();
     _model.pincodeTextFocusNode ??= FocusNode();
 
+    _model.switchValue2 = FFAppState().showPortrait;
     _model.textController2 ??= TextEditingController();
     _model.textFieldFocusNode ??= FocusNode();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -129,9 +152,10 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
     context.watch<FFAppState>();
 
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -151,7 +175,7 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
             elevation: 16.0,
             child: wrapWithModel(
               model: _model.drawerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const DrawerWidget(),
             ),
           ),
@@ -233,6 +257,7 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                 containerSizeRecordList.isNotEmpty
                                     ? containerSizeRecordList.first
                                     : null;
+
                             return Container(
                               width: double.infinity,
                               decoration: BoxDecoration(
@@ -517,22 +542,19 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                                                   Directionality.of(
                                                                       context)),
                                                       child: GestureDetector(
-                                                        onTap: () => _model
-                                                                .unfocusNode
-                                                                .canRequestFocus
-                                                            ? FocusScope.of(
-                                                                    context)
-                                                                .requestFocus(_model
-                                                                    .unfocusNode)
-                                                            : FocusScope.of(
-                                                                    context)
-                                                                .unfocus(),
+                                                        onTap: () {
+                                                          FocusScope.of(
+                                                                  dialogContext)
+                                                              .unfocus();
+                                                          FocusManager.instance
+                                                              .primaryFocus
+                                                              ?.unfocus();
+                                                        },
                                                         child: const SizeHelpWidget(),
                                                       ),
                                                     );
                                                   },
-                                                ).then(
-                                                    (value) => setState(() {}));
+                                                );
                                               },
                                               text: 'Size ?',
                                               options: FFButtonOptions(
@@ -659,10 +681,9 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                         size: 18.0,
                                       ),
                                       onPressed: () async {
-                                        setState(() {
-                                          FFAppState().zoomPer =
-                                              FFAppState().zoomPer + -0.1;
-                                        });
+                                        FFAppState().zoomPer =
+                                            FFAppState().zoomPer + -0.1;
+                                        safeSetState(() {});
                                       },
                                     ),
                                     Padding(
@@ -687,10 +708,9 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                         size: 18.0,
                                       ),
                                       onPressed: () async {
-                                        setState(() {
-                                          FFAppState().zoomPer =
-                                              FFAppState().zoomPer + 0.1;
-                                        });
+                                        FFAppState().zoomPer =
+                                            FFAppState().zoomPer + 0.1;
+                                        safeSetState(() {});
                                       },
                                     ),
                                   ],
@@ -710,7 +730,7 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                       selectedMedia.every((m) =>
                                           validateFileFormat(
                                               m.storagePath, context))) {
-                                    setState(
+                                    safeSetState(
                                         () => _model.isDataUploading1 = true);
                                     var selectedUploadedFiles =
                                         <FFUploadedFile>[];
@@ -732,21 +752,20 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                     }
                                     if (selectedUploadedFiles.length ==
                                         selectedMedia.length) {
-                                      setState(() {
+                                      safeSetState(() {
                                         _model.uploadedLocalFile1 =
                                             selectedUploadedFiles.first;
                                       });
                                     } else {
-                                      setState(() {});
+                                      safeSetState(() {});
                                       return;
                                     }
                                   }
 
-                                  setState(() {
-                                    FFAppState().imageUrl =
-                                        functions.imageToBase64new(
-                                            _model.uploadedLocalFile1)!;
-                                  });
+                                  FFAppState().imageUrl =
+                                      functions.imageToBase64new(
+                                          _model.uploadedLocalFile1)!;
+                                  safeSetState(() {});
                                 },
                                 text: 'Select Photo',
                                 icon: const Icon(
@@ -805,13 +824,12 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                               .resolve(
                                                   Directionality.of(context)),
                                           child: GestureDetector(
-                                            onTap: () => _model
-                                                    .unfocusNode.canRequestFocus
-                                                ? FocusScope.of(context)
-                                                    .requestFocus(
-                                                        _model.unfocusNode)
-                                                : FocusScope.of(context)
-                                                    .unfocus(),
+                                            onTap: () {
+                                              FocusScope.of(dialogContext)
+                                                  .unfocus();
+                                              FocusManager.instance.primaryFocus
+                                                  ?.unfocus();
+                                            },
                                             child: const SizedBox(
                                               height: 200.0,
                                               width: 400.0,
@@ -820,7 +838,7 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                           ),
                                         );
                                       },
-                                    ).then((value) => setState(() {}));
+                                    );
                                   },
                                   text: 'Add Text',
                                   icon: Icon(
@@ -947,18 +965,16 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                               ),
                             ),
                             Switch.adaptive(
-                              value: _model.switchValue1 ??=
-                                  FFAppState().showPortrait,
+                              value: _model.switchValue1!,
                               onChanged: (newValue) async {
-                                setState(() => _model.switchValue1 = newValue);
+                                safeSetState(
+                                    () => _model.switchValue1 = newValue);
                                 if (newValue) {
-                                  setState(() {
-                                    FFAppState().showPortrait = true;
-                                  });
+                                  FFAppState().showPortrait = true;
+                                  safeSetState(() {});
                                 } else {
-                                  setState(() {
-                                    FFAppState().showPortrait = false;
-                                  });
+                                  FFAppState().showPortrait = false;
+                                  safeSetState(() {});
                                 }
                               },
                               activeColor: FlutterFlowTheme.of(context).accent1,
@@ -991,6 +1007,7 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                         .toList()
                                         .toList() ??
                                     [];
+
                                 return ListView.separated(
                                   padding: EdgeInsets.zero,
                                   shrinkWrap: true,
@@ -1039,16 +1056,16 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                             imageShapesRecordList.isNotEmpty
                                                 ? imageShapesRecordList.first
                                                 : null;
+
                                         return InkWell(
                                           splashColor: Colors.transparent,
                                           focusColor: Colors.transparent,
                                           hoverColor: Colors.transparent,
                                           highlightColor: Colors.transparent,
                                           onTap: () async {
-                                            setState(() {
-                                              FFAppState().Shape =
-                                                  imageShapesRecord.name;
-                                            });
+                                            FFAppState().Shape =
+                                                imageShapesRecord.name;
+                                            safeSetState(() {});
                                           },
                                           child: ClipRRect(
                                             borderRadius:
@@ -1106,6 +1123,7 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                 richTextSizeRecordList.isNotEmpty
                                     ? richTextSizeRecordList.first
                                     : null;
+
                             return RichText(
                               textScaler: MediaQuery.of(context).textScaler,
                               text: TextSpan(
@@ -1197,11 +1215,11 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                     alignment: const AlignmentDirectional(0.0, 0.0)
                                         .resolve(Directionality.of(context)),
                                     child: GestureDetector(
-                                      onTap: () => _model
-                                              .unfocusNode.canRequestFocus
-                                          ? FocusScope.of(context)
-                                              .requestFocus(_model.unfocusNode)
-                                          : FocusScope.of(context).unfocus(),
+                                      onTap: () {
+                                        FocusScope.of(dialogContext).unfocus();
+                                        FocusManager.instance.primaryFocus
+                                            ?.unfocus();
+                                      },
                                       child: SizedBox(
                                         height:
                                             MediaQuery.sizeOf(context).height *
@@ -1212,7 +1230,7 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                     ),
                                   );
                                 },
-                              ).then((value) => setState(() {}));
+                              );
                             },
                             child: RichText(
                               textScaler: MediaQuery.of(context).textScaler,
@@ -1317,6 +1335,7 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                       final sizeList =
                                           widget.category?.sizeMap.toList() ??
                                               [];
+
                                       return GridView.builder(
                                         padding: EdgeInsets.zero,
                                         gridDelegate:
@@ -1374,28 +1393,29 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                                       ? buttonSizeRecordList
                                                           .first
                                                       : null;
+
                                               return FFButtonWidget(
                                                 onPressed: () async {
-                                                  setState(() {
-                                                    FFAppState().size =
-                                                        buttonSizeRecord.id;
-                                                  });
-                                                  setState(() {
-                                                    _model.selectedSize =
-                                                        sizeListItem;
-                                                  });
-                                                  setState(() {
-                                                    FFAppState().thickness =
-                                                        sizeListItem
-                                                            .thickness.first.id;
-                                                    FFAppState().productPrice =
-                                                        sizeListItem.thickness
-                                                            .first.sellingPrice;
-                                                    FFAppState()
-                                                            .productMRPPrice =
-                                                        sizeListItem.thickness
-                                                            .first.mrpPrice;
-                                                  });
+                                                  FFAppState().size =
+                                                      buttonSizeRecord.id;
+                                                  safeSetState(() {});
+                                                  _model.selectedSize =
+                                                      sizeListItem;
+                                                  safeSetState(() {});
+                                                  FFAppState().thickness =
+                                                      sizeListItem.thickness
+                                                          .firstOrNull!.id;
+                                                  FFAppState().productPrice =
+                                                      sizeListItem
+                                                          .thickness
+                                                          .firstOrNull!
+                                                          .sellingPrice;
+                                                  FFAppState().productMRPPrice =
+                                                      sizeListItem
+                                                          .thickness
+                                                          .firstOrNull!
+                                                          .mrpPrice;
+                                                  safeSetState(() {});
                                                 },
                                                 text: buttonSizeRecord!.title,
                                                 options: FFButtonOptions(
@@ -1503,6 +1523,7 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                               .selectedSize?.thickness
                                               .toList() ??
                                           [];
+
                                       return GridView.builder(
                                         padding: EdgeInsets.zero,
                                         gridDelegate:
@@ -1562,20 +1583,18 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                                       ? buttonThicknessRecordList
                                                           .first
                                                       : null;
+
                                               return FFButtonWidget(
                                                 onPressed: () async {
-                                                  setState(() {
-                                                    FFAppState().thickness =
-                                                        buttonThicknessRecord
-                                                            .id;
-                                                    FFAppState().productPrice =
-                                                        thicknessListItem
-                                                            .sellingPrice;
-                                                    FFAppState()
-                                                            .productMRPPrice =
-                                                        thicknessListItem
-                                                            .mrpPrice;
-                                                  });
+                                                  FFAppState().thickness =
+                                                      buttonThicknessRecord.id;
+                                                  FFAppState().productPrice =
+                                                      thicknessListItem
+                                                          .sellingPrice;
+                                                  FFAppState().productMRPPrice =
+                                                      thicknessListItem
+                                                          .mrpPrice;
+                                                  safeSetState(() {});
                                                   await queryCategoryRecordOnce(
                                                     queryBuilder:
                                                         (categoryRecord) =>
@@ -1902,7 +1921,7 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                   singleRecord: true,
                                 ).then((s) => s.firstOrNull);
                                 {
-                                  setState(
+                                  safeSetState(
                                       () => _model.isDataUploading2 = true);
                                   var selectedUploadedFiles =
                                       <FFUploadedFile>[];
@@ -1935,56 +1954,52 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                           selectedMedia.length &&
                                       downloadUrls.length ==
                                           selectedMedia.length) {
-                                    setState(() {
+                                    safeSetState(() {
                                       _model.uploadedLocalFile2 =
                                           selectedUploadedFiles.first;
                                       _model.uploadedFileUrl2 =
                                           downloadUrls.first;
                                     });
                                   } else {
-                                    setState(() {});
+                                    safeSetState(() {});
                                     return;
                                   }
                                 }
 
-                                setState(() {
-                                  FFAppState().count = FFAppState().count +
-                                      valueOrDefault<int>(
-                                        FFAppState().orderList.length,
-                                        1,
-                                      );
-                                  FFAppState().imageUrl =
-                                      _model.uploadedFileUrl2;
-                                });
-                                setState(() {
-                                  FFAppState().updateOrdersStruct(
-                                    (e) => e
-                                      ..imageurl = functions.imgstringToimgPath(
-                                          FFAppState().editedimg)
-                                      ..textString = FFAppState().textString
-                                      ..shapes = FFAppState().Shape
-                                      ..size = _model.sizeDocOutput?.title
-                                      ..thickness =
-                                          _model.thicknessDocOutput?.name
-                                      ..price = valueOrDefault<double>(
-                                        FFAppState().productPrice,
-                                        599.0,
-                                      )
-                                      ..qty = 1.0
-                                      ..categoryName = widget.category?.title
-                                      ..count = FFAppState().count
-                                      ..originalimage =
-                                          functions.imgstringToimgPath(
-                                              FFAppState().imageUrl),
-                                  );
-                                });
+                                FFAppState().count = FFAppState().count +
+                                    valueOrDefault<int>(
+                                      FFAppState().orderList.length,
+                                      1,
+                                    );
+                                FFAppState().imageUrl = _model.uploadedFileUrl2;
+                                safeSetState(() {});
+                                FFAppState().updateOrdersStruct(
+                                  (e) => e
+                                    ..imageurl = functions.imgstringToimgPath(
+                                        FFAppState().editedimg)
+                                    ..textString = FFAppState().textString
+                                    ..shapes = FFAppState().Shape
+                                    ..size = _model.sizeDocOutput?.title
+                                    ..thickness =
+                                        _model.thicknessDocOutput?.name
+                                    ..price = valueOrDefault<double>(
+                                      FFAppState().productPrice,
+                                      599.0,
+                                    )
+                                    ..qty = 1.0
+                                    ..categoryName = widget.category?.title
+                                    ..count = FFAppState().count
+                                    ..originalimage =
+                                        functions.imgstringToimgPath(
+                                            FFAppState().imageUrl),
+                                );
+                                safeSetState(() {});
                                 await actions.returnOrderQtyPluslist(
                                   FFAppState().orders,
                                 );
-                                setState(() {
-                                  FFAppState().orders = OrdersStruct();
-                                  FFAppState().editedimg = '';
-                                });
+                                FFAppState().orders = OrdersStruct();
+                                FFAppState().editedimg = '';
+                                safeSetState(() {});
 
                                 context.pushNamed('ShoppingCartnew');
                               } else {
@@ -2024,7 +2039,7 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                               );
                             }
 
-                            setState(() {});
+                            safeSetState(() {});
                           },
                           text: 'Buy Now',
                           options: FFButtonOptions(
@@ -2204,30 +2219,27 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                           pincode: _model
                                               .pincodeTextTextController.text,
                                         );
+
                                         if (getJsonField(
                                               (_model.apiResultepc?.jsonBody ??
                                                   ''),
                                               r'''$["tat"]''',
                                             ) !=
                                             null) {
-                                          setState(() {
-                                            FFAppState().tat = getJsonField(
-                                              (_model.apiResultepc?.jsonBody ??
-                                                  ''),
-                                              r'''$["tat"]''',
-                                            ).toString();
-                                            FFAppState().showEstimatedDate =
-                                                true;
-                                          });
+                                          FFAppState().tat = getJsonField(
+                                            (_model.apiResultepc?.jsonBody ??
+                                                ''),
+                                            r'''$["tat"]''',
+                                          ).toString();
+                                          FFAppState().showEstimatedDate = true;
+                                          safeSetState(() {});
                                         } else {
-                                          setState(() {
-                                            FFAppState().tat = 'notFound';
-                                            FFAppState().showEstimatedDate =
-                                                true;
-                                          });
+                                          FFAppState().tat = 'notFound';
+                                          FFAppState().showEstimatedDate = true;
+                                          safeSetState(() {});
                                         }
 
-                                        setState(() {});
+                                        safeSetState(() {});
                                       },
                                       text: 'Check',
                                       options: FFButtonOptions(
@@ -2497,7 +2509,7 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                   children: [
                                     Html(
                                       data: widget.category!.description,
-                                      onLinkTap: (url, _, __, ___) =>
+                                      onLinkTap: (url, _, __) =>
                                           launchURL(url!),
                                     ),
                                   ],
@@ -2558,7 +2570,7 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                     Html(
                                       data:
                                           '<ul style=\"list-style-type: square;\">\n<li><span style=\"font-size: 14pt;\">Easy to install</span></li>\n<li><span style=\"font-size: 14pt;\">That quick mounting option with industrial level two-sided tapes sounds incredibly convenient! It eliminates the need for nails or hammers, making the installation process hassle-free and suitable for various surfaces without causing damage.</span></li>\n<li><span style=\"font-size: 14pt;\">Providing a sleek and professional appearance once installed. This convenient mounting solution not only saves time but also preserves the integrity of your walls, making it ideal for both residential and commercial spaces where ease of installation and aesthetic appeal are paramount.</span></li>\n<li><span style=\"font-size: 14pt;\">You can customize your acrylic photo prints online with us in a range of sizes, providing you with options to suit your preferences and space requirements. Here are the available size options for you to choose from in inches:</span></li>\n</ul>\n<ol style=\"list-style-type: lower-alpha;\">\n<li><span style=\"font-size: 14pt;\"><strong>12x9 </strong>inches</span></li>\n<li><span style=\"font-size: 14pt;\"><strong>11x11 </strong>inches</span></li>\n<li><span style=\"font-size: 14pt;\"><strong>16x12 </strong>inches</span></li>\n<li><span style=\"font-size: 14pt;\"><strong>18x12 </strong>inches</span></li>\n<li><span style=\"font-size: 14pt;\"><strong>16x16 </strong>inches</span></li>\n<li><span style=\"font-size: 14pt;\"><strong>21x15 </strong>inches</span></li>\n<li><span style=\"font-size: 14pt;\"><strong>30x20 </strong>inches</span></li>\n<li><span style=\"font-size: 14pt;\"><strong>35x23 </strong>inches</span></li>\n</ol>\n<p><span style=\"font-size: 14pt;\">&nbsp; &nbsp; &nbsp; &nbsp;These size options offer versatility and flexibility to accommodate various display needs, whether you\'re looking for a small accent piece or a statement artwork for your wall.</span></p>\n<ul style=\"list-style-type: square;\">\n<li><span style=\"font-size: 14pt;\">Auto orientation for acrylic prints is a great feature! It ensures that your photos are displayed in the best possible orientation to maximize print quality and visual impact.</span></li>\n<li><span style=\"font-size: 14pt;\">It ensures that your acrylic picture is tailored precisely to fit the proportions of your image, whether it\'s vertical or horizontal, resulting in a perfectly customized print every time. Additionally, offering three thickness options of <strong>3 mm, 5mm and 8 mm</strong> provides further flexibility for customers to choose the look and feel that best complements their space and personal preferences.</span></li>\n</ul>',
-                                      onLinkTap: (url, _, __, ___) =>
+                                      onLinkTap: (url, _, __) =>
                                           launchURL(url!),
                                     ),
                                   ],
@@ -2596,7 +2608,7 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                       ),
                       wrapWithModel(
                         model: _model.footerWebModel,
-                        updateCallback: () => setState(() {}),
+                        updateCallback: () => safeSetState(() {}),
                         child: const FooterWebWidget(),
                       ),
                     ],
@@ -2693,6 +2705,7 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                 containerSizeRecordList.isNotEmpty
                                     ? containerSizeRecordList.first
                                     : null;
+
                             return Container(
                               width: double.infinity,
                               height: 450.0,
@@ -3015,16 +3028,14 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                                                 Directionality.of(
                                                                     context)),
                                                     child: GestureDetector(
-                                                      onTap: () => _model
-                                                              .unfocusNode
-                                                              .canRequestFocus
-                                                          ? FocusScope.of(
-                                                                  context)
-                                                              .requestFocus(_model
-                                                                  .unfocusNode)
-                                                          : FocusScope.of(
-                                                                  context)
-                                                              .unfocus(),
+                                                      onTap: () {
+                                                        FocusScope.of(
+                                                                dialogContext)
+                                                            .unfocus();
+                                                        FocusManager.instance
+                                                            .primaryFocus
+                                                            ?.unfocus();
+                                                      },
                                                       child: SizedBox(
                                                         width:
                                                             MediaQuery.sizeOf(
@@ -3036,8 +3047,7 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                                     ),
                                                   );
                                                 },
-                                              ).then(
-                                                  (value) => setState(() {}));
+                                              );
                                             },
                                             text: 'Size ?',
                                             options: FFButtonOptions(
@@ -3163,10 +3173,9 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                         size: 18.0,
                                       ),
                                       onPressed: () async {
-                                        setState(() {
-                                          FFAppState().zoomPer =
-                                              FFAppState().zoomPer + -0.1;
-                                        });
+                                        FFAppState().zoomPer =
+                                            FFAppState().zoomPer + -0.1;
+                                        safeSetState(() {});
                                       },
                                     ),
                                     Padding(
@@ -3192,10 +3201,9 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                         size: 18.0,
                                       ),
                                       onPressed: () async {
-                                        setState(() {
-                                          FFAppState().zoomPer =
-                                              FFAppState().zoomPer + 0.1;
-                                        });
+                                        FFAppState().zoomPer =
+                                            FFAppState().zoomPer + 0.1;
+                                        safeSetState(() {});
                                       },
                                     ),
                                   ],
@@ -3215,7 +3223,7 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                       selectedMedia.every((m) =>
                                           validateFileFormat(
                                               m.storagePath, context))) {
-                                    setState(
+                                    safeSetState(
                                         () => _model.isDataUploading3 = true);
                                     var selectedUploadedFiles =
                                         <FFUploadedFile>[];
@@ -3237,12 +3245,12 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                     }
                                     if (selectedUploadedFiles.length ==
                                         selectedMedia.length) {
-                                      setState(() {
+                                      safeSetState(() {
                                         _model.uploadedLocalFile3 =
                                             selectedUploadedFiles.first;
                                       });
                                     } else {
-                                      setState(() {});
+                                      safeSetState(() {});
                                       return;
                                     }
                                   }
@@ -3250,13 +3258,12 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                   if ((_model.uploadedLocalFile3.bytes
                                               ?.isNotEmpty ??
                                           false)) {
-                                    setState(() {
-                                      FFAppState().img =
-                                          'https://picsum.photos/seed/895/600';
-                                      FFAppState().imageUrl =
-                                          functions.imageToBase64new(
-                                              _model.uploadedLocalFile3)!;
-                                    });
+                                    FFAppState().img =
+                                        'https://picsum.photos/seed/895/600';
+                                    FFAppState().imageUrl =
+                                        functions.imageToBase64new(
+                                            _model.uploadedLocalFile3)!;
+                                    safeSetState(() {});
                                   }
                                 },
                                 text: 'Select Photo',
@@ -3326,13 +3333,12 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                               .resolve(
                                                   Directionality.of(context)),
                                           child: GestureDetector(
-                                            onTap: () => _model
-                                                    .unfocusNode.canRequestFocus
-                                                ? FocusScope.of(context)
-                                                    .requestFocus(
-                                                        _model.unfocusNode)
-                                                : FocusScope.of(context)
-                                                    .unfocus(),
+                                            onTap: () {
+                                              FocusScope.of(dialogContext)
+                                                  .unfocus();
+                                              FocusManager.instance.primaryFocus
+                                                  ?.unfocus();
+                                            },
                                             child: const SizedBox(
                                               height: 200.0,
                                               width: 350.0,
@@ -3341,7 +3347,7 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                           ),
                                         );
                                       },
-                                    ).then((value) => setState(() {}));
+                                    );
                                   },
                                   text: 'Add Text',
                                   icon: Icon(
@@ -3468,18 +3474,16 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                               ),
                             ),
                             Switch.adaptive(
-                              value: _model.switchValue2 ??=
-                                  FFAppState().showPortrait,
+                              value: _model.switchValue2!,
                               onChanged: (newValue) async {
-                                setState(() => _model.switchValue2 = newValue);
+                                safeSetState(
+                                    () => _model.switchValue2 = newValue);
                                 if (newValue) {
-                                  setState(() {
-                                    FFAppState().showPortrait = true;
-                                  });
+                                  FFAppState().showPortrait = true;
+                                  safeSetState(() {});
                                 } else {
-                                  setState(() {
-                                    FFAppState().showPortrait = false;
-                                  });
+                                  FFAppState().showPortrait = false;
+                                  safeSetState(() {});
                                 }
                               },
                               activeColor: FlutterFlowTheme.of(context).accent1,
@@ -3511,6 +3515,7 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                         .toList()
                                         .toList() ??
                                     [];
+
                                 return ListView.separated(
                                   padding: EdgeInsets.zero,
                                   shrinkWrap: true,
@@ -3559,16 +3564,16 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                             imageShapesRecordList.isNotEmpty
                                                 ? imageShapesRecordList.first
                                                 : null;
+
                                         return InkWell(
                                           splashColor: Colors.transparent,
                                           focusColor: Colors.transparent,
                                           hoverColor: Colors.transparent,
                                           highlightColor: Colors.transparent,
                                           onTap: () async {
-                                            setState(() {
-                                              FFAppState().Shape =
-                                                  imageShapesRecord.name;
-                                            });
+                                            FFAppState().Shape =
+                                                imageShapesRecord.name;
+                                            safeSetState(() {});
                                           },
                                           child: ClipRRect(
                                             borderRadius:
@@ -3626,6 +3631,7 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                 richTextSizeRecordList.isNotEmpty
                                     ? richTextSizeRecordList.first
                                     : null;
+
                             return RichText(
                               textScaler: MediaQuery.of(context).textScaler,
                               text: TextSpan(
@@ -3717,11 +3723,11 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                     alignment: const AlignmentDirectional(0.0, 0.0)
                                         .resolve(Directionality.of(context)),
                                     child: GestureDetector(
-                                      onTap: () => _model
-                                              .unfocusNode.canRequestFocus
-                                          ? FocusScope.of(context)
-                                              .requestFocus(_model.unfocusNode)
-                                          : FocusScope.of(context).unfocus(),
+                                      onTap: () {
+                                        FocusScope.of(dialogContext).unfocus();
+                                        FocusManager.instance.primaryFocus
+                                            ?.unfocus();
+                                      },
                                       child: SizedBox(
                                         height:
                                             MediaQuery.sizeOf(context).height *
@@ -3734,7 +3740,7 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                     ),
                                   );
                                 },
-                              ).then((value) => setState(() {}));
+                              );
                             },
                             child: RichText(
                               textScaler: MediaQuery.of(context).textScaler,
@@ -3840,6 +3846,7 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                       final sizeList =
                                           widget.category?.sizeMap.toList() ??
                                               [];
+
                                       return GridView.builder(
                                         padding: EdgeInsets.zero,
                                         gridDelegate:
@@ -3898,28 +3905,29 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                                       ? buttonSizeRecordList
                                                           .first
                                                       : null;
+
                                               return FFButtonWidget(
                                                 onPressed: () async {
-                                                  setState(() {
-                                                    FFAppState().size =
-                                                        buttonSizeRecord.id;
-                                                  });
-                                                  setState(() {
-                                                    _model.selectedSize =
-                                                        sizeListItem;
-                                                  });
-                                                  setState(() {
-                                                    FFAppState().thickness =
-                                                        sizeListItem
-                                                            .thickness.first.id;
-                                                    FFAppState().productPrice =
-                                                        sizeListItem.thickness
-                                                            .first.sellingPrice;
-                                                    FFAppState()
-                                                            .productMRPPrice =
-                                                        sizeListItem.thickness
-                                                            .first.mrpPrice;
-                                                  });
+                                                  FFAppState().size =
+                                                      buttonSizeRecord.id;
+                                                  safeSetState(() {});
+                                                  _model.selectedSize =
+                                                      sizeListItem;
+                                                  safeSetState(() {});
+                                                  FFAppState().thickness =
+                                                      sizeListItem.thickness
+                                                          .firstOrNull!.id;
+                                                  FFAppState().productPrice =
+                                                      sizeListItem
+                                                          .thickness
+                                                          .firstOrNull!
+                                                          .sellingPrice;
+                                                  FFAppState().productMRPPrice =
+                                                      sizeListItem
+                                                          .thickness
+                                                          .firstOrNull!
+                                                          .mrpPrice;
+                                                  safeSetState(() {});
                                                 },
                                                 text: buttonSizeRecord!.title,
                                                 options: FFButtonOptions(
@@ -4027,6 +4035,7 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                               .selectedSize?.thickness
                                               .toList() ??
                                           [];
+
                                       return GridView.builder(
                                         padding: EdgeInsets.zero,
                                         gridDelegate:
@@ -4085,20 +4094,18 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                                       ? buttonThicknessRecordList
                                                           .first
                                                       : null;
+
                                               return FFButtonWidget(
                                                 onPressed: () async {
-                                                  setState(() {
-                                                    FFAppState().thickness =
-                                                        buttonThicknessRecord
-                                                            .id;
-                                                    FFAppState().productPrice =
-                                                        thicknessListItem
-                                                            .sellingPrice;
-                                                    FFAppState()
-                                                            .productMRPPrice =
-                                                        thicknessListItem
-                                                            .mrpPrice;
-                                                  });
+                                                  FFAppState().thickness =
+                                                      buttonThicknessRecord.id;
+                                                  FFAppState().productPrice =
+                                                      thicknessListItem
+                                                          .sellingPrice;
+                                                  FFAppState().productMRPPrice =
+                                                      thicknessListItem
+                                                          .mrpPrice;
+                                                  safeSetState(() {});
                                                   await queryCategoryRecordOnce(
                                                     queryBuilder:
                                                         (categoryRecord) =>
@@ -4210,14 +4217,13 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                             ),
                                     singleRecord: true,
                                   ).then((s) => s.firstOrNull);
-                                  setState(() {
-                                    FFAppState().productPrice =
-                                        _model.priceDetailss!.price;
-                                    FFAppState().productMRPPrice =
-                                        _model.priceDetailss!.mrp;
-                                  });
+                                  FFAppState().productPrice =
+                                      _model.priceDetailss!.price;
+                                  FFAppState().productMRPPrice =
+                                      _model.priceDetailss!.mrp;
+                                  safeSetState(() {});
 
-                                  setState(() {});
+                                  safeSetState(() {});
                                 },
                                 child: Text(
                                   '₹ ${FFAppState().productPrice.toString()}',
@@ -4390,7 +4396,7 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                   singleRecord: true,
                                 ).then((s) => s.firstOrNull);
                                 {
-                                  setState(
+                                  safeSetState(
                                       () => _model.isDataUploading4 = true);
                                   var selectedUploadedFiles =
                                       <FFUploadedFile>[];
@@ -4423,58 +4429,53 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                                           selectedMedia.length &&
                                       downloadUrls.length ==
                                           selectedMedia.length) {
-                                    setState(() {
+                                    safeSetState(() {
                                       _model.uploadedLocalFile4 =
                                           selectedUploadedFiles.first;
                                       _model.uploadedFileUrl4 =
                                           downloadUrls.first;
                                     });
                                   } else {
-                                    setState(() {});
+                                    safeSetState(() {});
                                     return;
                                   }
                                 }
 
-                                setState(() {
-                                  FFAppState().imageUrl =
-                                      _model.uploadedFileUrl4;
-                                });
-                                setState(() {
-                                  FFAppState().count = FFAppState().count +
-                                      valueOrDefault<int>(
-                                        FFAppState().orderList.length,
-                                        1,
-                                      );
-                                });
-                                setState(() {
-                                  FFAppState().updateOrdersStruct(
-                                    (e) => e
-                                      ..imageurl = functions.imgstringToimgPath(
-                                          FFAppState().editedimg)
-                                      ..textString = FFAppState().textString
-                                      ..shapes = FFAppState().Shape
-                                      ..size = _model.sizeDocOutputCopy?.title
-                                      ..thickness =
-                                          _model.thicknessDocOutputCopy?.name
-                                      ..price = valueOrDefault<double>(
-                                        FFAppState().productPrice,
-                                        599.0,
-                                      )
-                                      ..qty = 1.0
-                                      ..categoryName = widget.category?.title
-                                      ..count = FFAppState().count
-                                      ..originalimage =
-                                          functions.imgstringToimgPath(
-                                              FFAppState().imageUrl),
-                                  );
-                                });
+                                FFAppState().imageUrl = _model.uploadedFileUrl4;
+                                safeSetState(() {});
+                                FFAppState().count = FFAppState().count +
+                                    valueOrDefault<int>(
+                                      FFAppState().orderList.length,
+                                      1,
+                                    );
+                                safeSetState(() {});
+                                FFAppState().updateOrdersStruct(
+                                  (e) => e
+                                    ..imageurl = functions.imgstringToimgPath(
+                                        FFAppState().editedimg)
+                                    ..textString = FFAppState().textString
+                                    ..shapes = FFAppState().Shape
+                                    ..size = _model.sizeDocOutputCopy?.title
+                                    ..thickness =
+                                        _model.thicknessDocOutputCopy?.name
+                                    ..price = valueOrDefault<double>(
+                                      FFAppState().productPrice,
+                                      599.0,
+                                    )
+                                    ..qty = 1.0
+                                    ..categoryName = widget.category?.title
+                                    ..count = FFAppState().count
+                                    ..originalimage =
+                                        functions.imgstringToimgPath(
+                                            FFAppState().imageUrl),
+                                );
+                                safeSetState(() {});
                                 await actions.returnOrderQtyPluslist(
                                   FFAppState().orders,
                                 );
-                                setState(() {
-                                  FFAppState().orders = OrdersStruct();
-                                  FFAppState().editedimg = '';
-                                });
+                                FFAppState().orders = OrdersStruct();
+                                FFAppState().editedimg = '';
+                                safeSetState(() {});
 
                                 context.pushNamed('ShoppingCartnew');
                               } else {
@@ -4514,7 +4515,7 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                               );
                             }
 
-                            setState(() {});
+                            safeSetState(() {});
                           },
                           text: 'Buy Now',
                           options: FFButtonOptions(
@@ -4894,7 +4895,7 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                               decoration: const BoxDecoration(),
                               child: Html(
                                 data: widget.category!.description,
-                                onLinkTap: (url, _, __, ___) => launchURL(url!),
+                                onLinkTap: (url, _, __) => launchURL(url!),
                               ),
                             ),
                           ),
@@ -4995,7 +4996,7 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
                       ),
                       wrapWithModel(
                         model: _model.footerMobileModel,
-                        updateCallback: () => setState(() {}),
+                        updateCallback: () => safeSetState(() {}),
                         child: const FooterMobileWidget(),
                       ),
                     ],
@@ -5004,7 +5005,7 @@ class _CartCopyNewWidgetState extends State<CartCopyNewWidget> {
               ),
             wrapWithModel(
               model: _model.headerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const HeaderWidget(),
             ),
           ],

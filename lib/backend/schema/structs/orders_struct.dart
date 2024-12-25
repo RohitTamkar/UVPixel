@@ -24,6 +24,9 @@ class OrdersStruct extends FFFirebaseStruct {
     List<String>? collageimages,
     int? count,
     String? originalimage,
+    int? quantity,
+    String? name,
+    List<String>? images,
     FirestoreUtilData firestoreUtilData = const FirestoreUtilData(),
   })  : _imageurl = imageurl,
         _textString = textString,
@@ -39,98 +42,149 @@ class OrdersStruct extends FFFirebaseStruct {
         _collageimages = collageimages,
         _count = count,
         _originalimage = originalimage,
+        _quantity = quantity,
+        _name = name,
+        _images = images,
         super(firestoreUtilData);
 
   // "imageurl" field.
   String? _imageurl;
   String get imageurl => _imageurl ?? '';
   set imageurl(String? val) => _imageurl = val;
+
   bool hasImageurl() => _imageurl != null;
 
   // "textString" field.
   String? _textString;
   String get textString => _textString ?? '';
   set textString(String? val) => _textString = val;
+
   bool hasTextString() => _textString != null;
 
   // "shapes" field.
   String? _shapes;
   String get shapes => _shapes ?? '';
   set shapes(String? val) => _shapes = val;
+
   bool hasShapes() => _shapes != null;
 
   // "size" field.
   String? _size;
   String get size => _size ?? '';
   set size(String? val) => _size = val;
+
   bool hasSize() => _size != null;
 
   // "thickness" field.
   String? _thickness;
   String get thickness => _thickness ?? '';
   set thickness(String? val) => _thickness = val;
+
   bool hasThickness() => _thickness != null;
 
   // "price" field.
   double? _price;
   double get price => _price ?? 0.0;
   set price(double? val) => _price = val;
-  void incrementPrice(double amount) => _price = price + amount;
+
+  void incrementPrice(double amount) => price = price + amount;
+
   bool hasPrice() => _price != null;
 
   // "qty" field.
   double? _qty;
   double get qty => _qty ?? 1.0;
   set qty(double? val) => _qty = val;
-  void incrementQty(double amount) => _qty = qty + amount;
+
+  void incrementQty(double amount) => qty = qty + amount;
+
   bool hasQty() => _qty != null;
 
   // "total" field.
   double? _total;
   double get total => _total ?? 0.0;
   set total(double? val) => _total = val;
-  void incrementTotal(double amount) => _total = total + amount;
+
+  void incrementTotal(double amount) => total = total + amount;
+
   bool hasTotal() => _total != null;
 
   // "finalAmt" field.
   double? _finalAmt;
   double get finalAmt => _finalAmt ?? 0.0;
   set finalAmt(double? val) => _finalAmt = val;
-  void incrementFinalAmt(double amount) => _finalAmt = finalAmt + amount;
+
+  void incrementFinalAmt(double amount) => finalAmt = finalAmt + amount;
+
   bool hasFinalAmt() => _finalAmt != null;
 
   // "userRef" field.
   DocumentReference? _userRef;
   DocumentReference? get userRef => _userRef;
   set userRef(DocumentReference? val) => _userRef = val;
+
   bool hasUserRef() => _userRef != null;
 
   // "categoryName" field.
   String? _categoryName;
   String get categoryName => _categoryName ?? '';
   set categoryName(String? val) => _categoryName = val;
+
   bool hasCategoryName() => _categoryName != null;
 
   // "collageimages" field.
   List<String>? _collageimages;
   List<String> get collageimages => _collageimages ?? const [];
   set collageimages(List<String>? val) => _collageimages = val;
-  void updateCollageimages(Function(List<String>) updateFn) =>
-      updateFn(_collageimages ??= []);
+
+  void updateCollageimages(Function(List<String>) updateFn) {
+    updateFn(_collageimages ??= []);
+  }
+
   bool hasCollageimages() => _collageimages != null;
 
   // "count" field.
   int? _count;
   int get count => _count ?? 1;
   set count(int? val) => _count = val;
-  void incrementCount(int amount) => _count = count + amount;
+
+  void incrementCount(int amount) => count = count + amount;
+
   bool hasCount() => _count != null;
 
   // "originalimage" field.
   String? _originalimage;
   String get originalimage => _originalimage ?? '';
   set originalimage(String? val) => _originalimage = val;
+
   bool hasOriginalimage() => _originalimage != null;
+
+  // "quantity" field.
+  int? _quantity;
+  int get quantity => _quantity ?? 0;
+  set quantity(int? val) => _quantity = val;
+
+  void incrementQuantity(int amount) => quantity = quantity + amount;
+
+  bool hasQuantity() => _quantity != null;
+
+  // "name" field.
+  String? _name;
+  String get name => _name ?? '';
+  set name(String? val) => _name = val;
+
+  bool hasName() => _name != null;
+
+  // "images" field.
+  List<String>? _images;
+  List<String> get images => _images ?? const [];
+  set images(List<String>? val) => _images = val;
+
+  void updateImages(Function(List<String>) updateFn) {
+    updateFn(_images ??= []);
+  }
+
+  bool hasImages() => _images != null;
 
   static OrdersStruct fromMap(Map<String, dynamic> data) => OrdersStruct(
         imageurl: data['imageurl'] as String?,
@@ -147,6 +201,9 @@ class OrdersStruct extends FFFirebaseStruct {
         collageimages: getDataList(data['collageimages']),
         count: castToType<int>(data['count']),
         originalimage: data['originalimage'] as String?,
+        quantity: castToType<int>(data['quantity']),
+        name: data['name'] as String?,
+        images: getDataList(data['images']),
       );
 
   static OrdersStruct? maybeFromMap(dynamic data) =>
@@ -167,6 +224,9 @@ class OrdersStruct extends FFFirebaseStruct {
         'collageimages': _collageimages,
         'count': _count,
         'originalimage': _originalimage,
+        'quantity': _quantity,
+        'name': _name,
+        'images': _images,
       }.withoutNulls;
 
   @override
@@ -218,7 +278,7 @@ class OrdersStruct extends FFFirebaseStruct {
         'collageimages': serializeParam(
           _collageimages,
           ParamType.String,
-          true,
+          isList: true,
         ),
         'count': serializeParam(
           _count,
@@ -227,6 +287,19 @@ class OrdersStruct extends FFFirebaseStruct {
         'originalimage': serializeParam(
           _originalimage,
           ParamType.String,
+        ),
+        'quantity': serializeParam(
+          _quantity,
+          ParamType.int,
+        ),
+        'name': serializeParam(
+          _name,
+          ParamType.String,
+        ),
+        'images': serializeParam(
+          _images,
+          ParamType.String,
+          isList: true,
         ),
       }.withoutNulls;
 
@@ -303,6 +376,21 @@ class OrdersStruct extends FFFirebaseStruct {
           ParamType.String,
           false,
         ),
+        quantity: deserializeParam(
+          data['quantity'],
+          ParamType.int,
+          false,
+        ),
+        name: deserializeParam(
+          data['name'],
+          ParamType.String,
+          false,
+        ),
+        images: deserializeParam<String>(
+          data['images'],
+          ParamType.String,
+          true,
+        ),
       );
 
   @override
@@ -325,7 +413,10 @@ class OrdersStruct extends FFFirebaseStruct {
         categoryName == other.categoryName &&
         listEquality.equals(collageimages, other.collageimages) &&
         count == other.count &&
-        originalimage == other.originalimage;
+        originalimage == other.originalimage &&
+        quantity == other.quantity &&
+        name == other.name &&
+        listEquality.equals(images, other.images);
   }
 
   @override
@@ -343,7 +434,10 @@ class OrdersStruct extends FFFirebaseStruct {
         categoryName,
         collageimages,
         count,
-        originalimage
+        originalimage,
+        quantity,
+        name,
+        images
       ]);
 }
 
@@ -361,6 +455,8 @@ OrdersStruct createOrdersStruct({
   String? categoryName,
   int? count,
   String? originalimage,
+  int? quantity,
+  String? name,
   Map<String, dynamic> fieldValues = const {},
   bool clearUnsetFields = true,
   bool create = false,
@@ -380,6 +476,8 @@ OrdersStruct createOrdersStruct({
       categoryName: categoryName,
       count: count,
       originalimage: originalimage,
+      quantity: quantity,
+      name: name,
       firestoreUtilData: FirestoreUtilData(
         clearUnsetFields: clearUnsetFields,
         create: create,

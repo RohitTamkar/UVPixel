@@ -28,7 +28,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     super.initState();
     _model = createModel(context, () => DrawerModel());
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -122,6 +122,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                           style: TextStyle(
                             color: FlutterFlowTheme.of(context).primaryText,
                           ),
+                          textAlign: TextAlign.center,
                         ),
                         duration: const Duration(milliseconds: 4000),
                         backgroundColor: FlutterFlowTheme.of(context).secondary,
@@ -196,6 +197,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                 );
               }
               List<CategoryRecord> listViewCategoryRecordList = snapshot.data!;
+
               return ListView.builder(
                 padding: EdgeInsets.zero,
                 shrinkWrap: true,

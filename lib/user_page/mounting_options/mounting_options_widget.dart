@@ -24,7 +24,7 @@ class _MountingOptionsWidgetState extends State<MountingOptionsWidget> {
     super.initState();
     _model = createModel(context, () => MountingOptionsModel());
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override

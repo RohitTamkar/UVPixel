@@ -43,7 +43,7 @@ class _AddThicknessWidgetState extends State<AddThicknessWidget> {
         TextEditingController(text: widget.codeLen?.toString());
     _model.textCatalogueCodeFocusNode ??= FocusNode();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -280,7 +280,7 @@ class _AddThicknessWidgetState extends State<AddThicknessWidget> {
                             onChanged: (_) => EasyDebounce.debounce(
                               '_model.textCatalogueCodeTextController',
                               const Duration(milliseconds: 2000),
-                              () => setState(() {}),
+                              () => safeSetState(() {}),
                             ),
                             autofocus: true,
                             readOnly: true,
@@ -467,7 +467,7 @@ class _AddThicknessWidgetState extends State<AddThicknessWidget> {
                             );
                             Navigator.pop(context);
 
-                            setState(() {});
+                            safeSetState(() {});
                           },
                           child: Container(
                             width: 200.0,

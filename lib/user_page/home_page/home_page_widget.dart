@@ -7,6 +7,7 @@ import '/user_page/drawer/drawer_widget.dart';
 import '/user_page/footer_mobile/footer_mobile_widget.dart';
 import '/user_page/footer_web/footer_web_widget.dart';
 import '/user_page/header/header_widget.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'home_page_model.dart';
@@ -29,7 +30,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     super.initState();
     _model = createModel(context, () => HomePageModel());
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -62,10 +63,12 @@ class _HomePageWidgetState extends State<HomePageWidget> {
           );
         }
         List<CategoryRecord> homePageCategoryRecordList = snapshot.data!;
+
         return GestureDetector(
-          onTap: () => _model.unfocusNode.canRequestFocus
-              ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-              : FocusScope.of(context).unfocus(),
+          onTap: () {
+            FocusScope.of(context).unfocus();
+            FocusManager.instance.primaryFocus?.unfocus();
+          },
           child: Scaffold(
             key: scaffoldKey,
             backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -87,7 +90,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                 elevation: 16.0,
                 child: wrapWithModel(
                   model: _model.drawerModel,
-                  updateCallback: () => setState(() {}),
+                  updateCallback: () => safeSetState(() {}),
                   child: const DrawerWidget(),
                 ),
               ),
@@ -270,8 +273,8 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                                   e.title ==
                                                                   'Premium Acrylic Photo')
                                                               .toList()
-                                                              .first
-                                                              .reference
+                                                              .firstOrNull
+                                                              ?.reference
                                                               .id,
                                                           ParamType.String,
                                                         ),
@@ -282,7 +285,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                                   e.title ==
                                                                   'Premium Acrylic Photo')
                                                               .toList()
-                                                              .first,
+                                                              .firstOrNull,
                                                           ParamType.Document,
                                                         ),
                                                       }.withoutNulls,
@@ -293,7 +296,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                                     e.title ==
                                                                     'Premium Acrylic Photo')
                                                                 .toList()
-                                                                .first,
+                                                                .firstOrNull,
                                                       },
                                                     );
                                                   },
@@ -575,8 +578,8 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                                   e.title ==
                                                                   'Acrylic Clock')
                                                               .toList()
-                                                              .first
-                                                              .categoryId,
+                                                              .firstOrNull
+                                                              ?.categoryId,
                                                           ParamType.String,
                                                         ),
                                                         'category':
@@ -586,7 +589,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                                   e.title ==
                                                                   'Acrylic Clock')
                                                               .toList()
-                                                              .first,
+                                                              .firstOrNull,
                                                           ParamType.Document,
                                                         ),
                                                       }.withoutNulls,
@@ -597,7 +600,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                                     e.title ==
                                                                     'Acrylic Clock')
                                                                 .toList()
-                                                                .first,
+                                                                .firstOrNull,
                                                       },
                                                     );
                                                   },
@@ -795,14 +798,14 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                   queryParameters: {
                                                     'category': serializeParam(
                                                       homePageCategoryRecordList
-                                                          .first,
+                                                          .firstOrNull,
                                                       ParamType.Document,
                                                     ),
                                                   }.withoutNulls,
                                                   extra: <String, dynamic>{
                                                     'category':
                                                         homePageCategoryRecordList
-                                                            .first,
+                                                            .firstOrNull,
                                                   },
                                                 );
                                               },
@@ -903,8 +906,8 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                                   e.title ==
                                                                   'Transparent Acrylic Photo')
                                                               .toList()
-                                                              .first
-                                                              .reference
+                                                              .firstOrNull
+                                                              ?.reference
                                                               .id,
                                                           ParamType.String,
                                                         ),
@@ -915,7 +918,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                                   e.title ==
                                                                   'Transparent Acrylic Photo')
                                                               .toList()
-                                                              .first,
+                                                              .firstOrNull,
                                                           ParamType.Document,
                                                         ),
                                                       }.withoutNulls,
@@ -926,7 +929,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                                     e.title ==
                                                                     'Transparent Acrylic Photo')
                                                                 .toList()
-                                                                .first,
+                                                                .firstOrNull,
                                                       },
                                                     );
                                                   },
@@ -1193,8 +1196,8 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                                   e.title ==
                                                                   'Acrylic Frame With High Gloss')
                                                               .toList()
-                                                              .first
-                                                              .reference
+                                                              .firstOrNull
+                                                              ?.reference
                                                               .id,
                                                           ParamType.String,
                                                         ),
@@ -1205,7 +1208,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                                   e.title ==
                                                                   'Acrylic Frame With High Gloss')
                                                               .toList()
-                                                              .first,
+                                                              .firstOrNull,
                                                           ParamType.Document,
                                                         ),
                                                       }.withoutNulls,
@@ -1216,7 +1219,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                                     e.title ==
                                                                     'Acrylic Frame With High Gloss')
                                                                 .toList()
-                                                                .first,
+                                                                .firstOrNull,
                                                       },
                                                     );
                                                   },
@@ -1717,7 +1720,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                                   e.title ==
                                                                   'Acrylic Cutout Photo')
                                                               .toList()
-                                                              .first,
+                                                              .firstOrNull,
                                                           ParamType.Document,
                                                         ),
                                                         'category':
@@ -1727,7 +1730,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                                   e.title ==
                                                                   'Acrylic Cutout Photo')
                                                               .toList()
-                                                              .first,
+                                                              .firstOrNull,
                                                           ParamType.Document,
                                                         ),
                                                       }.withoutNulls,
@@ -1738,14 +1741,14 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                                     e.title ==
                                                                     'Acrylic Cutout Photo')
                                                                 .toList()
-                                                                .first,
+                                                                .firstOrNull,
                                                         'category':
                                                             homePageCategoryRecordList
                                                                 .where((e) =>
                                                                     e.title ==
                                                                     'Acrylic Cutout Photo')
                                                                 .toList()
-                                                                .first,
+                                                                .firstOrNull,
                                                       },
                                                     );
                                                   },
@@ -2609,7 +2612,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                           ),
                           wrapWithModel(
                             model: _model.footerWebModel,
-                            updateCallback: () => setState(() {}),
+                            updateCallback: () => safeSetState(() {}),
                             child: const FooterWebWidget(),
                           ),
                         ],
@@ -2778,8 +2781,8 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                                       e.title ==
                                                                       'Premium Acrylic Photo')
                                                                   .toList()
-                                                                  .first
-                                                                  .reference
+                                                                  .firstOrNull
+                                                                  ?.reference
                                                                   .id,
                                                               ParamType.String,
                                                             ),
@@ -2790,34 +2793,21 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                                       e.title ==
                                                                       'Premium Acrylic Photo')
                                                                   .toList()
-                                                                  .first,
+                                                                  .firstOrNull,
                                                               ParamType
                                                                   .Document,
                                                             ),
                                                           }.withoutNulls,
                                                           extra: <String,
                                                               dynamic>{
-                                                            'category':
-                                                                homePageCategoryRecordList
-                                                                    .where((e) =>
-                                                                        e.title ==
-                                                                        'Premium Acrylic Photo')
-                                                                    .toList()
-                                                                    .first,
+                                                            'category': homePageCategoryRecordList
+                                                                .where((e) =>
+                                                                    e.title ==
+                                                                    'Premium Acrylic Photo')
+                                                                .toList()
+                                                                .firstOrNull,
                                                           },
                                                         );
-
-                                                        setState(() {
-                                                          FFAppState()
-                                                                  .catgerydoc =
-                                                              homePageCategoryRecordList
-                                                                  .where((e) =>
-                                                                      e.title ==
-                                                                      'Premium Acrylic Photo')
-                                                                  .toList()
-                                                                  .first
-                                                                  .reference;
-                                                        });
                                                       },
                                                       text: 'Shop Now',
                                                       options: FFButtonOptions(
@@ -3015,28 +3005,63 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                   children: [
                                                     FFButtonWidget(
                                                       onPressed: () async {
+                                                        _model.clock =
+                                                            await queryCategoryRecordOnce(
+                                                          queryBuilder:
+                                                              (categoryRecord) =>
+                                                                  categoryRecord
+                                                                      .where(
+                                                            'title',
+                                                            isEqualTo:
+                                                                'Acrylic Clock',
+                                                          ),
+                                                          singleRecord: true,
+                                                        ).then((s) =>
+                                                                s.firstOrNull);
+                                                        await showDialog(
+                                                          context: context,
+                                                          builder:
+                                                              (alertDialogContext) {
+                                                            return AlertDialog(
+                                                              title: Text(
+                                                                  valueOrDefault<
+                                                                      String>(
+                                                                _model.clock
+                                                                    ?.categoryId,
+                                                                '0',
+                                                              )),
+                                                              content: Text(
+                                                                  valueOrDefault<
+                                                                      String>(
+                                                                _model.clock
+                                                                    ?.title,
+                                                                '0',
+                                                              )),
+                                                              actions: [
+                                                                TextButton(
+                                                                  onPressed: () =>
+                                                                      Navigator.pop(
+                                                                          alertDialogContext),
+                                                                  child: const Text(
+                                                                      'Ok'),
+                                                                ),
+                                                              ],
+                                                            );
+                                                          },
+                                                        );
+
                                                         context.pushNamed(
                                                           'Clockpageedit',
                                                           queryParameters: {
                                                             'categoryId':
                                                                 serializeParam(
-                                                              homePageCategoryRecordList
-                                                                  .where((e) =>
-                                                                      e.title ==
-                                                                      'Acrylic Clock')
-                                                                  .toList()
-                                                                  .first
-                                                                  .categoryId,
+                                                              _model.clock
+                                                                  ?.categoryId,
                                                               ParamType.String,
                                                             ),
                                                             'category':
                                                                 serializeParam(
-                                                              homePageCategoryRecordList
-                                                                  .where((e) =>
-                                                                      e.title ==
-                                                                      'Acrylic Clock')
-                                                                  .toList()
-                                                                  .first,
+                                                              _model.clock,
                                                               ParamType
                                                                   .Document,
                                                             ),
@@ -3044,14 +3069,11 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                           extra: <String,
                                                               dynamic>{
                                                             'category':
-                                                                homePageCategoryRecordList
-                                                                    .where((e) =>
-                                                                        e.title ==
-                                                                        'Acrylic Clock')
-                                                                    .toList()
-                                                                    .first,
+                                                                _model.clock,
                                                           },
                                                         );
+
+                                                        safeSetState(() {});
                                                       },
                                                       text: 'Shop Now',
                                                       options: FFButtonOptions(
@@ -3259,8 +3281,8 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                                       e.title ==
                                                                       'Transparent Acrylic Photo')
                                                                   .toList()
-                                                                  .first
-                                                                  .reference
+                                                                  .firstOrNull
+                                                                  ?.reference
                                                                   .id,
                                                               ParamType.String,
                                                             ),
@@ -3271,20 +3293,19 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                                       e.title ==
                                                                       'Transparent Acrylic Photo')
                                                                   .toList()
-                                                                  .first,
+                                                                  .firstOrNull,
                                                               ParamType
                                                                   .Document,
                                                             ),
                                                           }.withoutNulls,
                                                           extra: <String,
                                                               dynamic>{
-                                                            'category':
-                                                                homePageCategoryRecordList
-                                                                    .where((e) =>
-                                                                        e.title ==
-                                                                        'Transparent Acrylic Photo')
-                                                                    .toList()
-                                                                    .first,
+                                                            'category': homePageCategoryRecordList
+                                                                .where((e) =>
+                                                                    e.title ==
+                                                                    'Transparent Acrylic Photo')
+                                                                .toList()
+                                                                .firstOrNull,
                                                           },
                                                         );
                                                       },
@@ -3494,8 +3515,8 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                                       e.title ==
                                                                       'Acrylic Frame With High Gloss')
                                                                   .toList()
-                                                                  .first
-                                                                  .reference
+                                                                  .firstOrNull
+                                                                  ?.reference
                                                                   .id,
                                                               ParamType.String,
                                                             ),
@@ -3506,20 +3527,19 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                                       e.title ==
                                                                       'Acrylic Frame With High Gloss')
                                                                   .toList()
-                                                                  .first,
+                                                                  .firstOrNull,
                                                               ParamType
                                                                   .Document,
                                                             ),
                                                           }.withoutNulls,
                                                           extra: <String,
                                                               dynamic>{
-                                                            'category':
-                                                                homePageCategoryRecordList
-                                                                    .where((e) =>
-                                                                        e.title ==
-                                                                        'Acrylic Frame With High Gloss')
-                                                                    .toList()
-                                                                    .first,
+                                                            'category': homePageCategoryRecordList
+                                                                .where((e) =>
+                                                                    e.title ==
+                                                                    'Acrylic Frame With High Gloss')
+                                                                .toList()
+                                                                .firstOrNull,
                                                           },
                                                         );
                                                       },
@@ -3928,7 +3948,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                                       e.title ==
                                                                       'Acrylic Cutout Photo')
                                                                   .toList()
-                                                                  .first,
+                                                                  .firstOrNull,
                                                               ParamType
                                                                   .Document,
                                                             ),
@@ -3939,7 +3959,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                                       e.title ==
                                                                       'Acrylic Cutout Photo')
                                                                   .toList()
-                                                                  .first,
+                                                                  .firstOrNull,
                                                               ParamType
                                                                   .Document,
                                                             ),
@@ -3952,14 +3972,13 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                                                         e.title ==
                                                                         'Acrylic Cutout Photo')
                                                                     .toList()
-                                                                    .first,
-                                                            'category':
-                                                                homePageCategoryRecordList
-                                                                    .where((e) =>
-                                                                        e.title ==
-                                                                        'Acrylic Cutout Photo')
-                                                                    .toList()
-                                                                    .first,
+                                                                    .firstOrNull,
+                                                            'category': homePageCategoryRecordList
+                                                                .where((e) =>
+                                                                    e.title ==
+                                                                    'Acrylic Cutout Photo')
+                                                                .toList()
+                                                                .firstOrNull,
                                                           },
                                                         );
                                                       },
@@ -4627,7 +4646,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                           ),
                           wrapWithModel(
                             model: _model.footerMobileModel,
-                            updateCallback: () => setState(() {}),
+                            updateCallback: () => safeSetState(() {}),
                             child: const FooterMobileWidget(),
                           ),
                         ],
@@ -4636,7 +4655,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                   ),
                 wrapWithModel(
                   model: _model.headerModel,
-                  updateCallback: () => setState(() {}),
+                  updateCallback: () => safeSetState(() {}),
                   child: const HeaderWidget(),
                 ),
               ],

@@ -30,7 +30,7 @@ class _ShoppingCartnewWidgetState extends State<ShoppingCartnewWidget> {
     super.initState();
     _model = createModel(context, () => ShoppingCartnewModel());
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -45,9 +45,10 @@ class _ShoppingCartnewWidgetState extends State<ShoppingCartnewWidget> {
     context.watch<FFAppState>();
 
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -67,7 +68,7 @@ class _ShoppingCartnewWidgetState extends State<ShoppingCartnewWidget> {
             elevation: 16.0,
             child: wrapWithModel(
               model: _model.drawerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const DrawerWidget(),
             ),
           ),
@@ -259,6 +260,7 @@ class _ShoppingCartnewWidgetState extends State<ShoppingCartnewWidget> {
                                           builder: (context) {
                                             final orderList =
                                                 FFAppState().orderList.toList();
+
                                             return ListView.builder(
                                               padding: EdgeInsets.zero,
                                               shrinkWrap: true,
@@ -497,13 +499,14 @@ class _ShoppingCartnewWidgetState extends State<ShoppingCartnewWidget> {
                                                                               await actions.returnOrderQtyminuslist(
                                                                             orderListItem,
                                                                           );
-                                                                          setState(
-                                                                              () {
-                                                                            FFAppState().orderList =
-                                                                                _model.qtyminus!.toList().cast<OrdersStruct>();
-                                                                          });
+                                                                          FFAppState().orderList = _model
+                                                                              .qtyminus!
+                                                                              .toList()
+                                                                              .cast<OrdersStruct>();
+                                                                          safeSetState(
+                                                                              () {});
 
-                                                                          setState(
+                                                                          safeSetState(
                                                                               () {});
                                                                         },
                                                                       ),
@@ -559,13 +562,14 @@ class _ShoppingCartnewWidgetState extends State<ShoppingCartnewWidget> {
                                                                               await actions.returnOrderQtyPluslist(
                                                                             orderListItem,
                                                                           );
-                                                                          setState(
-                                                                              () {
-                                                                            FFAppState().orderList =
-                                                                                _model.returnorderList!.toList().cast<OrdersStruct>();
-                                                                          });
+                                                                          FFAppState().orderList = _model
+                                                                              .returnorderList!
+                                                                              .toList()
+                                                                              .cast<OrdersStruct>();
+                                                                          safeSetState(
+                                                                              () {});
 
-                                                                          setState(
+                                                                          safeSetState(
                                                                               () {});
                                                                         },
                                                                       ),
@@ -670,19 +674,19 @@ class _ShoppingCartnewWidgetState extends State<ShoppingCartnewWidget> {
                                                             ),
                                                             onPressed:
                                                                 () async {
-                                                              setState(() {
-                                                                FFAppState()
-                                                                    .removeFromOrderList(
-                                                                        orderListItem);
-                                                              });
-                                                              setState(() {
-                                                                FFAppState()
-                                                                    .FinalAmt = FFAppState()
-                                                                        .FinalAmt +
-                                                                    functions.returnminusAmt(
-                                                                        orderListItem
-                                                                            .total);
-                                                              });
+                                                              FFAppState()
+                                                                  .removeFromOrderList(
+                                                                      orderListItem);
+                                                              safeSetState(
+                                                                  () {});
+                                                              FFAppState()
+                                                                  .FinalAmt = FFAppState()
+                                                                      .FinalAmt +
+                                                                  functions.returnminusAmt(
+                                                                      orderListItem
+                                                                          .total);
+                                                              safeSetState(
+                                                                  () {});
                                                             },
                                                           ),
                                                         ],
@@ -1250,6 +1254,7 @@ class _ShoppingCartnewWidgetState extends State<ShoppingCartnewWidget> {
                                   builder: (context) {
                                     final orderList =
                                         FFAppState().orderList.toList();
+
                                     return ListView.builder(
                                       padding: EdgeInsets.zero,
                                       shrinkWrap: true,
@@ -1488,11 +1493,11 @@ class _ShoppingCartnewWidgetState extends State<ShoppingCartnewWidget> {
                                                                                 await actions.returnOrderQtyminuslist(
                                                                               orderListItem,
                                                                             );
-                                                                            setState(() {
-                                                                              FFAppState().orderList = _model.qtyminusCopy!.toList().cast<OrdersStruct>();
-                                                                            });
+                                                                            FFAppState().orderList =
+                                                                                _model.qtyminusCopy!.toList().cast<OrdersStruct>();
+                                                                            safeSetState(() {});
 
-                                                                            setState(() {});
+                                                                            safeSetState(() {});
                                                                           },
                                                                         ),
                                                                       ),
@@ -1542,11 +1547,11 @@ class _ShoppingCartnewWidgetState extends State<ShoppingCartnewWidget> {
                                                                                 await actions.returnOrderQtyPluslist(
                                                                               orderListItem,
                                                                             );
-                                                                            setState(() {
-                                                                              FFAppState().orderList = _model.returnorderListCopy!.toList().cast<OrdersStruct>();
-                                                                            });
+                                                                            FFAppState().orderList =
+                                                                                _model.returnorderListCopy!.toList().cast<OrdersStruct>();
+                                                                            safeSetState(() {});
 
-                                                                            setState(() {});
+                                                                            safeSetState(() {});
                                                                           },
                                                                         ),
                                                                       ),
@@ -1640,22 +1645,23 @@ class _ShoppingCartnewWidgetState extends State<ShoppingCartnewWidget> {
                                                               ),
                                                               onPressed:
                                                                   () async {
-                                                                setState(() {
-                                                                  FFAppState()
-                                                                      .removeFromOrderList(
-                                                                          orderListItem);
-                                                                });
-                                                                setState(() {
-                                                                  FFAppState()
-                                                                      .FinalAmt = FFAppState()
-                                                                          .FinalAmt +
-                                                                      valueOrDefault<
-                                                                          double>(
-                                                                        functions
-                                                                            .returnminusAmt(orderListItem.total),
-                                                                        0.0,
-                                                                      );
-                                                                });
+                                                                FFAppState()
+                                                                    .removeFromOrderList(
+                                                                        orderListItem);
+                                                                safeSetState(
+                                                                    () {});
+                                                                FFAppState()
+                                                                    .FinalAmt = FFAppState()
+                                                                        .FinalAmt +
+                                                                    valueOrDefault<
+                                                                        double>(
+                                                                      functions.returnminusAmt(
+                                                                          orderListItem
+                                                                              .total),
+                                                                      0.0,
+                                                                    );
+                                                                safeSetState(
+                                                                    () {});
                                                               },
                                                             ),
                                                           ],
@@ -2182,7 +2188,7 @@ class _ShoppingCartnewWidgetState extends State<ShoppingCartnewWidget> {
               ),
             wrapWithModel(
               model: _model.headerModel,
-              updateCallback: () => setState(() {}),
+              updateCallback: () => safeSetState(() {}),
               child: const HeaderWidget(),
             ),
           ],

@@ -28,7 +28,7 @@ class _FooterMobileWidgetState extends State<FooterMobileWidget> {
     super.initState();
     _model = createModel(context, () => FooterMobileModel());
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override

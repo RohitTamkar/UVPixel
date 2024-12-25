@@ -39,7 +39,7 @@ class _EditThicknessWidgetState extends State<EditThicknessWidget> {
 
     _model.textCatalogueCodeFocusNode ??= FocusNode();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -76,7 +76,9 @@ class _EditThicknessWidgetState extends State<EditThicknessWidget> {
                   ),
                 );
               }
+
               final containerThicknessRecord = snapshot.data!;
+
               return Container(
                 width: 650.0,
                 height: 350.0,
@@ -316,7 +318,7 @@ class _EditThicknessWidgetState extends State<EditThicknessWidget> {
                                 onChanged: (_) => EasyDebounce.debounce(
                                   '_model.textCatalogueCodeTextController',
                                   const Duration(milliseconds: 2000),
-                                  () => setState(() {}),
+                                  () => safeSetState(() {}),
                                 ),
                                 autofocus: true,
                                 readOnly: true,

@@ -3,9 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '/backend/schema/util/firestore_util.dart';
-import '/backend/schema/util/schema_util.dart';
 
-import 'index.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 
 class ThicknessAndPriceListStruct extends FFFirebaseStruct {
@@ -23,21 +21,26 @@ class ThicknessAndPriceListStruct extends FFFirebaseStruct {
   String? _id;
   String get id => _id ?? '';
   set id(String? val) => _id = val;
+
   bool hasId() => _id != null;
 
   // "sellingPrice" field.
   double? _sellingPrice;
   double get sellingPrice => _sellingPrice ?? 0.0;
   set sellingPrice(double? val) => _sellingPrice = val;
+
   void incrementSellingPrice(double amount) =>
-      _sellingPrice = sellingPrice + amount;
+      sellingPrice = sellingPrice + amount;
+
   bool hasSellingPrice() => _sellingPrice != null;
 
   // "mrpPrice" field.
   double? _mrpPrice;
   double get mrpPrice => _mrpPrice ?? 0.0;
   set mrpPrice(double? val) => _mrpPrice = val;
-  void incrementMrpPrice(double amount) => _mrpPrice = mrpPrice + amount;
+
+  void incrementMrpPrice(double amount) => mrpPrice = mrpPrice + amount;
+
   bool hasMrpPrice() => _mrpPrice != null;
 
   static ThicknessAndPriceListStruct fromMap(Map<String, dynamic> data) =>
