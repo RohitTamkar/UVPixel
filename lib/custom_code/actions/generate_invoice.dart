@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
+import 'index.dart'; // Imports other custom actions
+
 import 'package:flutter/services.dart';
 
 import 'dart:io';
@@ -35,14 +37,14 @@ Future<String> generateInvoice(
   final pdf = pw.Document();
 
   // Load logo image from URL
-  final http.Response response = await http.get(Uri.parse(logoImageUrl!));
-  final Uint8List logoImageBytes = response.bodyBytes;
-  final logoImageProvider = pw.MemoryImage(logoImageBytes);
-
-  final http.Response response1 = await http.get(Uri.parse(
-      'https://firebasestorage.googleapis.com/v0/b/uvpixcel.appspot.com/o/importantImages%2Faddd.jpg?alt=media&token=6a7b48ba-ecb3-4b43-817f-3386f5783546'!));
-  final Uint8List logoImageBytes1 = response1.bodyBytes;
-  final logoImageProvider1 = pw.MemoryImage(logoImageBytes1);
+  // final http.Response response = await http.get(Uri.parse(logoImageUrl!));
+  // final Uint8List logoImageBytes = response.bodyBytes;
+  // final logoImageProvider = pw.MemoryImage(logoImageBytes);
+  //
+  // final http.Response response1 = await http.get(Uri.parse(
+  //     'https://firebasestorage.googleapis.com/v0/b/uvpixcel.appspot.com/o/importantImages%2Faddd.jpg?alt=media&token=6a7b48ba-ecb3-4b43-817f-3386f5783546'!));
+  // final Uint8List logoImageBytes1 = response1.bodyBytes;
+  // final logoImageProvider1 = pw.MemoryImage(logoImageBytes1);
 
   pdf.addPage(
     pw.Page(
@@ -55,7 +57,7 @@ Future<String> generateInvoice(
               mainAxisAlignment: pw.MainAxisAlignment.center,
               children: [
                 pw.SizedBox(width: 20),
-                pw.Image(logoImageProvider, width: 100), // Logo image
+                //pw.Image(logoImageProvider, width: 100), // Logo image
               ],
             ),
             // Order details
@@ -75,6 +77,10 @@ Future<String> generateInvoice(
                     style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                   ),
                   pw.Text('${customerDetails?.address ?? ''}'),
+                  pw.Text('${customerDetails?.city ?? ''}'),
+                  pw.Text('${customerDetails?.state ?? ''}'),
+                  pw.Text('${customerDetails?.zipCode ?? ''}'),
+
                   pw.SizedBox(height: 10),
                   // Bold labels for customer details
                   pw.Text(
@@ -82,14 +88,14 @@ Future<String> generateInvoice(
                     style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                   ),
                   pw.Text(
-                    '${customerDetails?.firstname ?? ''} ${customerDetails?.lastname ?? ''}',
+                    '${customerDetails?.firstName ?? ''} ${customerDetails?.lastName ?? ''}',
                   ),
 
                   pw.Text(
                     'Mobile No: ',
                     style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                   ),
-                  pw.Text('+91${customerDetails?.mobileNo ?? ''}'),
+                  pw.Text('+91${customerDetails?.mobileNumber ?? ''}'),
                   pw.Text(
                     'Email: ',
                     style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
@@ -103,12 +109,13 @@ Future<String> generateInvoice(
                     headerAlignment: pw.Alignment.centerLeft,
                     data: [
                       // Header row
-                      ['Product Name', 'Quantity', 'Price'],
+                      ['Product Name', 'Quantity', 'Price', 'Sub Total'],
                       // Order items
                       ...orderList!.map((order) => [
-                            '${order.categoryName} , (${order.size}) ,${order.thickness} ,${order.shapes}',
-                            order.qty.toString(),
-                            order.price.toString()
+                            '${order.name}',
+                            order.quantity.toString(),
+                            order.price.toString(),
+                            (order.quantity * order.price).toString()
                           ]),
                       // GST and Total row
                       ['', 'GST (18% included):', calculateGST(totalAmt)],
@@ -120,7 +127,7 @@ Future<String> generateInvoice(
                     mainAxisAlignment: pw.MainAxisAlignment.center,
                     children: [
                       pw.SizedBox(width: 10),
-                      pw.Image(logoImageProvider1, width: 300), // Logo image
+                      //pw.Image(logoImageProvider1, width: 300), // Logo image
                     ],
                   ),
                 ],
@@ -136,7 +143,7 @@ Future<String> generateInvoice(
   final bytes = await pdf.save();
   final base64String = base64Encode(bytes);
   final pdfDataUri = 'data:application/pdf;base64,$base64String';
-
+  print(pdfDataUri);
   // Print the PDF in web environment
   if (html.window.navigator.userAgent.contains('Chrome')) {
     // For Chrome browser

@@ -504,6 +504,94 @@ class _AdminOrdersWidgetState extends State<AdminOrdersWidget> {
                                                             ),
                                                           ),
                                                         ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                                      0.0,
+                                                                      0.0,
+                                                                      0.0,
+                                                                      10.0),
+                                                          child: RichText(
+                                                            textScaler:
+                                                                MediaQuery.of(
+                                                                        context)
+                                                                    .textScaler,
+                                                            text: TextSpan(
+                                                              children: [
+                                                                TextSpan(
+                                                                  text: valueOrDefault<
+                                                                      String>(
+                                                                    listViewOrdersRecord
+                                                                        .userdetails
+                                                                        .city,
+                                                                    'pune',
+                                                                  ),
+                                                                  style:
+                                                                      const TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    fontSize:
+                                                                        15.0,
+                                                                  ),
+                                                                ),
+                                                                const TextSpan(
+                                                                  text: '    -',
+                                                                  style:
+                                                                      TextStyle(),
+                                                                ),
+                                                                TextSpan(
+                                                                  text: valueOrDefault<
+                                                                      String>(
+                                                                    listViewOrdersRecord
+                                                                        .userdetails
+                                                                        .state,
+                                                                    'pune',
+                                                                  ),
+                                                                  style:
+                                                                      const TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    fontSize:
+                                                                        15.0,
+                                                                  ),
+                                                                ),
+                                                                const TextSpan(
+                                                                  text: '    -',
+                                                                  style:
+                                                                      TextStyle(),
+                                                                ),
+                                                                TextSpan(
+                                                                  text: valueOrDefault<
+                                                                      String>(
+                                                                    listViewOrdersRecord
+                                                                        .userdetails
+                                                                        .zipCode,
+                                                                    'pune',
+                                                                  ),
+                                                                  style:
+                                                                      const TextStyle(),
+                                                                )
+                                                              ],
+                                                              style: FlutterFlowTheme
+                                                                      .of(context)
+                                                                  .bodyMedium
+                                                                  .override(
+                                                                    fontFamily:
+                                                                        FlutterFlowTheme.of(context)
+                                                                            .bodyMediumFamily,
+                                                                    letterSpacing:
+                                                                        0.0,
+                                                                    useGoogleFonts: GoogleFonts
+                                                                            .asMap()
+                                                                        .containsKey(
+                                                                            FlutterFlowTheme.of(context).bodyMediumFamily),
+                                                                  ),
+                                                            ),
+                                                          ),
+                                                        ),
                                                         Row(
                                                           mainAxisSize:
                                                               MainAxisSize.max,
